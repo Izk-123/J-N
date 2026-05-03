@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% load image_tags %}
+{% block title %}{{ service.title }}{% endblock %}
+
+{% load image_tags %}
+{% block content %}
+
+<div style="background:var(--black);padding:60px 0 30px;">
+    <div class="container">
+        <nav aria-label="breadcrumb" data-aos="fade-up">
+            <ol class="breadcrumb mb-2" style="font-size:0.82rem;">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color:rgba(255,255,255,0.5);">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'service_list' %}" style="color:rgba(255,255,255,0.5);">Services</a></li>
+                <li class="breadcrumb-item active text-white-50">{{ service.title }}</li>
+            </ol>
+        </nav>
+        <h1 class="section-title text-white mt-2" data-aos="fade-right">{{ service.title }}</h1>
+        <div class="divider-red" data-aos="fade-right" data-aos-delay="100"></div>
+    </div>
+</div>
+
+<section style="padding:60px 0;">
+    <div class="container">
+        <div class="row g-5 align-items-start">
+            <div class="col-lg-7" data-aos="fade-right">
+                <img src="{% safe_image_url service.image 600 420 service.title %}" alt="{{ service.title }}" style="width:100%;height:420px;object-fit:cover;margin-bottom:30px;">
+                <h3 style="font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:1.5rem;margin-bottom:16px;">
+                    <span style="color:var(--red);">{{ service.title }}</span> — Overview
+                </h3>
+                <div style="color:var(--gray);line-height:1.9;font-size:1rem;">
+                    {{ service.description|linebreaks }}
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-5" data-aos="fade-left">
+                <div style="background:var(--black);padding:36px;color:white;position:sticky;top:90px;">
+                    <div style="font-family:'Oswald',sans-serif;font-size:0.8rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--red);margin-bottom:8px;">
+                        Get Started
+                    </div>
+                    <h4 style="font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:1.4rem;margin-bottom:24px;">Request This Service</h4>
+
+                    <a href="https://wa.me/{{ site.whatsapp_number }}?text=Hello J%26N, I'm interested in your {{ service.title }} service."
+                       target="_blank"
+                       style="background:#25D366;color:white;padding:14px 20px;text-decoration:none;font-family:'Oswald',sans-serif;letter-spacing:0.08em;text-transform:uppercase;font-size:0.9rem;display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+                        <i class="bi bi-whatsapp fs-5"></i> Chat on WhatsApp
+                    </a>
+                    <a href="{% url 'contact' %}"
+                       style="border:2px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.85);padding:12px 20px;text-decoration:none;font-family:'Oswald',sans-serif;letter-spacing:0.08em;text-transform:uppercase;font-size:0.9rem;display:flex;align-items:center;gap:10px;margin-bottom:28px;">
+                        <i class="bi bi-envelope"></i> Send Enquiry
+                    </a>
+
+                    <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:24px;">
+                        <p style="color:rgba(255,255,255,0.5);font-size:0.82rem;margin-bottom:10px;">OR CALL US DIRECTLY</p>
+                        <a href="tel:{{ site.phone }}" style="color:white;text-decoration:none;font-family:'Oswald',sans-serif;font-size:1.3rem;letter-spacing:0.04em;">
+                            <i class="bi bi-telephone-fill me-2" style="color:var(--red);"></i>{{ site.phone }}
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Other services -->
+                <div style="margin-top:16px;padding:24px;background:var(--gray-light);">
+                    <h6 style="font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:0.1em;font-size:0.85rem;margin-bottom:16px;">Other Services</h6>
+                    <a href="{% url 'service_list' %}" style="color:var(--red);text-decoration:none;font-size:0.9rem;font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:0.08em;">
+                        <i class="bi bi-arrow-left me-1"></i> View All Services
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

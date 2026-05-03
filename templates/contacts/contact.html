@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact Us{% endblock %}
+
+{% block content %}
+<div style="background:var(--black);padding:60px 0 40px;">
+    <div class="container">
+        <span class="section-label">Get In Touch</span>
+        <h1 class="section-title text-white mt-2">Contact <span style="color:var(--red)">Us</span></h1>
+        <div class="divider-red"></div>
+    </div>
+</div>
+
+<section style="padding:70px 0;">
+    <div class="container">
+        <div class="row g-5">
+            <!-- Contact Info -->
+            <div class="col-lg-4">
+                <h3 style="font-family:'Oswald',sans-serif;text-transform:uppercase;margin-bottom:30px;">We'd Love to <span style="color:var(--red)">Hear From You</span></h3>
+                <p class="text-muted mb-4">Whether you need a quote, have a question about our products, or want to start a project — reach out to us today.</p>
+
+                <div class="d-flex gap-3 mb-4">
+                    <div style="width:48px;height:48px;background:var(--red);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <i class="bi bi-geo-alt-fill text-white fs-5"></i>
+                    </div>
+                    <div>
+                        <div style="font-family:'Oswald',sans-serif;font-size:0.9rem;text-transform:uppercase;letter-spacing:0.08em;">Address</div>
+                        <div class="text-muted" style="font-size:0.9rem;">{{ site.address }}</div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-3 mb-4">
+                    <div style="width:48px;height:48px;background:var(--red);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <i class="bi bi-telephone-fill text-white fs-5"></i>
+                    </div>
+                    <div>
+                        <div style="font-family:'Oswald',sans-serif;font-size:0.9rem;text-transform:uppercase;letter-spacing:0.08em;">Phone</div>
+                        <a href="tel:{{ site.phone }}" class="text-muted text-decoration-none" style="font-size:0.9rem;">{{ site.phone }}</a>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-3 mb-5">
+                    <div style="width:48px;height:48px;background:#25D366;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        <i class="bi bi-whatsapp text-white fs-5"></i>
+                    </div>
+                    <div>
+                        <div style="font-family:'Oswald',sans-serif;font-size:0.9rem;text-transform:uppercase;letter-spacing:0.08em;">WhatsApp</div>
+                        <a href="https://wa.me/{{ site.whatsapp_number }}" target="_blank" class="text-muted text-decoration-none" style="font-size:0.9rem;">{{ site.whatsapp_number }}</a>
+                    </div>
+                </div>
+
+                <a href="https://wa.me/{{ site.whatsapp_number }}?text=Hello J%26N Building Products, I'd like to get a quote." target="_blank"
+                   style="background:#25D366;color:white;padding:14px 28px;text-decoration:none;font-family:'Oswald',sans-serif;letter-spacing:0.1em;text-transform:uppercase;display:inline-block;">
+                    <i class="bi bi-whatsapp me-2"></i>Start on WhatsApp
+                </a>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="col-lg-8">
+                <div style="background:white;padding:40px;box-shadow:0 4px 30px rgba(0,0,0,0.08);">
+                    <h4 style="font-family:'Oswald',sans-serif;text-transform:uppercase;margin-bottom:24px;">Send Us a Message</h4>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label" style="font-size:0.82rem;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;">Full Name *</label>
+                                <input type="text" name="name" class="form-control" required style="border-radius:0;border:1px solid #ddd;padding:12px;">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" style="font-size:0.82rem;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;">Phone Number *</label>
+                                <input type="tel" name="phone" class="form-control" required style="border-radius:0;border:1px solid #ddd;padding:12px;">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" style="font-size:0.82rem;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;">Email</label>
+                                <input type="email" name="email" class="form-control" style="border-radius:0;border:1px solid #ddd;padding:12px;">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" style="font-size:0.82rem;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;">Subject</label>
+                                <input type="text" name="subject" class="form-control" style="border-radius:0;border:1px solid #ddd;padding:12px;">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" style="font-size:0.82rem;text-transform:uppercase;letter-spacing:0.08em;font-weight:600;">Message *</label>
+                                <textarea name="message" class="form-control" rows="5" required style="border-radius:0;border:1px solid #ddd;padding:12px;resize:vertical;"></textarea>
+                            </div>
+                            <div class="col-12 mt-2">
+                                <button type="submit" class="btn-red" style="width:100%;padding:14px;">
+                                    <i class="bi bi-send me-2"></i>Send Message
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% load static image_tags %}
+
+{% block title %}{{ product.name }}{% endblock %}
+{% block meta_description %}{{ product.description|truncatewords:25 }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .product-hero {
+        background: var(--black);
+        padding: 50px 0 30px;
+    }
+    .product-img-main {
+        width: 100%;
+        height: 420px;
+        object-fit: cover;
+        background: var(--gray-light);
+    }
+    .spec-table td {
+        padding: 10px 14px;
+        font-size: 0.9rem;
+        border-color: #eee;
+    }
+    .spec-table tr:nth-child(odd) td { background: var(--gray-light); }
+    .related-card {
+        border: 1px solid #eee;
+        overflow: hidden;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: block;
+        color: inherit;
+    }
+    .related-card:hover {
+        border-color: var(--red);
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(214,40,40,0.1);
+        color: inherit;
+    }
+    .related-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        transition: transform 0.4s;
+    }
+    .related-card:hover img { transform: scale(1.06); }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+<div class="product-hero">
+    <div class="container">
+        <nav aria-label="breadcrumb" data-aos="fade-up">
+            <ol class="breadcrumb mb-2" style="font-size:0.82rem;">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color:rgba(255,255,255,0.5);">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'product_list' %}" style="color:rgba(255,255,255,0.5);">Products</a></li>
+                <li class="breadcrumb-item active text-white-50">{{ product.name }}</li>
+            </ol>
+        </nav>
+        <span style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--red);font-weight:600;" data-aos="fade-right">{{ product.category.name }}</span>
+        <h1 class="section-title text-white mt-1" data-aos="fade-right" data-aos-delay="100">{{ product.name }}</h1>
+    </div>
+</div>
+
+<!-- Product Body -->
+<section style="padding:60px 0;">
+    <div class="container">
+        <div class="row g-5">
+            <!-- Image -->
+            <div class="col-lg-6" data-aos="fade-right">
+                <div style="position:relative;">
+                    <img src="{% safe_image_url product.image 600 420 product.name %}" alt="{{ product.name }}" class="product-img-main">
+                    <div style="position:absolute;top:16px;left:16px;background:var(--red);color:white;padding:6px 14px;font-family:'Oswald',sans-serif;font-size:0.78rem;letter-spacing:0.12em;text-transform:uppercase;">
+                        {{ product.category.name }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Details -->
+            <div class="col-lg-6" data-aos="fade-left">
+                <h2 style="font-family:'Oswald',sans-serif;font-size:2rem;text-transform:uppercase;">{{ product.name }}</h2>
+                <div style="width:40px;height:4px;background:var(--red);margin:12px 0 20px;"></div>
+
+                {% if product.price %}
+                <div style="font-family:'Oswald',sans-serif;font-size:2.2rem;color:var(--red);margin-bottom:20px;">
+                    MK {{ product.price|floatformat:0 }}
+                </div>
+                {% endif %}
+
+                <p style="color:var(--gray);line-height:1.8;font-size:1rem;">{{ product.description }}</p>
+
+                {% if product.specifications %}
+                <h5 style="font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:0.06em;margin:28px 0 12px;">Specifications</h5>
+                <div style="background:var(--gray-light);padding:20px;border-left:4px solid var(--red);">
+                    <p style="font-size:0.9rem;line-height:1.8;margin:0;white-space:pre-line;">{{ product.specifications }}</p>
+                </div>
+                {% endif %}
+
+                <div class="d-flex flex-wrap gap-3 mt-4">
+                    <a href="https://wa.me/{{ site.whatsapp_number }}?text=Hello J%26N, I'm interested in {{ product.name }}. Please send me more info."
+                       target="_blank"
+                       style="background:#25D366;color:white;padding:14px 28px;text-decoration:none;font-family:'Oswald',sans-serif;letter-spacing:0.08em;text-transform:uppercase;font-size:0.95rem;display:inline-flex;align-items:center;gap:8px;">
+                        <i class="bi bi-whatsapp fs-5"></i> Enquire on WhatsApp
+                    </a>
+                    <a href="{% url 'contact' %}"
+                       style="border:2px solid var(--red);color:var(--red);padding:12px 28px;text-decoration:none;font-family:'Oswald',sans-serif;letter-spacing:0.08em;text-transform:uppercase;font-size:0.95rem;display:inline-flex;align-items:center;gap:8px;">
+                        <i class="bi bi-envelope"></i> Send Message
+                    </a>
+                </div>
+
+                <!-- Quick contact info -->
+                <div style="margin-top:28px;padding:18px;background:var(--gray-light);border-radius:2px;">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <i class="bi bi-telephone-fill" style="color:var(--red);"></i>
+                        <a href="tel:{{ site.phone }}" style="text-decoration:none;color:var(--black);font-weight:600;font-size:0.95rem;">{{ site.phone }}</a>
+                    </div>
+                    <p style="font-size:0.8rem;color:var(--gray);margin:0;">Call us for bulk orders or custom requirements</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Products -->
+{% if related %}
+<section style="padding:50px 0 70px;background:var(--gray-light);">
+    <div class="container">
+        <span class="section-label" data-aos="fade-down">More Products</span>
+        <h3 class="section-title mt-2 mb-1" data-aos="fade-right">Related <span>Products</span></h3>
+        <div class="divider-red" data-aos="fade-right" data-aos-delay="100"></div>
+        <div class="row g-4 mt-2">
+            {% for p in related %}
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1|stringformat:'s' }}00">
+                <a href="{% url 'product_detail' p.slug %}" class="related-card">
+                    <div style="overflow:hidden;">
+                        <img src="{% safe_image_url p.image 400 200 p.name %}" alt="{{ p.name }}">
+                    </div>
+                    <div style="padding:16px;">
+                        <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--red);font-weight:600;">{{ p.category.name }}</div>
+                        <h6 style="font-family:'Oswald',sans-serif;margin:6px 0 0;font-size:1rem;">{{ p.name }}</h6>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

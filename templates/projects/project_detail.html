@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ project.title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .gallery-thumb {
+        height: 100px;
+        object-fit: cover;
+        width: 100%;
+        cursor: pointer;
+        transition: all 0.3s;
+        border: 3px solid transparent;
+    }
+    .gallery-thumb:hover, .gallery-thumb.active {
+        border-color: var(--red);
+        opacity: 0.85;
+    }
+    #mainImage {
+        width: 100%;
+        height: 480px;
+        object-fit: cover;
+        transition: opacity 0.3s;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div style="background:var(--black);padding:60px 0 30px;">
+    <div class="container">
+        <nav aria-label="breadcrumb" data-aos="fade-up">
+            <ol class="breadcrumb mb-2" style="font-size:0.82rem;">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color:rgba(255,255,255,0.5);">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'project_list' %}" style="color:rgba(255,255,255,0.5);">Projects</a></li>
+                <li class="breadcrumb-item active text-white-50">{{ project.title }}</li>
+            </ol>
+        </nav>
+        <h1 class="section-title text-white mt-1" data-aos="fade-right">{{ project.title }}</h1>
+        <div class="divider-red" data-aos="fade-right" data-aos-delay="100"></div>
+        <div class="d-flex flex-wrap gap-3" style="font-size:0.85rem;color:rgba(255,255,255,0.6);" data-aos="fade-up" data-aos-delay="200">
+            {% if project.location %}<span><i class="bi bi-geo-alt-fill me-1" style="color:var(--red)"></i>{{ project.location }}</span>{% endif %}
+            {% if project.completion_date %}<span><i class="bi bi-calendar3 me-1" style="color:var(--red)"></i>Completed {{ project.completion_date|date:"F Y" }}</span>{% endif %}
+            {% if project.client_name %}<span><i class="bi bi-person-fill me-1" style="color:var(--red)"></i>{{ project.client_name }}</span>{% endif %}
+        </div>
+    </div>
+</div>
+
+<section style="padding:60px 0;">
+    <div class="container">
+        <div class="row g-5">
+            <!-- Images -->
+            <div class="col-lg-7" data-aos="fade-right">
+                <img id="mainImage" src="{% safe_image_url project.cover_image 800 400 project.title %}" alt="{{ project.title }}">
+
+                {% if project.images.all %}
+                <div class="row g-2 mt-2">
+                    <!-- Cover as first thumb -->
+                    <div class="col-3">
+                        <img src="{% safe_image_url project.cover_image 800 400 project.title %}" class="gallery-thumb active" onclick="switchImage(this, '{% safe_image_url project.cover_image 800 400 project.title %}')" alt="Cover">
+                    </div>
+                    {% for img in project.images.all %}
+                    <div class="col-3">
+                        <img src="{% safe_image_url img.image 800 400 project.title %}" class="gallery-thumb" onclick="switchImage(this, '{% safe_image_url img.image 800 400 project.title %}')" alt="{{ img.caption|default:project.title }}">
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Info Sidebar -->
+            <div class="col-lg-5" data-aos="fade-left">
+                <h3 style="font-family:'Oswald',sans-serif;font-size:1.6rem;text-transform:uppercase;margin-bottom:16px;">Project <span style="color:var(--red)">Overview</span></h3>
+                <div style="color:var(--gray);line-height:1.9;font-size:0.97rem;">
+                    {{ project.description|linebreaks }}
+                </div>
+
+                <!-- Project info table -->
+                <div style="background:var(--gray-light);padding:24px;margin-top:28px;">
+                    <h6 style="font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:16px;font-size:0.85rem;">Project Details</h6>
+                    <table style="width:100%;font-size:0.88rem;">
+                        {% if project.location %}
+                        <tr style="border-bottom:1px solid #ddd;">
+                            <td style="padding:8px 0;color:var(--gray);width:40%;">Location</td>
+                            <td style="padding:8px 0;font-weight:600;">{{ project.location }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if project.completion_date %}
+                        <tr style="border-bottom:1px solid #ddd;">
+                            <td style="padding:8px 0;color:var(--gray);">Completed</td>
+                            <td style="padding:8px 0;font-weight:600;">{{ project.completion_date|date:"F Y" }}</td>
+                        </tr>
+                        {% endif %}
+                        {% if project.client_name %}
+                        <tr>
+                            <td style="padding:8px 0;color:var(--gray);">Client</td>
+                            <td style="padding:8px 0;font-weight:600;">{{ project.client_name }}</td>
+                        </tr>
+                        {% endif %}
+                    </table>
+                </div>
+
+                <div style="margin-top:24px;">
+                    <p style="font-size:0.9rem;color:var(--gray);margin-bottom:16px;">Interested in a similar project? Get in touch with us today.</p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a href="https://wa.me/{{ site.whatsapp_number }}?text=Hello J%26N, I saw your project '{{ project.title }}' and I'd like something similar."
+                           target="_blank"
+                           style="background:#25D366;color:white;padding:12px 24px;text-decoration:none;font-family:'Oswald',sans-serif;letter-spacing:0.08em;text-transform:uppercase;font-size:0.88rem;">
+                            <i class="bi bi-whatsapp me-1"></i> WhatsApp
+                        </a>
+                        <a href="{% url 'contact' %}"
+                           style="background:var(--red);color:white;padding:12px 24px;text-decoration:none;font-family:'Oswald',sans-serif;letter-spacing:0.08em;text-transform:uppercase;font-size:0.88rem;">
+                            Get Quote
+                        </a>
+                    </div>
+                </div>
+
+                <div style="margin-top:20px;">
+                    <a href="{% url 'project_list' %}" style="color:var(--red);text-decoration:none;font-family:'Oswald',sans-serif;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.08em;">
+                        <i class="bi bi-arrow-left me-1"></i> All Projects
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function switchImage(thumb, src) {
+    const mainImg = document.getElementById('mainImage');
+    mainImg.style.opacity = '0';
+    setTimeout(() => {
+        mainImg.src = src;
+        mainImg.style.opacity = '1';
+    }, 200);
+    document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+    thumb.classList.add('active');
+}
+</script>
+{% endblock %}
