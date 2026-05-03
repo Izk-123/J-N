@@ -1,0 +1,41 @@
+# Gunicorn systemd service for J&N Building Products
+# File location on server: /etc/systemd/system/jandn.service
+#
+# Commands:
+#   Start:   systemctl start jandn
+#   Stop:    systemctl stop jandn
+#   Restart: systemctl restart jandn
+#   Status:  systemctl status jandn
+#   Logs:    journalctl -u jandn -f
+
+[Unit]
+Description=J&N Building Products — Gunicorn Django App
+After=network.target
+
+[Service]
+Type=notify
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/jandn
+ExecStart=/var/www/jandn/venv/bin/gunicorn \
+    --workers 3 \
+    --bind 127.0.0.1:8000 \
+    --timeout 120 \
+    --access-logfile /var/log/jandn/gunicorn.access.log \
+    --error-logfile /var/log/jandn/gunicorn.error.log \
+    jn_building_products.wsgi:application
+
+# Environment variables
+EnvironmentFile=/var/www/jandn/.env
+Environment="DJANGO_SETTINGS_MODULE=jn_building_products.settings_production"
+
+# Auto-restart on failure
+Restart=on-failure
+RestartSec=5s
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
