@@ -4,6 +4,39 @@
 
 {% block title %}Products{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* Same hover effect as home page featured products */
+    .product-card {
+        background: white;
+        border: 1px solid #eee;
+        overflow: hidden;
+        transition: all 0.3s;
+    }
+    .product-card:hover {
+        border-color: var(--red);
+        box-shadow: 0 8px 30px rgba(214,40,40,0.1);
+        transform: translateY(-4px);
+    }
+    .product-card .img-wrap {
+        height: 230px;
+        overflow: hidden;
+        background: var(--gray-light);
+    }
+    .product-card .img-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+    }
+    .product-card:hover .img-wrap img {
+        transform: scale(1.08);
+    }
+
+    /* Keep any other custom styles */
+</style>
+{% endblock %}
+
 {% block content %}
 <!-- Page Header -->
 <div style="background:var(--black);padding:60px 0 40px;">
@@ -42,20 +75,19 @@
         <div class="row g-4">
             {% for product in products %}
             <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1|stringformat:'s' }}00">
-                <div class="product-card" style="background:white;border:1px solid #eee;overflow:hidden;transition:all 0.3s;">
-                    <!-- Product Image animates with its own effect -->
-                    <div class="img-wrap" style="height:230px;overflow:hidden;background:var(--gray-light);" 
+                <div class="product-card">
+                    <!-- Image -->
+                    <div class="img-wrap" 
                          data-aos="zoom-in" data-aos-delay="{{ forloop.counter0|add:2|stringformat:'s' }}00">
-                        <img src="{% safe_image_url product.image 600 400 product.name %}" alt="{{ product.name }}" 
-                             style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s;">
+                        <img src="{% safe_image_url product.image 600 400 product.name %}" alt="{{ product.name }}" loading="lazy">
                     </div>
                     <div style="padding:20px;">
-                        <!-- Category tag with a slide from left -->
+                        <!-- Category -->
                         <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--red);font-weight:600;"
                              data-aos="fade-right" data-aos-delay="{{ forloop.counter0|add:3|stringformat:'s' }}00">
                             {{ product.category.name }}
                         </div>
-                        <!-- Title with a fade up -->
+                        <!-- Title -->
                         <h5 style="font-family:'Oswald',sans-serif;font-size:1.15rem;margin:6px 0 10px;"
                             data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:3|stringformat:'s' }}50">
                             {{ product.name }}
@@ -66,13 +98,13 @@
                             {{ product.description|truncatewords:18 }}
                         </p>
                         {% if product.price %}
-                        <!-- Price with a slight bounce and scale -->
+                        <!-- Price -->
                         <p class="mb-3" style="font-family:'Oswald',sans-serif;font-size:1.2rem;color:var(--red);"
                            data-aos="zoom-in-up" data-aos-delay="{{ forloop.counter0|add:4|stringformat:'s' }}50">
                             MK {{ product.price|floatformat:0 }}
                         </p>
                         {% endif %}
-                        <!-- Buttons appear last -->
+                        <!-- Buttons -->
                         <div class="d-flex gap-2" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:5|stringformat:'s' }}00">
                             <a href="{% url 'product_detail' product.slug %}" class="btn-red text-decoration-none" 
                                style="font-size:0.82rem;padding:8px 20px;">Details</a>

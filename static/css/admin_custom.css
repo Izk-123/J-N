@@ -1,0 +1,58 @@
+/* ===== Sidebar Scrollbar Styling ===== */
+.unfold-sidebar {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--color-primary-600)) transparent;
+}
+.unfold-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+.unfold-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.unfold-sidebar::-webkit-scrollbar-thumb {
+    background-color: rgb(var(--color-primary-500));
+    border-radius: 20px;
+    border: 2px solid transparent;
+}
+.unfold-sidebar::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(var(--color-primary-600));
+}
+
+/* ===== Smooth Page‑Level Animations ===== */
+#main {
+    animation: fadeSlideIn 0.4s ease-out both;
+}
+@keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Sidebar link hover effect */
+.unfold-sidebar .unfold-nav-item a,
+.unfold-sidebar .unfold-nav-item a:link {
+    transition: all 0.2s ease;
+}
+.unfold-sidebar .unfold-nav-item a:hover {
+    transform: translateX(4px);
+    background-color: rgb(var(--color-primary-100) / 0.15);
+}
+
+/* Custom theme toggle button – placed in Unfold’s header */
+.jn-theme-toggle {
+    padding: 0.4rem 0.9rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-border-primary);
+    background: var(--color-background-secondary);
+    color: var(--color-font-default-light);
+    cursor: pointer;
+    font-size: 0.82rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.2s;
+    margin-right: 0.5rem;   /* space before built‑in toggle */
+}
+.jn-theme-toggle:hover {
+    background: var(--color-background-primary);
+    border-color: rgb(var(--color-primary-500));
+}

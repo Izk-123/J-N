@@ -1,0 +1,37 @@
+{% with stats=dash_stats %}
+<a href="{% url 'admin:contacts_contactmessage_changelist' %}?status__exact=new" class="stat-card">
+  <div class="icon-wrap">📩</div>
+  <div class="num amber">{{ stats.messages_new }}</div>
+  <div class="label">New Enquiries</div>
+</a>
+<a href="{% url 'admin:contacts_contactmessage_changelist' %}" class="stat-card">
+  <div class="icon-wrap">💬</div>
+  <div class="num">{{ stats.messages_month }}</div>
+  <div class="label">This Month</div>
+</a>
+<a href="{% url 'admin:products_product_changelist' %}" class="stat-card">
+  <div class="icon-wrap">📦</div>
+  <div class="num">{{ stats.products }}</div>
+  <div class="label">Products</div>
+</a>
+<a href="{% url 'admin:services_service_changelist' %}" class="stat-card">
+  <div class="icon-wrap">🔧</div>
+  <div class="num">{{ stats.services }}</div>
+  <div class="label">Services</div>
+</a>
+<a href="{% url 'admin:projects_project_changelist' %}" class="stat-card">
+  <div class="icon-wrap">🏗️</div>
+  <div class="num">{{ stats.projects }}</div>
+  <div class="label">Projects</div>
+</a>
+<a href="{% url 'admin:gallery_galleryimage_changelist' %}" class="stat-card">
+  <div class="icon-wrap">🖼️</div>
+  <div class="num">{{ stats.gallery }}</div>
+  <div class="label">Gallery</div>
+</a>
+<a href="{% url 'admin:core_testimonial_changelist' %}" class="stat-card">
+  <div class="icon-wrap">⭐</div>
+  <div class="num green">{{ stats.testimonials }}</div>
+  <div class="label">Reviews</div>
+</a>
+{% endwith %}

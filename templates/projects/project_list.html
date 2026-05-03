@@ -88,7 +88,7 @@
             <div class="col-md-6 col-lg-{% cycle '8' '4' '4' '8' %}" 
                  data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1|stringformat:'s' }}00">
                 <a href="{% url 'project_detail' project.slug %}" class="project-grid-card">
-                    <img src="{% safe_image_url project.cover_image 800 300 project.title %}" alt="{{ project.title }}" style="height:{% cycle '340px' '340px' '340px' '340px' %};">
+                    <img src="{% safe_image_url project.cover_image 800 300 project.title %}" alt="{{ project.title }}" style="height:{% cycle '340px' '340px' '340px' '340px' %};" loading="lazy">
                     <div class="overlay">
                         <h5>{{ project.title }}</h5>
                         <div class="meta">

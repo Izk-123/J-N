@@ -25,3 +25,27 @@ class HomeView(TemplateView):
 
 class AboutView(TemplateView):
     template_name = 'core/about.html'
+    
+
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import WhatsAppClick
+
+@csrf_exempt
+def log_whatsapp_click(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        page_path = data.get('path', '')
+        product_id = data.get('product_id')
+        contact_id = data.get('contact_id')
+        ip = request.META.get('REMOTE_ADDR')
+
+        click = WhatsAppClick.objects.create(
+            page_path=page_path,
+            product_id=product_id or None,
+            contact_message_id=contact_id or None,
+            ip_address=ip,
+        )
+        return JsonResponse({'status': 'ok', 'id': click.id})
+    return JsonResponse({'status': 'error'}, status=400)

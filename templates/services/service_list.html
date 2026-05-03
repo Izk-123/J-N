@@ -12,24 +12,31 @@
         transition: all 0.35s;
         height: 100%;
     }
+
     .service-card-v2:hover {
         border-color: var(--red);
-        box-shadow: 0 12px 36px rgba(214,40,40,0.1);
+        box-shadow: 0 12px 36px rgba(214, 40, 40, 0.1);
         transform: translateY(-5px);
     }
+
     .service-card-v2 .img-wrap {
         height: 240px;
         overflow: hidden;
         background: var(--gray-light);
         position: relative;
     }
+
     .service-card-v2 img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         transition: transform 0.5s;
     }
-    .service-card-v2:hover img { transform: scale(1.07); }
+
+    .service-card-v2:hover img {
+        transform: scale(1.07);
+    }
+
     .service-card-v2 .icon-badge {
         position: absolute;
         bottom: 0;
@@ -43,7 +50,11 @@
         justify-content: center;
         font-size: 1.5rem;
     }
-    .service-card-v2 .body { padding: 24px; }
+
+    .service-card-v2 .body {
+        padding: 24px;
+    }
+
     .service-card-v2 h4 {
         font-family: 'Oswald', sans-serif;
         font-size: 1.2rem;
@@ -51,12 +62,14 @@
         letter-spacing: 0.03em;
         margin-bottom: 10px;
     }
+
     .service-card-v2 p {
         color: var(--gray);
         font-size: 0.9rem;
         line-height: 1.7;
         margin-bottom: 16px;
     }
+
     .service-card-v2 a.read-more {
         color: var(--red);
         font-family: 'Oswald', sans-serif;
@@ -69,7 +82,10 @@
         gap: 6px;
         transition: gap 0.2s;
     }
-    .service-card-v2:hover a.read-more { gap: 10px; }
+
+    .service-card-v2:hover a.read-more {
+        gap: 10px;
+    }
 </style>
 {% endblock %}
 
@@ -78,11 +94,13 @@
 <div style="background:var(--black);padding:60px 0 40px;">
     <div class="container">
         <span class="section-label" data-aos="fade-down">What We Do</span>
-        <h1 class="section-title text-white mt-2" data-aos="fade-right">Our <span style="color:var(--red)">Services</span></h1>
+        <h1 class="section-title text-white mt-2" data-aos="fade-right">Our <span
+                style="color:var(--red)">Services</span></h1>
         <div class="divider-red" data-aos="fade-right" data-aos-delay="100"></div>
         <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
             <ol class="breadcrumb mb-0" style="font-size:0.85rem;">
-                <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color:rgba(255,255,255,0.5);">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color:rgba(255,255,255,0.5);">Home</a>
+                </li>
                 <li class="breadcrumb-item active text-white-50">Services</li>
             </ol>
         </nav>
@@ -94,10 +112,11 @@
         {% if services %}
         <div class="row g-4">
             {% for service in services %}
-            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1|stringformat:'s' }}00">
+            <div class="col-md-6 col-lg-4" data-aos="fade-up"
+                data-aos-delay="{{ forloop.counter0|add:1|stringformat:'s' }}00">
                 <div class="service-card-v2">
                     <div class="img-wrap">
-                        <img src="{% safe_image_url service.image 600 240 service.title %}" alt="{{ service.title }}">
+                        <img src="{% safe_image_url service.image 600 240 service.title %}" alt="{{ service.title }}" loading="lazy">
                         <div class="icon-badge">
                             <i class="{{ service.icon|default:'bi-house-gear' }}"></i>
                         </div>
@@ -125,14 +144,17 @@
 <!-- CTA Strip -->
 <div style="background:var(--red);padding:50px 0;">
     <div class="container text-center" data-aos="zoom-in">
-        <h3 style="font-family:'Oswald',sans-serif;color:white;text-transform:uppercase;font-size:1.8rem;">Need a Custom Service?</h3>
-        <p style="color:rgba(255,255,255,0.85);margin:10px 0 24px;">Talk to us — we handle projects of all sizes across Malawi.</p>
+        <h3 style="font-family:'Oswald',sans-serif;color:white;text-transform:uppercase;font-size:1.8rem;">Need a Custom
+            Service?</h3>
+        <p style="color:rgba(255,255,255,0.85);margin:10px 0 24px;">Talk to us — we handle projects of all sizes across
+            Malawi.</p>
         <div class="d-flex gap-3 justify-content-center flex-wrap">
-            <a href="{% url 'contact' %}" style="background:white;color:var(--red);padding:12px 32px;text-decoration:none;font-family:'Oswald',sans-serif;letter-spacing:0.1em;text-transform:uppercase;">
+            <a href="{% url 'contact' %}"
+                style="background:white;color:var(--red);padding:12px 32px;text-decoration:none;font-family:'Oswald',sans-serif;letter-spacing:0.1em;text-transform:uppercase;">
                 Get a Quote
             </a>
             <a href="https://wa.me/{{ site.whatsapp_number }}" target="_blank"
-               style="background:#25D366;color:white;padding:12px 32px;text-decoration:none;font-family:'Oswald',sans-serif;letter-spacing:0.1em;text-transform:uppercase;">
+                style="background:#25D366;color:white;padding:12px 32px;text-decoration:none;font-family:'Oswald',sans-serif;letter-spacing:0.1em;text-transform:uppercase;">
                 <i class="bi bi-whatsapp me-1"></i> WhatsApp
             </a>
         </div>

@@ -7,13 +7,13 @@
     <title>{% block title %}J&N Building Products{% endblock %} | Make Your House Smile</title>
     <meta name="description" content="{% block meta_description %}J&N Building Products - Quality building materials and construction services in Malawi.{% endblock %}">
 
-    <!-- Bootstrap 5 -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
-    <!-- AOS Animation CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
 
     <style>
@@ -27,22 +27,17 @@
             --gray: #6C6C6C;
             --gold: #C9A84C;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: 'Source Sans 3', sans-serif;
             color: var(--black);
             background: var(--white);
         }
-
         h1, h2, h3, h4, h5, .display-font {
             font-family: 'Oswald', sans-serif;
             font-weight: 600;
             letter-spacing: 0.02em;
         }
-
-        /* ======== NAVBAR ======== */
         .navbar-main {
             background: var(--black) !important;
             padding: 0;
@@ -51,16 +46,8 @@
             z-index: 1000;
             box-shadow: 0 2px 20px rgba(0,0,0,0.4);
         }
-
-        .navbar-main .navbar-brand {
-            padding: 10px 0;
-        }
-
-        .navbar-main .navbar-brand img {
-            height: 60px;
-            width: auto;
-        }
-
+        .navbar-main .navbar-brand { padding: 10px 0; }
+        .navbar-main .navbar-brand img { height: 60px; width: auto; }
         .navbar-main .nav-link {
             color: rgba(255,255,255,0.85) !important;
             font-family: 'Oswald', sans-serif;
@@ -71,29 +58,18 @@
             transition: all 0.2s;
             position: relative;
         }
-
         .navbar-main .nav-link::after {
             content: '';
             position: absolute;
-            bottom: 0;
-            left: 16px;
-            right: 16px;
-            height: 3px;
-            background: var(--red);
+            bottom: 0; left: 16px; right: 16px;
+            height: 3px; background: var(--red);
             transform: scaleX(0);
             transition: transform 0.2s;
         }
-
         .navbar-main .nav-link:hover,
-        .navbar-main .nav-link.active {
-            color: var(--white) !important;
-        }
-
+        .navbar-main .nav-link.active { color: var(--white) !important; }
         .navbar-main .nav-link:hover::after,
-        .navbar-main .nav-link.active::after {
-            transform: scaleX(1);
-        }
-
+        .navbar-main .nav-link.active::after { transform: scaleX(1); }
         .navbar-main .btn-contact-nav {
             background: var(--red);
             color: var(--white) !important;
@@ -105,36 +81,17 @@
             border: none;
             transition: background 0.2s;
         }
-
-        .navbar-main .btn-contact-nav:hover {
-            background: var(--red-dark) !important;
-        }
-
+        .navbar-main .btn-contact-nav:hover { background: var(--red-dark) !important; }
         .navbar-main .btn-contact-nav::after { display: none; }
-
-        .navbar-toggler {
-            border-color: rgba(255,255,255,0.3) !important;
-        }
-
-        .navbar-toggler-icon {
-            filter: invert(1);
-        }
-
-        /* ======== TOP BAR ======== */
+        .navbar-toggler { border-color: rgba(255,255,255,0.3) !important; }
+        .navbar-toggler-icon { filter: invert(1); }
         .top-bar {
             background: var(--red);
             padding: 6px 0;
             font-size: 0.82rem;
         }
-
-        .top-bar a {
-            color: rgba(255,255,255,0.9);
-            text-decoration: none;
-        }
-
+        .top-bar a { color: rgba(255,255,255,0.9); text-decoration: none; }
         .top-bar a:hover { color: white; }
-
-        /* ======== SECTION STYLES ======== */
         .section-title {
             font-family: 'Oswald', sans-serif;
             font-size: 2.4rem;
@@ -142,11 +99,7 @@
             text-transform: uppercase;
             letter-spacing: 0.04em;
         }
-
-        .section-title span {
-            color: var(--red);
-        }
-
+        .section-title span { color: var(--red); }
         .section-label {
             font-family: 'Oswald', sans-serif;
             font-size: 0.8rem;
@@ -155,45 +108,34 @@
             color: var(--red);
             font-weight: 500;
         }
-
         .divider-red {
             width: 50px;
             height: 4px;
             background: var(--red);
             margin: 12px 0 20px;
         }
-
-        /* ======== CARDS ======== */
         .card-product {
             border: none;
             background: var(--white);
             transition: transform 0.3s, box-shadow 0.3s;
             overflow: hidden;
         }
-
         .card-product:hover {
             transform: translateY(-6px);
             box-shadow: 0 16px 40px rgba(0,0,0,0.12);
         }
-
         .card-product .card-img-wrap {
             overflow: hidden;
             height: 220px;
             background: var(--gray-light);
         }
-
         .card-product .card-img-wrap img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             transition: transform 0.5s;
         }
-
-        .card-product:hover .card-img-wrap img {
-            transform: scale(1.05);
-        }
-
-        /* ======== BUTTONS ======== */
+        .card-product:hover .card-img-wrap img { transform: scale(1.05); }
         .btn-red {
             background: var(--red);
             color: var(--white);
@@ -205,13 +147,11 @@
             border: none;
             transition: all 0.2s;
         }
-
         .btn-red:hover {
             background: var(--red-dark);
             color: var(--white);
             transform: translateY(-1px);
         }
-
         .btn-outline-red {
             border: 2px solid var(--red);
             color: var(--red);
@@ -223,19 +163,15 @@
             background: transparent;
             transition: all 0.2s;
         }
-
         .btn-outline-red:hover {
             background: var(--red);
             color: var(--white);
         }
-
-        /* ======== FOOTER ======== */
         footer {
             background: var(--black);
             color: rgba(255,255,255,0.75);
             padding-top: 60px;
         }
-
         footer h5 {
             color: var(--white);
             font-family: 'Oswald', sans-serif;
@@ -244,14 +180,12 @@
             margin-bottom: 20px;
             font-size: 1rem;
         }
-
         footer .footer-divider {
             width: 35px;
             height: 3px;
             background: var(--red);
             margin-bottom: 20px;
         }
-
         footer a {
             color: rgba(255,255,255,0.65);
             text-decoration: none;
@@ -260,22 +194,18 @@
             display: block;
             margin-bottom: 8px;
         }
-
         footer a:hover { color: var(--red); }
-
         footer .footer-bottom {
             border-top: 1px solid rgba(255,255,255,0.1);
             padding: 16px 0;
             margin-top: 40px;
             font-size: 0.82rem;
         }
-
         footer .social-icons a {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 36px;
-            height: 36px;
+            width: 36px; height: 36px;
             border: 1px solid rgba(255,255,255,0.2);
             border-radius: 4px;
             color: rgba(255,255,255,0.7);
@@ -283,30 +213,24 @@
             transition: all 0.2s;
             margin-right: 8px;
         }
-
         footer .social-icons a:hover {
             background: var(--red);
             border-color: var(--red);
             color: white;
         }
-
-        /* ======== WHATSAPP FLOAT ======== */
         .whatsapp-float {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 30px; right: 30px;
             z-index: 9999;
             display: flex;
             align-items: center;
             gap: 10px;
             animation: pulse-wa 2.5s infinite;
         }
-
         .whatsapp-float a {
             background: #25D366;
             color: white;
-            width: 58px;
-            height: 58px;
+            width: 58px; height: 58px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -316,33 +240,23 @@
             box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
             transition: transform 0.2s;
         }
-
         .whatsapp-float a:hover { transform: scale(1.1); }
-
         @keyframes pulse-wa {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
         }
-
-        /* ======== MESSAGES ======== */
         .messages-container {
             position: fixed;
-            top: 80px;
-            right: 20px;
+            top: 80px; right: 20px;
             z-index: 9000;
             width: 320px;
         }
-
-        /* ======== RESPONSIVE ======== */
         @media (max-width: 768px) {
             .section-title { font-size: 1.8rem; }
             .navbar-main .nav-link { padding: 12px 16px !important; }
             .navbar-main .nav-link::after { display: none; }
         }
-
-        {% block extra_css_vars %}{% endblock %}
     </style>
-
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -372,7 +286,8 @@
     <nav class="navbar navbar-expand-lg navbar-main">
         <div class="container">
             <a class="navbar-brand" href="{% url 'home' %}">
-                <img src="{% static 'images/logo.png' %}" alt="J&N Building Products" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                <img src="{% static 'images/logo.png' %}" alt="J&N Building Products" 
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
                 <span style="display:none; font-family:'Oswald',sans-serif; font-size:1.4rem; color:white;">
                     J<span style="color:var(--red)">&amp;</span>N <span style="font-size:0.9rem; color:rgba(255,255,255,0.7)">Building Products</span>
                 </span>
@@ -382,35 +297,19 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarMain">
                 <ul class="navbar-nav ms-auto align-items-lg-center">
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'about' %}">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if 'product' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'product_list' %}">Products</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if 'service' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'service_list' %}">Services</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if 'project' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'project_list' %}">Projects</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'gallery' %}active{% endif %}" href="{% url 'gallery' %}">Gallery</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link btn-contact-nav {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'contact' %}">
-                            <i class="bi bi-chat-dots me-1"></i> Get Quote
-                        </a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'about' %}">About</a></li>
+                    <li class="nav-item"><a class="nav-link {% if 'product' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'product_list' %}">Products</a></li>
+                    <li class="nav-item"><a class="nav-link {% if 'service' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'service_list' %}">Services</a></li>
+                    <li class="nav-item"><a class="nav-link {% if 'project' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'project_list' %}">Projects</a></li>
+                    <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'gallery' %}active{% endif %}" href="{% url 'gallery' %}">Gallery</a></li>
+                    <li class="nav-item"><a class="nav-link btn-contact-nav {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'contact' %}"><i class="bi bi-chat-dots me-1"></i> Get Quote</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Django Messages -->
+    <!-- Messages -->
     {% if messages %}
     <div class="messages-container">
         {% for message in messages %}
@@ -422,16 +321,12 @@
     </div>
     {% endif %}
 
-    <!-- Main Content -->
-    <main>
-        {% block content %}{% endblock %}
-    </main>
+    <main>{% block content %}{% endblock %}</main>
 
     <!-- Footer -->
     <footer>
         <div class="container">
             <div class="row g-4">
-                <!-- Brand -->
                 <div class="col-lg-4 col-md-6" data-aos="fade-up">
                     <h5>J&amp;N Building Products</h5>
                     <div class="footer-divider"></div>
@@ -443,8 +338,6 @@
                         <a href="https://wa.me/{{ site.whatsapp_number }}" target="_blank"><i class="bi bi-whatsapp"></i></a>
                     </div>
                 </div>
-
-                <!-- Quick Links -->
                 <div class="col-lg-2 col-md-6" data-aos="fade-up" data-aos-delay="100">
                     <h5>Quick Links</h5>
                     <div class="footer-divider"></div>
@@ -456,8 +349,6 @@
                     <a href="{% url 'gallery' %}">Gallery</a>
                     <a href="{% url 'contact' %}">Contact</a>
                 </div>
-
-                <!-- Services -->
                 <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
                     <h5>Our Services</h5>
                     <div class="footer-divider"></div>
@@ -466,29 +357,29 @@
                     <a href="{% url 'service_list' %}"><i class="bi bi-chevron-right me-1" style="font-size:0.7rem;color:var(--red)"></i> Project Management</a>
                     <a href="{% url 'service_list' %}"><i class="bi bi-chevron-right me-1" style="font-size:0.7rem;color:var(--red)"></i> Renovation</a>
                 </div>
-
-                <!-- Contact -->
                 <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
                     <h5>Contact Us</h5>
                     <div class="footer-divider"></div>
                     <p style="font-size:0.9rem;"><i class="bi bi-geo-alt-fill me-2" style="color:var(--red)"></i>{{ site.address }}</p>
                     <p style="font-size:0.9rem;"><i class="bi bi-telephone-fill me-2" style="color:var(--red)"></i><a href="tel:{{ site.phone }}">{{ site.phone }}</a></p>
-                    {% if site.email %}<p style="font-size:0.9rem;"><i class="bi bi-envelope-fill me-2" style="color:var(--red)"></i><a href="mailto:{{ site.email }}">{{ site.email }}</a></p>{% endif %}
-                    <a href="https://wa.me/{{ site.whatsapp_number }}" target="_blank" class="btn btn-sm mt-2" style="background:#25D366;color:white;font-family:'Oswald',sans-serif;letter-spacing:0.08em;">
+                    {% if site.email %}
+                    <p style="font-size:0.9rem;"><i class="bi bi-envelope-fill me-2" style="color:var(--red)"></i><a href="mailto:{{ site.email }}">{{ site.email }}</a></p>
+                    {% endif %}
+                    <a href="https://wa.me/{{ site.whatsapp_number }}" target="_blank" 
+                       class="btn btn-sm mt-2" 
+                       style="background:#25D366;color:white;font-family:'Oswald',sans-serif;letter-spacing:0.08em;">
                         <i class="bi bi-whatsapp me-1"></i> WhatsApp Us
                     </a>
                 </div>
             </div>
-
             <div class="footer-bottom text-center">
-                <p class="mb-0" style="color:rgba(255,255,255,0.4);">
-                    &copy; {% now "Y" %} J&amp;N Building Products. All Rights Reserved. | Built with ❤️ in Malawi
-                </p>
+                <p class="mb-0" style="color:rgba(255,255,255,0.4);">&copy; {% now "Y" %} J&amp;N Building Products. All Rights Reserved. | Built with ❤️ in Malawi</p>
+                <p class="mb-0" style="color:rgba(255,255,255,0.4);">Developed by <span><a href="http://pritechmw.com">Pritech</a></span></p>
             </div>
         </div>
     </footer>
 
-    <!-- WhatsApp Floating Button -->
+    <!-- WhatsApp Float -->
     <div class="whatsapp-float">
         <a href="https://wa.me/{{ site.whatsapp_number }}?text=Hello%20J%26N%20Building%20Products%2C%20I%20would%20like%20to%20inquire%20about%20your%20products%20and%20services." 
            target="_blank" title="Chat on WhatsApp">
@@ -497,17 +388,59 @@
     </div>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
     <!-- AOS Animation JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js" defer></script>
     <script>
-        AOS.init({
-            duration: 800,
-            once: true,
-            offset: 100,
-            easing: 'ease-out',
+        window.addEventListener('DOMContentLoaded', function() {
+            if (window.AOS) {
+                AOS.init({
+                    duration: 800,
+                    once: true,
+                    offset: 100,
+                    easing: 'ease-out',
+                });
+            }
         });
+    </script>
+
+    <!-- ─── WhatsApp Click Tracker ─────────────────────────────── -->
+    <script>
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('a[href*="wa.me"]');
+            if (!link) return;
+
+            const productId = link.dataset.productId || null;
+            const contactId = link.dataset.contactId || null;
+
+            fetch('/log-whatsapp-click/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    path: window.location.pathname,
+                    product_id: productId,
+                    contact_id: contactId
+                })
+            }).catch(() => {});
+        });
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
     </script>
 
     {% block extra_js %}{% endblock %}

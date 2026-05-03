@@ -1,0 +1,46 @@
+{% if recent_messages %}
+<table class="msg-table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Phone</th>
+      <th>Subject</th>
+      <th>Status</th>
+      <th>Date</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for msg in recent_messages %}
+    <tr x-show="tab === 'messages' || (tab === 'new' && '{{ msg.status }}' === 'new')">
+      <td>
+        <a href="{% url 'admin:contacts_contactmessage_change' msg.pk %}"
+          style="font-weight:600;text-decoration:none;color:inherit;">{{ msg.name }}</a>
+      </td>
+      <td><a href="tel:{{ msg.phone }}" style="color:inherit;">{{ msg.phone }}</a></td>
+      <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.7;">{{
+        msg.subject|default:"General enquiry"|truncatechars:22 }}</td>
+      <td>
+        <span class="badge badge-{{ msg.status }}">{{ msg.get_status_display }}</span>
+      </td>
+      <td style="opacity:.5;white-space:nowrap;font-size:.78rem;">{{ msg.created_at|date:"d M" }}</td>
+      <td>
+        {% if msg.status == 'new' %}
+        <button hx-post="{% url 'htmx_message_read' msg.pk %}" hx-target="closest tr" hx-swap="outerHTML"
+          hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+          style="font-size:.7rem;padding:2px 8px;border-radius:4px;border:1px solid #d1d5db;cursor:pointer;background:white;color:#3730a3;">✓
+          Read</button>
+        {% endif %}
+        <a href="https://wa.me/{{ msg.phone|slice:'1:'|cut:' ' }}" target="_blank"
+          style="font-size:.7rem;padding:2px 8px;border-radius:4px;background:#25D366;color:white;text-decoration:none;margin-left:2px;">WhatsApp</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div style="padding:2.5rem;text-align:center;opacity:.4;">
+  <div style="font-size:2.5rem;margin-bottom:.5rem;">📭</div>
+  No enquiries yet
+</div>
+{% endif %}

@@ -1,0 +1,26 @@
+{% if recent_visitors %}
+<table class="msg-table" style="font-size:0.82rem;">
+  <thead>
+    <tr>
+      <th>Path</th>
+      <th>IP</th>
+      <th>Device</th>
+      <th>Browser</th>
+      <th>Time</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for v in recent_visitors %}
+    <tr>
+      <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ v.path }}</td>
+      <td>{{ v.ip_address }}</td>
+      <td>{{ v.device_type }}</td>
+      <td>{{ v.browser }}</td>
+      <td>{{ v.created_at|time:"H:i" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div style="padding:2rem;text-align:center;opacity:0.4;">No recent visitors</div>
+{% endif %}

@@ -134,7 +134,7 @@
             <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1|stringformat:'s' }}00">
                 <a href="{% url 'product_detail' p.slug %}" class="related-card">
                     <div style="overflow:hidden;">
-                        <img src="{% safe_image_url p.image 400 200 p.name %}" alt="{{ p.name }}">
+                        <img src="{% safe_image_url p.image 400 200 p.name %}" alt="{{ p.name }}" loading="lazy">
                     </div>
                     <div style="padding:16px;">
                         <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--red);font-weight:600;">{{ p.category.name }}</div>

@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 class SiteSettings(models.Model):
@@ -51,3 +52,78 @@ class Testimonial(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.rating}★"
+
+
+# ─── NEW: Visitor Analytics ─────────────────────────────────────────────
+
+class Visitor(models.Model):
+    path = models.CharField(max_length=255, help_text="Page visited")
+    ip_address = models.GenericIPAddressField()
+    user_agent = models.TextField(blank=True, default='')
+    device_type = models.CharField(max_length=20, blank=True, default='')
+    browser = models.CharField(max_length=100, blank=True, default='')
+    referrer = models.CharField(max_length=500, blank=True, default='')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['-created_at']),
+            models.Index(fields=['ip_address']),
+        ]
+        verbose_name = "Visitor"
+        verbose_name_plural = "Visitors"
+
+    def __str__(self):
+        return f"{self.ip_address} → {self.path} at {self.created_at:%H:%M}"
+
+    @staticmethod
+    def get_device_type(user_agent):
+        """Simple device detection without extra packages."""
+        ua = user_agent.lower()
+        if 'mobile' in ua:
+            return 'Mobile'
+        elif 'tablet' in ua or 'ipad' in ua:
+            return 'Tablet'
+        return 'Desktop'
+
+    @staticmethod
+    def get_browser(user_agent):
+        ua = user_agent.lower()
+        if 'firefox' in ua:
+            return 'Firefox'
+        elif 'edge' in ua or 'edg' in ua:
+            return 'Edge'
+        elif 'chrome' in ua and 'safari' in ua:
+            return 'Chrome'
+        elif 'safari' in ua:
+            return 'Safari'
+        return 'Other'
+
+
+class WhatsAppClick(models.Model):
+    page_path = models.CharField(max_length=255)
+    product = models.ForeignKey(
+        'products.Product',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='whatsapp_clicks'
+    )
+    contact_message = models.ForeignKey(
+        'contacts.ContactMessage',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='whatsapp_clicks'
+    )
+    ip_address = models.GenericIPAddressField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = "WhatsApp Click"
+        verbose_name_plural = "WhatsApp Clicks"
+
+    def __str__(self):
+        return f"WhatsApp click on {self.created_at:%Y-%m-%d %H:%M}"
