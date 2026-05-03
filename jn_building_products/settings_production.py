@@ -16,9 +16,15 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
 ]
 
+# Add trusted origins for CSRF (required for POST requests over HTTPS)
+CSRF_TRUSTED_ORIGINS = [
+    'https://jandn.mw',
+    'https://www.jandn.mw',
+]
+
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', SECRET_KEY)
 
-# PostgreSQL database (credentials via environment variables)
+# Database – PostgreSQL (credentials from .env)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -30,7 +36,7 @@ DATABASES = {
     }
 }
 
-# Static & Media — Nginx serves these directly in production
+# Static & Media – served by Nginx
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -38,13 +44,12 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# WhiteNoise fallback (Nginx handles static/media if correctly configured,
-# but WhiteNoise ensures they work even without Nginx for static)
+# WhiteNoise middleware (fallback)
 MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
-# cPanel Email settings
+# Email – cPanel (or your mail server)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'mail.jandn.mw'        # cPanel mail server (or the server hostname)
+EMAIL_HOST = 'mail.jandn.mw'          # or your SMTP host
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'info@jandn.mw')
@@ -52,15 +57,20 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 DEFAULT_FROM_EMAIL = f'J&N Building Products <{EMAIL_HOST_USER}>'
 ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'admin@jandn.mw')
 
-# Security headers (activate after SSL is live)
+# Security headers (activate after SSL)
 SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = 'DENY'
 SECURE_CONTENT_TYPE_NOSNIFF = True
-SECURE_SSL_REDIRECT = os.environ.get('HTTPS_ENABLED', '') == 'true'
-SESSION_COOKIE_SECURE = os.environ.get('HTTPS_ENABLED', '') == 'true'
-CSRF_COOKIE_SECURE = os.environ.get('HTTPS_ENABLED', '') == 'true'
 
-# Logging (optional but helpful)
+# SSL / HTTPS settings – enabled only when HTTPS_ENABLED=true in .env
+if os.environ.get('HTTPS_ENABLED', '').lower() == 'true':
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    # Tell Django that the original request came from HTTPS (Nginx proxy)
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Logging (optional)
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
