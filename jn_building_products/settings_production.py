@@ -70,6 +70,16 @@ if os.environ.get('HTTPS_ENABLED', '').lower() == 'true':
     # Tell Django that the original request came from HTTPS (Nginx proxy)
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379')
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [REDIS_URL],
+        },
+    },
+}
+
 # Logging (optional)
 LOGGING = {
     'version': 1,
