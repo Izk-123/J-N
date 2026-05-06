@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from unfold.admin import ModelAdmin
 from unfold.decorators import display
 from unfold.contrib.forms.widgets import WysiwygWidget
@@ -59,4 +60,4 @@ class ProductAdmin(ModelAdmin):
     def display_price(self, obj):
         if obj.price:
             return format_html('<span style="color:#057a55;font-weight:600;">MK {:,.0f}</span>', obj.price)
-        return format_html('<span style="color:#aaa;font-size:0.8rem;">—</span>')
+        return mark_safe('<span style="color:#aaa;font-size:0.8rem;">—</span>')
