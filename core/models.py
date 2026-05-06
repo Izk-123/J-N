@@ -18,6 +18,54 @@ class SiteSettings(models.Model):
     years_experience = models.PositiveIntegerField(default=1)
     projects_completed = models.PositiveIntegerField(default=0)
     happy_clients = models.PositiveIntegerField(default=0)
+    # Inside SiteSettings model
+    hero_badge_text = models.CharField(
+        max_length=200,
+        default="Trusted Building Partner in Malawi"
+    )
+    hero_heading_prefix = models.CharField(
+        max_length=100,
+        default="Building"
+    )
+    hero_heading_highlight = models.CharField(
+        max_length=100,
+        default="Malawi's"
+    )
+    hero_heading_suffix = models.CharField(
+        max_length=100,
+        default="Future"
+    )
+    hero_image = models.ImageField(
+        upload_to='hero/',
+        blank=True,
+        null=True,
+        help_text="Upload a hero background image. If left empty, the default static image will be used."
+    )
+    # About page
+    about_image = models.ImageField(
+        upload_to='about/', blank=True, null=True,
+        help_text="Main image shown on the About page."
+    )
+    about_mission = models.TextField(
+        blank=True,
+        default="To provide affordable, high-quality building products and construction services that help Malawians build safe, beautiful, and lasting homes and structures."
+    )
+    about_vision = models.TextField(
+        blank=True,
+        default="To be the most trusted and preferred building products and construction company in Malawi — known for quality, reliability, and making every house smile."
+    )
+    # Value 1
+    about_value1_title = models.CharField(max_length=100, default="Quality First")
+    about_value1_desc = models.TextField(default="We only supply products that meet high construction standards. No shortcuts.")
+    about_value1_icon = models.CharField(max_length=100, default="bi-award-fill", help_text="Bootstrap icon class")
+    # Value 2
+    about_value2_title = models.CharField(max_length=100, default="Customer Focused")
+    about_value2_desc = models.TextField(default="Your project goals drive everything we do. We listen before we build.")
+    about_value2_icon = models.CharField(max_length=100, default="bi-people-fill", help_text="Bootstrap icon class")
+    # Value 3
+    about_value3_title = models.CharField(max_length=100, default="Integrity Always")
+    about_value3_desc = models.TextField(default="Transparent pricing and honest communication — always. No hidden costs.")
+    about_value3_icon = models.CharField(max_length=100, default="bi-shield-check-fill", help_text="Bootstrap icon class")
 
     class Meta:
         verbose_name = "Site Settings"

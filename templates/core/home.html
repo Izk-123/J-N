@@ -491,12 +491,12 @@
             <div class="col-lg-6 hero-content">
                 <div class="hero-badge" data-aos="fade-down" data-aos-delay="100">
                     <i class="bi bi-shield-check-fill"></i>
-                    Trusted Building Partner in Malawi
+                    {{ site.hero_badge_text }}
                 </div>
                 <h1 data-aos="fade-right" data-aos-delay="200">
-                    Building
-                    <span class="highlight">Malawi's</span>
-                    Future
+                    {{ site.hero_heading_prefix }}
+                    <span class="highlight">{{ site.hero_heading_highlight }}</span>
+                    {{ site.hero_heading_suffix }}
                 </h1>
                 <p data-aos="fade-right" data-aos-delay="300">{{ site.hero_subheading }}</p>
                 <div class="d-flex flex-wrap gap-3" data-aos="fade-up" data-aos-delay="400">
@@ -525,8 +525,10 @@
             </div>
             <div class="col-lg-6 d-none d-lg-block" data-aos="fade-left" data-aos-delay="300">
                 <div class="hero-image-frame">
-                    <img src="{% static 'images/hero-building.jpg' %}" alt="J&N Building Products"
-                        onerror="this.src='https://placehold.co/600x480/2D2D2D/FFFFFF?text=J%26N+Building+Products'" loading="lazy">
+                    <img src="{% if site.hero_image %}{{ site.hero_image.url }}{% else %}{% static 'images/hero-building.jpg' %}{% endif %}"
+                        alt="J&N Building Products"
+                        onerror="this.onerror=null; this.src='https://placehold.co/600x480/2D2D2D/FFFFFF?text=J%26N+Building+Products';"
+                        loading="lazy">
                 </div>
             </div>
         </div>

@@ -25,7 +25,29 @@ class SiteSettingsAdmin(ModelAdmin):
         ('🏢 Company Identity', {'fields': ('company_name', 'tagline')}),
         ('📞 Contact Details', {'fields': ('phone', 'email', 'address', 'whatsapp_number')}),
         ('📱 Social Media', {'classes': ('collapse',), 'fields': ('facebook_url', 'instagram_url', 'twitter_url')}),
-        ('🏠 Homepage Content', {'fields': ('hero_heading', 'hero_subheading', 'about_text')}),
+        # Inside SiteSettingsAdmin.fieldsets, update the Homepage Content tuple:
+        ('🏠 Homepage Content', {
+            'fields': (
+                'hero_badge_text',
+                'hero_heading_prefix',
+                'hero_heading_highlight',
+                'hero_heading_suffix',
+                'hero_subheading',
+                'hero_image',
+                'about_text',
+            )
+        }),
+        ('🏠 About Page Content', {
+            'classes': ('collapse',),
+            'fields': (
+                'about_image',
+                'about_mission',
+                'about_vision',
+                ('about_value1_title', 'about_value1_desc', 'about_value1_icon'),
+                ('about_value2_title', 'about_value2_desc', 'about_value2_icon'),
+                ('about_value3_title', 'about_value3_desc', 'about_value3_icon'),
+            )
+        }),
         ('📊 Statistics', {'fields': ('years_experience', 'projects_completed', 'happy_clients')}),
     )
     def has_add_permission(self, request):
