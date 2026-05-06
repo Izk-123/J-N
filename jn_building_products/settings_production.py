@@ -65,12 +65,20 @@ X_FRAME_OPTIONS = 'DENY'
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
 # SSL / HTTPS settings – enabled only when HTTPS_ENABLED=true in .env
+# SSL / HTTPS settings – enabled only when HTTPS_ENABLED=true in .env
 if os.environ.get('HTTPS_ENABLED', '').lower() == 'true':
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    # Tell Django that the original request came from HTTPS (Nginx proxy)
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+    # Allow WebSocket handshake to include session cookie
+    SESSION_COOKIE_SAMESITE = 'None'
+    CSRF_COOKIE_SAMESITE = 'None'
+
+# Create logs directory automatically
+LOGS_DIR = BASE_DIR / 'logs'
+LOGS_DIR.mkdir(exist_ok=True)
     
 CHANNEL_LAYERS = {
     'default': {

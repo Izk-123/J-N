@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
 <style>
-  /* ── Your existing dashboard styles ── */
+  /* ── Your existing dashboard styles (unchanged) ── */
   .jn-dash { color: var(--color-font-important-light); }
   .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem; }
   .stat-card {
@@ -102,7 +102,7 @@
   </div>
   {% endif %}
 
-  <!-- Stat Cards (live, with IDs for CountUp) -->
+  <!-- Stat Cards -->
   <div class="stat-grid" id="stat-grid-container">
     {% include "admin/snippets/dashboard_stats_grid.html" %}
   </div>
@@ -206,13 +206,13 @@
 <!-- ─── Scripts ────────────────────────────────────────────── -->
 <script>
   // =============================
-  // ApexCharts initialisation
+  // ApexCharts initialisation (global)
   // =============================
   let lineChart, doughnutChart;
   document.addEventListener('DOMContentLoaded', function() {
     lineChart = new ApexCharts(document.querySelector("#enquiriesChart"), {
       chart: { type: 'line', height: 240, toolbar: { show: false }, zoom: { enabled: false } },
-      series: [],  // filled after data arrives
+      series: [],
       xaxis: { categories: [] },
       colors: ['rgb(var(--color-primary-500))', '#3b82f6'],
       stroke: { curve: 'smooth', width: 2 },
@@ -231,12 +231,18 @@
       dataLabels: { enabled: false }
     });
     doughnutChart.render();
+
+    // Make them globally accessible so HTMX can update them
+    window.dashboardLineChart = lineChart;
+    window.dashboardDoughnutChart = doughnutChart;
   });
 
   // =============================
   // CountUp animation helpers
   // =============================
   const countUpInstances = {};
+  const csrf_token = '{{ csrf_token|escapejs }}';
+
   function animateNumber(id, newVal) {
     const el = document.getElementById(id);
     if (!el) return;
@@ -257,10 +263,9 @@
   }
 
   // =============================
-  // Update UI with new data
+  // Update UI with new data (WebSocket)
   // =============================
   function updateDashboard(data) {
-    // Stats
     const stats = data.stats;
     animateNumber('stat-messages-new', stats.messages_new);
     animateNumber('stat-messages-month', stats.messages_month);
@@ -274,19 +279,15 @@
     animateNumber('stat-wa-today', stats.whatsapp_today);
     animateNumber('stat-wa-week', stats.whatsapp_week);
 
-    // Charts
     if (data.chart) {
       const chart = data.chart;
-      lineChart.updateOptions({
-        xaxis: { categories: chart.weekdays },
-      });
-      lineChart.updateSeries([
+      window.dashboardLineChart.updateOptions({ xaxis: { categories: chart.weekdays } });
+      window.dashboardLineChart.updateSeries([
         { name: 'Enquiries', data: chart.enquiries },
         { name: 'Visitors', data: chart.visitors }
       ]);
-
-      doughnutChart.updateSeries(chart.content_values);
-      doughnutChart.updateOptions({ labels: chart.content_labels });
+      window.dashboardDoughnutChart.updateSeries(chart.content_values);
+      window.dashboardDoughnutChart.updateOptions({ labels: chart.content_labels });
     }
 
     // Messages table
@@ -343,65 +344,28 @@
 
   function connectWebSocket() {
     ws = new WebSocket(wsUrl);
-    ws.onopen = function() {
-      console.log('WebSocket connected – real‑time dashboard active');
-      wsActive = true;
-      // Disable HTMX polling if it was being used (optional)
-      // We could remove hx-trigger attributes, but it's easier to just let them continue – they'll be overridden
-    };
-    ws.onmessage = function(e) {
-      const data = JSON.parse(e.data);
-      updateDashboard(data);
-    };
-    ws.onclose = function(e) {
-      console.log('WebSocket closed, falling back to HTMX polling');
-      wsActive = false;
-      // Re-enable HTMX polling (already active, so no need to change)
-    };
-    ws.onerror = function(e) {
-      console.log('WebSocket error, falling back to HTMX polling');
-      wsActive = false;
-      // HTMX polling will handle updates
-    };
+    ws.onopen = function() { wsActive = true; };
+    ws.onmessage = function(e) { updateDashboard(JSON.parse(e.data)); };
+    ws.onclose = function() { wsActive = false; };
+    ws.onerror = function() { wsActive = false; };
   }
-
-  // Try to connect, if it fails HTMX polling will work
   connectWebSocket();
 
-  // =============================
-  // HTMX Polling (fallback when WebSocket not available)
-  // The existing stat grid and message/visitor snippets are already loaded via includes.
-  // To keep them live, we attach HTMX polling to their parent wrappers.
-  // But since our WebSocket might update the HTML directly, we need to avoid conflicts.
-  // The simplest: we only use the polling if WebSocket is not active.
-  // However, we can conditionally add hx-trigger only after WebSocket fails.
-  // For now, we'll leave the HTMX polling on the snippet containers as originally designed;
-  // when WebSocket updates the innerHTML, HTMX may overwrite it later.
-  // A cleaner solution: we wrap the polling in a check.
-  // We'll set a flag and use HTMX "htmx:configRequest" to stop if wsActive.
-  // </script>
-  // We'll add a small patch:
   document.body.addEventListener('htmx:configRequest', function(evt) {
-    // If wsActive, cancel requests that are trying to refresh dashboard sections
     if (wsActive && (
         evt.detail.path.includes('/admin/dashboard/stats/') ||
         evt.detail.path.includes('/admin/dashboard/messages/') ||
-        evt.detail.path.includes('/admin/dashboard/visitors/')
+        evt.detail.path.includes('/admin/dashboard/visitors/') ||
+        evt.detail.path.includes('/admin/dashboard/charts/')
     )) {
       evt.preventDefault();
     }
   });
 </script>
 
-<!-- Keep the existing HTMX endpoints on the containers as a fallback.
-     They are already present in the HTML includes, but we'll add the triggers
-     directly to the containers that need polling when WebSocket is off.
-     The initial page load uses Django includes, so we just need to re-enable
-     polling on those containers after the page is ready and if ws is not active.
--->
+<!-- Fallback polling when WebSocket fails -->
 <script>
   function enablePolling() {
-    // Add polling to stat grid container
     const statGrid = document.getElementById('stat-grid-container');
     if (statGrid && !statGrid.hasAttribute('hx-get')) {
       statGrid.setAttribute('hx-get', "{% url 'dashboard_stats_api' %}");
@@ -409,7 +373,6 @@
       statGrid.setAttribute('hx-swap', 'outerHTML');
       htmx.process(statGrid);
     }
-    // Messages container
     const msgCont = document.getElementById('messages-container');
     if (msgCont && !msgCont.hasAttribute('hx-get')) {
       msgCont.setAttribute('hx-get', "{% url 'dashboard_messages_api' %}");
@@ -417,7 +380,6 @@
       msgCont.setAttribute('hx-swap', 'outerHTML');
       htmx.process(msgCont);
     }
-    // Visitors container
     const visCont = document.getElementById('visitors-container');
     if (visCont && !visCont.hasAttribute('hx-get')) {
       visCont.setAttribute('hx-get', "{% url 'dashboard_visitors_api' %}");
@@ -425,9 +387,15 @@
       visCont.setAttribute('hx-swap', 'outerHTML');
       htmx.process(visCont);
     }
+    // Poll charts container
+    const chartsDiv = document.querySelector('.chart-grid');
+    if (chartsDiv && !chartsDiv.hasAttribute('hx-get')) {
+      chartsDiv.setAttribute('hx-get', "{% url 'dashboard_chart_api' %}");
+      chartsDiv.setAttribute('hx-trigger', 'every 30s');
+      chartsDiv.setAttribute('hx-swap', 'outerHTML');
+      htmx.process(chartsDiv);
+    }
   }
-
-  // If after 2 seconds the WebSocket didn't connect, enable polling
   setTimeout(function() {
     if (!wsActive) {
       enablePolling();
@@ -436,5 +404,3 @@
   }, 2000);
 </script>
 {% endblock %}
-
-B26LzclEUUX9rbKX

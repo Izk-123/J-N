@@ -1,0 +1,29 @@
+<div class="chart-grid" hx-swap-oob="true">
+  <div class="panel">
+    <div class="panel-header">📈 Enquiries &amp; Visitors (Last 7 Days)</div>
+    <div style="padding:1rem;"><div id="enquiriesChart" style="height:240px;"></div></div>
+  </div>
+  <div class="panel">
+    <div class="panel-header">📊 Content Breakdown</div>
+    <div style="padding:1rem;"><div id="contentChart" style="height:240px;"></div></div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // Update ApexCharts with the new data
+    const lineChart = window.dashboardLineChart;
+    const doughnutChart = window.dashboardDoughnutChart;
+    if (lineChart && doughnutChart) {
+      lineChart.updateOptions({
+        xaxis: { categories: {{ weekdays|safe }} }
+      });
+      lineChart.updateSeries([
+        { name: 'Enquiries', data: {{ enquiries|safe }} },
+        { name: 'Visitors', data: {{ visitors|safe }} }
+      ]);
+      doughnutChart.updateSeries({{ content_values|safe }});
+      doughnutChart.updateOptions({ labels: {{ content_labels|safe }} });
+    }
+  })();
+</script>

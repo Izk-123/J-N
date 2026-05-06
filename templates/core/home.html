@@ -683,7 +683,7 @@
                         <i class="{{ service.icon|default:'bi-house-gear' }}"></i>
                     </div>
                     <h4>{{ service.title }}</h4>
-                    <p>{{ service.short_description|truncatewords:20 }}</p>
+                    <p>{{ service.short_description|truncatewords:20|safe }}</p>
                     <a href="{% url 'service_detail' service.slug %}">Learn More <i class="bi bi-arrow-right"></i></a>
                 </div>
             </div>

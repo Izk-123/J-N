@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import HomeView, AboutView, log_whatsapp_click
-from .dashboard import dashboard_messages_api, dashboard_stats_api, dashboard_visitors_api, htmx_mark_message_read, htmx_mark_message_replied, htmx_toggle_featured
+from .dashboard import dashboard_chart_api, dashboard_messages_api, dashboard_stats_api, dashboard_visitors_api, htmx_mark_message_read, htmx_mark_message_replied, htmx_toggle_featured
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
@@ -15,6 +15,7 @@ urlpatterns = [
     path('admin/dashboard/stats/',    dashboard_stats_api,    name='dashboard_stats_api'),
     path('admin/dashboard/messages/', dashboard_messages_api, name='dashboard_messages_api'),
     path('admin/dashboard/visitors/', dashboard_visitors_api, name='dashboard_visitors_api'),
+    path('admin/dashboard/charts/', dashboard_chart_api, name='dashboard_chart_api'),
     
     path('log-whatsapp-click/', log_whatsapp_click, name='log_whatsapp_click'),
 ]

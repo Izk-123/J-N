@@ -33,7 +33,7 @@
                     <span style="color:var(--red);">{{ service.title }}</span> — Overview
                 </h3>
                 <div style="color:var(--gray);line-height:1.9;font-size:1rem;">
-                    {{ service.description|linebreaks }}
+                    {{ service.description|linebreaks|safe }}
                 </div>
             </div>
 

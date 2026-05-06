@@ -123,7 +123,7 @@
                     </div>
                     <div class="body">
                         <h4>{{ service.title }}</h4>
-                        <p>{{ service.short_description }}</p>
+                        <p>{{ service.short_description|safe }}</p>
                         <a href="{% url 'service_detail' service.slug %}" class="read-more">
                             Learn More <i class="bi bi-arrow-right"></i>
                         </a>

@@ -89,7 +89,7 @@
                     style="font-family:'Oswald',sans-serif;font-size:1.6rem;text-transform:uppercase;margin-bottom:16px;">
                     Project <span style="color:var(--red)">Overview</span></h3>
                 <div style="color:var(--gray);line-height:1.9;font-size:0.97rem;">
-                    {{ project.description|linebreaks }}
+                    {{ project.description|linebreaks|safe }}
                 </div>
 
                 <!-- Project info table -->

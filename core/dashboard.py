@@ -174,3 +174,31 @@ def dashboard_visitors_api(request):
     """HTMX – returns the recent visitors table as HTML."""
     recent_visitors = Visitor.objects.order_by('-created_at')[:15]
     return render(request, 'admin/snippets/visitors_table.html', {'recent_visitors': recent_visitors})
+
+@staff_member_required
+def dashboard_chart_api(request):
+    """HTMX – returns the charts HTML as a snippet."""
+    now = timezone.now()
+    today = now.date()
+    days, enquiries, visitors = [], [], []
+    for i in range(6, -1, -1):
+        day = today - timedelta(days=i)
+        days.append(day.strftime('%a'))
+        enquiries.append(ContactMessage.objects.filter(created_at__date=day).count())
+        visitors.append(Visitor.objects.filter(created_at__date=day).count())
+
+    content_labels = ['Products', 'Services', 'Projects', 'Gallery', 'Testimonials']
+    content_values = [
+        Product.objects.count(),
+        Service.objects.count(),
+        Project.objects.count(),
+        GalleryImage.objects.count(),
+        Testimonial.objects.count(),
+    ]
+    return render(request, 'admin/snippets/dashboard_charts.html', {
+        'weekdays': days,
+        'enquiries': enquiries,
+        'visitors': visitors,
+        'content_labels': content_labels,
+        'content_values': content_values,
+    })
