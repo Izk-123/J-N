@@ -95,7 +95,7 @@
                         <!-- Description -->
                         <p class="text-muted mb-3" style="font-size:0.88rem;"
                            data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:4|stringformat:'s' }}00">
-                            {{ product.description|truncatewords:18 }}
+                            {{ product.description|striptags|truncatewords:18|safe }}
                         </p>
                         {% if product.price %}
                         <!-- Price -->

@@ -627,12 +627,13 @@
                 data-aos-delay="{{ forloop.counter0|add:1|stringformat:'s' }}00">
                 <div class="product-card">
                     <div class="img-wrap">
-                        <img src="{% safe_image_url product.image 600 400 product.name %}" alt="{{ product.name }}" loading="lazy">
+                        <img src="{% safe_image_url product.image 600 400 product.name %}" alt="{{ product.name }}"
+                            loading="lazy">
                     </div>
                     <div class="body">
                         <div class="category-tag">{{ product.category.name }}</div>
                         <h5>{{ product.name }}</h5>
-                        <p class="text-muted mb-3" style="font-size:0.88rem;">{{ product.description|truncatewords:15 }}
+                        <p class="text-muted mb-3" style="font-size:0.88rem;">{{ product.description|striptags|truncatewords:18|safe }}
                         </p>
                         <div class="d-flex gap-2">
                             <a href="{% url 'product_detail' product.slug %}" class="btn-red"

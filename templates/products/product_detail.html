@@ -88,12 +88,12 @@
                 </div>
                 {% endif %}
 
-                <p style="color:var(--gray);line-height:1.8;font-size:1rem;">{{ product.description }}</p>
+                <p style="color:var(--gray);line-height:1.8;font-size:1rem;">{{ product.description|safe }}</p>
 
                 {% if product.specifications %}
                 <h5 style="font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:0.06em;margin:28px 0 12px;">Specifications</h5>
                 <div style="background:var(--gray-light);padding:20px;border-left:4px solid var(--red);">
-                    <p style="font-size:0.9rem;line-height:1.8;margin:0;white-space:pre-line;">{{ product.specifications }}</p>
+                    <p style="font-size:0.9rem;line-height:1.8;margin:0;white-space:pre-line;">{{ product.specifications|safe }}</p>
                 </div>
                 {% endif %}
 
