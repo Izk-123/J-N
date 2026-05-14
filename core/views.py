@@ -1,51 +1,72 @@
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
+
 from products.models import Product
-from services.models import Service
-from projects.models import Project
-from core.models import Testimonial
+from .models import Testimonial, WhatsAppClick, SiteSettings, GroupConfig
+from contacts.models import ContactMessage
 
 
+# ── Shared contact base ───────────────────────────────────────────────
+class GenericContactView(View):
+    template_name = 'contacts/contact.html'
+    source = 'general'
+    redirect_url_name = 'contact'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        name    = request.POST.get('name', '').strip()
+        phone   = request.POST.get('phone', '').strip()
+        email   = request.POST.get('email', '').strip()
+        subject = request.POST.get('subject', '').strip()
+        msg     = request.POST.get('message', '').strip()
+        source  = request.POST.get('source', self.source)
+        if name and phone and msg:
+            ContactMessage.objects.create(
+                name=name, phone=phone, email=email,
+                subject=subject, message=msg, source=source
+            )
+            messages.success(request, f'Thank you {name}! We will contact you shortly.')
+            return redirect(request.path)
+        messages.error(request, 'Please fill in name, phone and message.')
+        return render(request, self.template_name)
+
+
+# ── Group landing ─────────────────────────────────────────────────────
 class HomeView(TemplateView):
-    template_name = 'core/home.html'
+    template_name = 'group/landing.html'
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['featured_products'] = Product.objects.filter(
-            is_featured=True, is_active=True
-        )[:6]
-        context['featured_services'] = Service.objects.filter(
-            is_featured=True, is_active=True
-        )[:4]
-        context['featured_projects'] = Project.objects.filter(
-            is_featured=True, is_active=True
-        )[:3]
-        context['testimonials'] = Testimonial.objects.filter(is_active=True)[:4]
-        return context
+        ctx = super().get_context_data(**kwargs)
+        ctx['gcfg'] = GroupConfig.get()
+        return ctx
 
 
 class AboutView(TemplateView):
     template_name = 'core/about.html'
-    
 
-import json
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from .models import WhatsAppClick
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['settings_obj'] = SiteSettings.get_settings()
+        return ctx
 
+
+# ── WhatsApp click tracker ────────────────────────────────────────────
 @csrf_exempt
+@require_POST
 def log_whatsapp_click(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        page_path = data.get('path', '')
-        product_id = data.get('product_id')
-        contact_id = data.get('contact_id')
-        ip = request.META.get('REMOTE_ADDR')
-
-        click = WhatsAppClick.objects.create(
-            page_path=page_path,
-            product_id=product_id or None,
-            contact_message_id=contact_id or None,
-            ip_address=ip,
-        )
-        return JsonResponse({'status': 'ok', 'id': click.id})
-    return JsonResponse({'status': 'error'}, status=400)
+    try:
+        page_path  = request.POST.get('page_path', '/')
+        product_id = request.POST.get('product_id')
+        ip = (request.META.get('HTTP_X_FORWARDED_FOR', '').split(',')[0].strip()
+              or request.META.get('REMOTE_ADDR'))
+        product = Product.objects.filter(pk=product_id).first() if product_id else None
+        WhatsAppClick.objects.create(page_path=page_path, product=product, ip_address=ip)
+        return JsonResponse({'status': 'ok'})
+    except Exception:
+        return JsonResponse({'status': 'error'}, status=500)

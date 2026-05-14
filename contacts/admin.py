@@ -9,7 +9,7 @@ from .models import ContactMessage
 @admin.register(ContactMessage)
 class ContactMessageAdmin(ModelAdmin):
     compressed_fields = True
-    list_display = ('name', 'display_phone', 'display_subject', 'display_status', 'created_at')
+    list_display = ('name', 'display_phone', 'display_subject', 'source', 'display_status', 'created_at')
     list_filter = ('status',)
     search_fields = ('name', 'phone', 'email', 'message')
     readonly_fields = ('name', 'phone', 'email', 'subject', 'message', 'created_at', 'display_whatsapp_link')
@@ -17,7 +17,7 @@ class ContactMessageAdmin(ModelAdmin):
     fieldsets = (
         ('📨 From', {'fields': ('name', 'phone', 'email', 'display_whatsapp_link', 'created_at')}),
         ('💬 Message', {'fields': ('subject', 'message')}),
-        ('📋 Status', {'fields': ('status',)}),
+        ('📋 Status', {'fields': ('status', 'source')}),
     )
 
     @display(description='Phone')

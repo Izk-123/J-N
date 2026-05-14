@@ -2,29 +2,26 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
-from django.views import View
 from .models import ContactMessage
 
 
-class ContactView(View):
-    template_name = 'contacts/contact.html'
-
-    def get(self, request):
-        return render(request, self.template_name)
-
-    def post(self, request):
+def contact(request):
+    if request.method == 'POST':
         name = request.POST.get('name', '').strip()
         phone = request.POST.get('phone', '').strip()
         email = request.POST.get('email', '').strip()
         subject = request.POST.get('subject', '').strip()
         msg = request.POST.get('message', '').strip()
 
+        source = request.POST.get('source', 'general')
         if name and phone and msg:
+            # Save to database
             ContactMessage.objects.create(
                 name=name, phone=phone, email=email,
-                subject=subject, message=msg
+                subject=subject, message=msg, source=source
             )
 
+            # Send email notification to admin
             try:
                 admin_email = getattr(settings, 'ADMIN_EMAIL', None)
                 if admin_email:
@@ -44,13 +41,14 @@ class ContactView(View):
                         fail_silently=True,
                     )
             except Exception:
-                pass
+                pass  # Never break the form if email fails
 
             messages.success(
                 request,
                 f'Thank you, {name}! Your message has been sent. We will contact you soon.'
             )
             return redirect('contact')
+        else:
+            messages.error(request, 'Please fill in your name, phone number, and message.')
 
-        messages.error(request, 'Please fill in your name, phone number, and message.')
-        return render(request, self.template_name)
+    return render(request, 'contacts/contact.html')

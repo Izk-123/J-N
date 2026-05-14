@@ -175,3 +175,65 @@ class WhatsAppClick(models.Model):
 
     def __str__(self):
         return f"WhatsApp click on {self.created_at:%Y-%m-%d %H:%M}"
+
+class GroupConfig(models.Model):
+    """
+    Configuration for the Group holding page (jandn.mw/).
+    Controls the cinematic hero, company cards, and group story.
+    """
+    group_name     = models.CharField(max_length=200, default="J&N Group of Companies")
+    tagline        = models.CharField(max_length=300, default="Industrial Excellence For The Future")
+    sub_tagline    = models.CharField(max_length=300, default="Construction · Mining · Manufacturing")
+    logo           = models.ImageField(upload_to='group/brand/', blank=True, null=True)
+    hero_image     = models.ImageField(upload_to='group/hero/', blank=True, null=True,
+                                       help_text="Full-screen background image for the hero")
+    hero_video_url = models.URLField(blank=True, help_text="Optional YouTube embed ID for background video")
+
+    # Four company buttons (Building Products, Construction, Mining, Timber)
+    btn1_label     = models.CharField(max_length=100, default="Blue Rock Wall Putty")
+    btn1_url       = models.CharField(max_length=200, default="/products/")
+    btn1_icon      = models.CharField(max_length=60, default="bi-droplet-fill")
+
+    btn2_label     = models.CharField(max_length=100, default="Construction Company")
+    btn2_url       = models.CharField(max_length=200, default="/construction/")
+    btn2_icon      = models.CharField(max_length=60, default="bi-building")
+
+    btn3_label     = models.CharField(max_length=100, default="Mining Company")
+    btn3_url       = models.CharField(max_length=200, default="/mining/")
+    btn3_icon      = models.CharField(max_length=60, default="bi-gem")
+
+    btn4_label     = models.CharField(max_length=100, default="Timber Company")
+    btn4_url       = models.CharField(max_length=200, default="/timber/")
+    btn4_icon      = models.CharField(max_length=60, default="bi-tree-fill")
+
+    # Group story section
+    story_heading  = models.CharField(max_length=200, default="About the Group")
+    story_text     = models.TextField(default="J&N Group of Companies is a diversified industrial group based in Malawi, delivering excellence across building products, construction, and mining.")
+
+    # Contact
+    phone          = models.CharField(max_length=20, blank=True)
+    email          = models.EmailField(blank=True)
+    address        = models.TextField(blank=True)
+    whatsapp       = models.CharField(max_length=20, blank=True)
+    facebook       = models.URLField(blank=True)
+    linkedin       = models.URLField(blank=True)
+
+    class Meta:
+        verbose_name = "Group Site Config"
+        verbose_name_plural = "Group Site Config"
+
+    def __str__(self):
+        return self.group_name
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def get(cls):
+        obj, _ = cls.objects.get_or_create(pk=1, defaults={
+            'phone': '+265 000 000 000',
+            'address': 'Blantyre, Malawi',
+            'whatsapp': '+265000000000',
+        })
+        return obj

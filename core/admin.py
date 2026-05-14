@@ -117,3 +117,24 @@ class WhatsAppClickAdmin(ModelAdmin):
         return False
     def has_change_permission(self, request, obj=None):
         return False
+
+from .models import GroupConfig
+
+@admin.register(GroupConfig)
+class GroupConfigAdmin(ModelAdmin):
+    compressed_fields = True
+    warn_unsaved_form = True
+    fieldsets = (
+        ('🏢 Group Brand', {'fields': ('group_name', 'tagline', 'sub_tagline', 'logo', 'hero_image', 'hero_video_url')}),
+        ('🔴 Building Products Button', {'fields': ('btn1_label', 'btn1_url', 'btn1_icon')}),
+        ('🔵 Construction Button',      {'fields': ('btn2_label', 'btn2_url', 'btn2_icon')}),
+        ('🟡 Mining Button',            {'fields': ('btn3_label', 'btn3_url', 'btn3_icon')}),
+        ('🌲 Timber Button',            {'fields': ('btn4_label', 'btn4_url', 'btn4_icon')}),
+        ('📖 Group Story',              {'fields': ('story_heading', 'story_text')}),
+        ('📞 Contact',                  {'fields': ('phone', 'email', 'address', 'whatsapp')}),
+        ('📱 Social',                   {'classes': ('collapse',), 'fields': ('facebook', 'linkedin')}),
+    )
+    def has_add_permission(self, request):
+        return not GroupConfig.objects.exists()
+    def has_delete_permission(self, request, obj=None):
+        return False
