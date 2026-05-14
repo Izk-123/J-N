@@ -1,0 +1,138 @@
+{% extends 'mining/base_mining.html' %}
+{% load static image_tags %}
+{% block title %}Minerals{% endblock %}
+
+{% block extra_css %}
+<style>
+    .minerals-hero {
+        background: var(--black);
+        padding: 120px 0 60px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .category-filter {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        margin-bottom: 2.5rem;
+    }
+    .filter-btn {
+        padding: 0.5rem 1.5rem;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        border-radius: 40px;
+        transition: all 0.3s;
+        background: transparent;
+        color: rgba(255,255,255,0.7);
+        border: 1px solid rgba(255,255,255,0.15);
+        text-decoration: none;
+    }
+    .filter-btn.active, .filter-btn:hover {
+        background: var(--primary);
+        color: #fff;
+        border-color: var(--primary);
+        transform: translateY(-2px);
+    }
+    .mineral-card-modern {
+        background: rgba(20,20,20,0.6);
+        backdrop-filter: blur(8px);
+        border-radius: 28px;
+        overflow: hidden;
+        transition: all 0.4s;
+        border: 1px solid rgba(255,255,255,0.05);
+        height: 100%;
+    }
+    .mineral-card-modern:hover {
+        transform: translateY(-10px);
+        border-color: var(--primary);
+        box-shadow: 0 20px 35px -12px rgba(0,0,0,0.4);
+    }
+    .mineral-img {
+        height: 220px;
+        width: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+    }
+    .mineral-card-modern:hover .mineral-img {
+        transform: scale(1.05);
+    }
+    .mineral-body {
+        padding: 1.5rem;
+    }
+    details summary {
+        cursor: pointer;
+        color: var(--primary);
+        font-weight: 600;
+        font-size: 0.8rem;
+        letter-spacing: 0.05em;
+    }
+    details summary::marker {
+        color: var(--primary);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Minerals Hero -->
+<section class="minerals-hero">
+    <div class="container" data-aos="fade-up">
+        <span class="section-label">What We Extract</span>
+        <h1 class="section-title text-white mt-2">Our <span>Minerals</span></h1>
+        <div class="divider-m"></div>
+        <p class="lead text-white-50 col-lg-8">High‑grade minerals sourced responsibly from our operations in Malawi.</p>
+    </div>
+</section>
+
+<!-- Mineral Products -->
+<section class="py-5 py-xl-5" style="background: #0A0A0A;">
+    <div class="container">
+        <!-- Category Filter -->
+        <div class="category-filter" data-aos="fade-up">
+            <a href="{% url 'mining:minerals' %}" class="filter-btn {% if not active_category %}active{% endif %}">All</a>
+            {% for cat in categories %}
+            <a href="?category={{ cat.slug }}" class="filter-btn {% if active_category == cat.slug %}active{% endif %}">{{ cat.name }}</a>
+            {% endfor %}
+        </div>
+
+        {% if minerals %}
+        <div class="row g-4">
+            {% for m in minerals %}
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:50 }}">
+                <div class="mineral-card-modern">
+                    <img src="{% safe_image_url m.image 500 300 m.name %}" alt="{{ m.name }}" class="mineral-img">
+                    <div class="mineral-body">
+                        <div class="text-primary text-uppercase small fw-semibold mb-1">{{ m.category.name }}</div>
+                        <h4 class="text-white fs-4 mb-2">{{ m.name }}</h4>
+                        <p class="text-white-50 small mb-3">{{ m.description|striptags|truncatewords:20 }}</p>
+                        {% if m.specifications %}
+                        <details class="mt-2">
+                            <summary>Specifications</summary>
+                            <div class="mt-2 text-white-50 small" style="line-height: 1.6;">{{ m.specifications|linebreaksbr }}</div>
+                        </details>
+                        {% endif %}
+                        <a href="{% url 'mining:contact' %}" class="btn-link text-primary text-decoration-none fw-semibold mt-3 d-inline-block">Enquire <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5" data-aos="fade-up">
+            <i class="bi bi-gem display-1 text-white-25"></i>
+            <p class="text-white-50 mt-3">No minerals found in this category.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="py-5" style="background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);" data-aos="fade-up">
+    <div class="container text-center">
+        <h2 class="text-white display-5 fw-bold">Request a Quote</h2>
+        <p class="text-white-75 lead mb-4">Tell us your mineral requirements and we'll get back to you promptly.</p>
+        <a href="{% url 'mining:contact' %}" class="btn btn-light rounded-pill px-5 py-3 fw-semibold" style="color: var(--accent);">Contact Sales <i class="bi bi-envelope-paper ms-2"></i></a>
+    </div>
+</section>
+{% endblock %}

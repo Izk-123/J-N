@@ -1,0 +1,355 @@
+{% extends 'mining/base_mining.html' %}
+{% load static image_tags %}
+{% block title %}Home{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Parallax Hero */
+    .hero-parallax {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        background: url('{% if msite.hero_image %}{{ msite.hero_image.url }}{% else %}{% static "images/hero-bg.jpg" %}{% endif %}') no-repeat center center/cover;
+        background-attachment: fixed;
+        background-size: cover;
+        isolation: isolate;
+    }
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 20% 30%, rgba(0,0,0,0.7), rgba(0,0,0,0.9));
+        z-index: 0;
+    }
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+    .hero h1 {
+        font-size: clamp(2.5rem, 7vw, 5rem);
+        font-weight: 800;
+        background: linear-gradient(135deg, #fff 0%, #e0a87c 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+    .hero h1 span {
+        display: block;
+        color: var(--primary);
+        background: none;
+        -webkit-background-clip: unset;
+        background-clip: unset;
+    }
+    .hero-badge {
+        background: rgba(180,83,9,0.15);
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(180,83,9,0.4);
+        border-radius: 40px;
+        padding: 0.3rem 1rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+    .scroll-indicator {
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        animation: bounce 2s infinite;
+        color: rgba(255,255,255,0.6);
+        font-size: 1.8rem;
+        z-index: 2;
+    }
+    @keyframes bounce {
+        0%, 100% { transform: translateX(-50%) translateY(0); }
+        50% { transform: translateX(-50%) translateY(10px); }
+    }
+    
+    /* Mineral Card 3D */
+    .mineral-card-3d {
+        background: rgba(20,20,20,0.7);
+        backdrop-filter: blur(12px);
+        border-radius: 28px;
+        padding: 1.5rem;
+        transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        border: 1px solid rgba(255,255,255,0.05);
+        height: 100%;
+    }
+    .mineral-card-3d:hover {
+        transform: translateY(-12px) scale(1.02);
+        border-color: var(--primary);
+        box-shadow: 0 25px 40px -12px rgba(0,0,0,0.5);
+    }
+    .mineral-card-3d img {
+        border-radius: 20px;
+        transition: transform 0.5s;
+    }
+    .mineral-card-3d:hover img {
+        transform: scale(1.03);
+    }
+    
+    /* Operation Card Modern */
+    .op-card-modern {
+        position: relative;
+        border-radius: 24px;
+        overflow: hidden;
+        height: 320px;
+        transition: all 0.4s;
+    }
+    .op-card-modern img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s, filter 0.4s;
+    }
+    .op-card-modern:hover img {
+        transform: scale(1.08);
+        filter: brightness(0.7) saturate(1.2);
+    }
+    .op-card-modern .overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, #000000cc, transparent 60%);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 1.8rem;
+        transform: translateY(10px);
+        transition: transform 0.3s;
+    }
+    .op-card-modern:hover .overlay {
+        transform: translateY(0);
+    }
+    .op-card-modern h4 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #fff;
+    }
+    
+    /* Stat Counter */
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 800;
+        color: var(--primary);
+        line-height: 1;
+    }
+    
+    /* Feature Box */
+    .feature-box {
+        text-align: center;
+        padding: 2rem 1.5rem;
+        border-radius: 32px;
+        background: rgba(255,255,255,0.02);
+        transition: all 0.3s;
+        height: 100%;
+    }
+    .feature-box:hover {
+        background: rgba(180,83,9,0.1);
+        transform: translateY(-8px);
+    }
+    .feature-icon {
+        font-size: 2.5rem;
+        color: var(--primary);
+        margin-bottom: 1.2rem;
+    }
+    
+    /* Responsive fix for parallax on mobile */
+    @media (max-width: 768px) {
+        .hero-parallax {
+            background-attachment: scroll;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Parallax Hero Section -->
+<section class="hero-parallax hero">
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+        <div class="row">
+            <div class="col-lg-8" data-aos="fade-up" data-aos-duration="1000">
+                <div class="hero-badge d-inline-flex align-items-center gap-2 mb-3">
+                    <i class="bi bi-gem"></i> Responsible Mineral Extraction
+                </div>
+                <h1>{{ msite.hero_heading|wordwrap:15|linebreaksbr }}</h1>
+                <p class="lead mt-3 text-white-75">{{ msite.hero_sub }}</p>
+                <div class="d-flex flex-wrap gap-3 mt-4">
+                    <a href="{% url 'mining:minerals' %}" class="btn-primary-m"><i class="bi bi-gem me-2"></i>Our Minerals</a>
+                    <a href="{% url 'mining:contact' %}" class="btn-outline-m">Enquire Now</a>
+                </div>
+                <div class="row mt-5 pt-3 g-4">
+                    <div class="col-auto" data-aos="fade-right" data-aos-delay="200">
+                        <div class="stat-number counter" data-target="{{ msite.years_exp }}">0</div>
+                        <div class="text-uppercase small text-white-50">Years of Excellence</div>
+                    </div>
+                    {% if msite.tonnes_mined %}
+                    <div class="col-auto" data-aos="fade-right" data-aos-delay="300">
+                        <div class="stat-number counter" data-target="{{ msite.tonnes_mined|cut:'+' }}">0</div>
+                        <div class="text-uppercase small text-white-50">Tonnes Mined</div>
+                    </div>
+                    {% endif %}
+                    <div class="col-auto" data-aos="fade-right" data-aos-delay="400">
+                        <div class="stat-number counter" data-target="{{ msite.sites }}">0</div>
+                        <div class="text-uppercase small text-white-50">Active Sites</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="scroll-indicator">
+        <i class="bi bi-chevron-double-down"></i>
+    </div>
+</section>
+
+<!-- Featured Minerals -->
+{% if featured_minerals %}
+<section class="py-5 py-xl-5" style="background: #0A0A0A;">
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-between align-items-end mb-5" data-aos="fade-up">
+            <div>
+                <span class="section-label">What We Extract</span>
+                <h2 class="section-title text-white">Our <span>Minerals</span></h2>
+                <div class="divider-m"></div>
+            </div>
+            <a href="{% url 'mining:minerals' %}" class="btn-outline-m">View All <i class="bi bi-arrow-right ms-1"></i></a>
+        </div>
+        <div class="row g-4">
+            {% for m in featured_minerals %}
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+                <div class="mineral-card-3d">
+                    <img src="{% safe_image_url m.image 500 300 m.name %}" alt="{{ m.name }}" class="img-fluid w-100 mb-3" style="height: 220px; object-fit: cover;">
+                    <div class="text-primary text-uppercase small fw-semibold tracking-wide">{{ m.category.name }}</div>
+                    <h5 class="text-white fs-4 mt-2">{{ m.name }}</h5>
+                    <p class="text-white-50">{{ m.description|striptags|truncatewords:18 }}</p>
+                    <a href="{% url 'mining:contact' %}" class="btn-link text-primary text-decoration-none fw-semibold">Enquire <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Operations -->
+{% if operations %}
+<section class="py-5 py-xl-5" style="background: #111111;">
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-between align-items-end mb-5" data-aos="fade-up">
+            <div>
+                <span class="section-label text-white-50">Where We Work</span>
+                <h2 class="section-title text-white">Mining <span>Operations</span></h2>
+                <div class="divider-m"></div>
+            </div>
+            <a href="{% url 'mining:operations' %}" class="btn-outline-m">All Sites <i class="bi bi-arrow-right ms-1"></i></a>
+        </div>
+        <div class="row g-4">
+            {% for op in operations %}
+            <div class="col-md-{% if forloop.first %}6{% else %}6{% endif %} col-lg-{% if forloop.first %}6{% else %}3{% endif %}" data-aos="zoom-in" data-aos-delay="{{ forloop.counter0|add:100 }}">
+                <div class="op-card-modern">
+                    <img src="{% safe_image_url op.image 800 500 op.name %}" alt="{{ op.name }}">
+                    <div class="overlay">
+                        <h4 class="mb-1">{{ op.name }}</h4>
+                        <p class="mb-0 text-white-50"><i class="bi bi-geo-alt-fill me-1 text-primary"></i>{{ op.location }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Why Choose Us -->
+<section class="py-5 py-xl-5" style="background: #0A0A0A;">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <span class="section-label">Our Edge</span>
+            <h2 class="section-title text-white">Why Choose <span>Us</span></h2>
+            <div class="divider-m mx-auto"></div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-box">
+                    <div class="feature-icon"><i class="bi bi-shield-check-fill"></i></div>
+                    <h5 class="text-white">Responsible Mining</h5>
+                    <p class="text-white-50 small">We operate within all environmental regulations and community engagement standards.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-box">
+                    <div class="feature-icon"><i class="bi bi-gear-fill"></i></div>
+                    <h5 class="text-white">Advanced Equipment</h5>
+                    <p class="text-white-50 small">Modern machinery and skilled operators for maximum efficiency and safety.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                <div class="feature-box">
+                    <div class="feature-icon"><i class="bi bi-map-fill"></i></div>
+                    <h5 class="text-white">Local Expertise</h5>
+                    <p class="text-white-50 small">Deep knowledge of Malawi's mineral geology and regulatory framework.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
+                <div class="feature-box">
+                    <div class="feature-icon"><i class="bi bi-clock-fill"></i></div>
+                    <h5 class="text-white">Reliable Supply</h5>
+                    <p class="text-white-50 small">Consistent production volumes and on-time delivery to all customers.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA with Gradient Background -->
+<section class="py-5" style="background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);" data-aos="fade-up">
+    <div class="container">
+        <div class="row align-items-center text-center text-lg-start">
+            <div class="col-lg-8 mb-4 mb-lg-0">
+                <h2 class="text-white display-5 fw-bold">Ready to Source Quality Minerals?</h2>
+                <p class="text-white-75 lead mb-0">Contact our team for pricing, availability, and logistics.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="{% url 'mining:contact' %}" class="btn btn-light rounded-pill px-4 py-2 fw-semibold" style="color: var(--accent);">Enquire Now <i class="bi bi-arrow-right ms-2"></i></a>
+                {% if msite.whatsapp %}
+                <a href="https://wa.me/{{ msite.whatsapp }}" target="_blank" class="btn btn-dark rounded-pill px-4 py-2 ms-2"><i class="bi bi-whatsapp me-2"></i>WhatsApp</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Animated counter on scroll
+    document.addEventListener('DOMContentLoaded', function() {
+        const counters = document.querySelectorAll('.counter');
+        
+        const animateCounter = (counter) => {
+            const target = parseInt(counter.getAttribute('data-target'));
+            let count = 0;
+            const updateCount = () => {
+                const increment = Math.ceil(target / 30);
+                if(count < target) {
+                    count += increment;
+                    if(count > target) count = target;
+                    counter.innerText = count.toLocaleString();
+                    setTimeout(updateCount, 20);
+                } else {
+                    counter.innerText = target.toLocaleString();
+                }
+            };
+            updateCount();
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    animateCounter(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        counters.forEach(counter => observer.observe(counter));
+    });
+</script>
+{% endblock %}

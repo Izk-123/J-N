@@ -1,0 +1,465 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>{% block title %}{{ msite.company_name }}{% endblock %} | {{ msite.tagline }}</title>
+    <meta name="description" content="{{ msite.meta_description|default:msite.tagline }}">
+
+    <!-- Bootstrap 5.3 + Icons + Google Fonts -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- AOS (Animate On Scroll) -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Custom base CSS (will be extended) -->
+    <link href="{% static 'css/m-animations.css' %}" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary:   {{ msite.primary_color|default:'#B45309' }};
+            --primary-dark: #8B3A0A;
+            --accent:    {{ msite.accent_color|default:'#78350F' }};
+            --black:     #0A0A0A;
+            --white:     #FFFFFF;
+            --gray-light:#F5F3EF;
+            --gray:      #6B7280;
+            --glass:     rgba(255,255,255,0.05);
+            --glass-border: rgba(255,255,255,0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--black);
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+        
+        /* Navbar - Modern Glass Effect */
+        .m-navbar {
+            background: rgba(10,10,10,0.85) !important;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1030;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .m-navbar.scrolled {
+            background: rgba(0,0,0,0.95) !important;
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+            border-bottom-color: var(--primary);
+        }
+        .m-navbar .navbar-brand img {
+            height: 52px;
+            width: auto;
+            transition: transform 0.3s;
+        }
+        .m-navbar .navbar-brand:hover img {
+            transform: scale(1.02);
+        }
+        .m-navbar .nav-link {
+            color: rgba(255,255,255,0.85) !important;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            padding: 1.75rem 1rem !important;
+            position: relative;
+            transition: color 0.2s;
+        }
+        .m-navbar .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 1.2rem;
+            left: 1rem;
+            right: 1rem;
+            height: 2px;
+            background: var(--primary);
+            transform: scaleX(0);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .m-navbar .nav-link:hover, .m-navbar .nav-link.active {
+            color: #fff !important;
+        }
+        .m-navbar .nav-link:hover::after, .m-navbar .nav-link.active::after {
+            transform: scaleX(1);
+        }
+        .m-navbar .btn-enquire {
+            background: var(--primary);
+            color: #fff !important;
+            padding: 0.6rem 1.5rem !important;
+            margin: 1.2rem 0 1.2rem 1rem;
+            border-radius: 40px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            transition: all 0.3s;
+            border: none;
+        }
+        .m-navbar .btn-enquire:hover {
+            background: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(180,83,9,0.3);
+        }
+        .back-to-group {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            color: rgba(255,255,255,0.5) !important;
+            padding: 1.75rem 0.5rem !important;
+            transition: color 0.2s;
+        }
+        .back-to-group:hover {
+            color: rgba(255,255,255,0.9) !important;
+        }
+        
+        /* Buttons */
+        .btn-primary-m {
+            background: var(--primary);
+            color: #fff;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            padding: 0.8rem 2rem;
+            border-radius: 40px;
+            border: none;
+            transition: all 0.3s;
+            display: inline-block;
+            text-decoration: none;
+        }
+        .btn-primary-m:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(180,83,9,0.4);
+            color: #fff;
+        }
+        .btn-outline-m {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            padding: 0.7rem 1.8rem;
+            border-radius: 40px;
+            background: transparent;
+            transition: all 0.3s;
+            display: inline-block;
+            text-decoration: none;
+        }
+        .btn-outline-m:hover {
+            background: var(--primary);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(180,83,9,0.2);
+        }
+        
+        /* Section helpers */
+        .section-label {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+        }
+        .section-title span {
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
+        }
+        .divider-m {
+            width: 60px;
+            height: 4px;
+            background: var(--primary);
+            margin: 1rem 0 1.5rem;
+            border-radius: 2px;
+        }
+        
+        /* WhatsApp float */
+        .wa-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1040;
+        }
+        .wa-float a {
+            background: #25D366;
+            color: #fff;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            text-decoration: none;
+            box-shadow: 0 6px 25px rgba(37,211,102,0.4);
+            transition: all 0.3s;
+        }
+        .wa-float a:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 30px rgba(37,211,102,0.6);
+        }
+        
+        /* Footer */
+        footer {
+            background: #050505;
+            color: rgba(255,255,255,0.6);
+            padding-top: 60px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+            z-index: 2;
+        }
+        footer h5 {
+            color: #fff;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        footer .fd {
+            width: 40px;
+            height: 3px;
+            background: var(--primary);
+            margin-bottom: 1rem;
+        }
+        footer a {
+            color: rgba(255,255,255,0.5);
+            text-decoration: none;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+            transition: color 0.2s, transform 0.2s;
+        }
+        footer a:hover {
+            color: var(--primary);
+            transform: translateX(3px);
+        }
+        footer .fb {
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding: 1.5rem 0;
+            margin-top: 2rem;
+            font-size: 0.75rem;
+            text-align: center;
+        }
+        
+        /* Page loader */
+        #page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--black);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+        #page-loader.loaded {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(180,83,9,0.2);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 991px) {
+            .m-navbar .nav-link {
+                padding: 0.8rem 0 !important;
+            }
+            .m-navbar .nav-link::after {
+                bottom: 0;
+                left: 0;
+                right: 0;
+            }
+            .m-navbar .btn-enquire {
+                margin: 0.5rem 0;
+                width: fit-content;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<div id="page-loader">
+    <div class="loader-spinner"></div>
+</div>
+
+<nav class="navbar navbar-expand-lg m-navbar" id="mainNav">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'mining:home' %}">
+            {% if msite.logo %}
+                <img src="{{ msite.logo.url }}" alt="{{ msite.company_name }}">
+            {% else %}
+                <span style="font-family:'Space Grotesk',sans-serif;font-size:1.4rem;font-weight:700;color:#fff;">
+                    <span style="color:var(--primary)">⛏</span> {{ msite.company_name }}
+                </span>
+            {% endif %}
+        </a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navM">
+            <i class="bi bi-list text-white fs-3"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navM">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'mining:home' %}">Home</a></li>
+                <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'mining:about' %}">About</a></li>
+                <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'minerals' %}active{% endif %}" href="{% url 'mining:minerals' %}">Minerals</a></li>
+                <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'operations' %}active{% endif %}" href="{% url 'mining:operations' %}">Operations</a></li>
+                <li class="nav-item"><a class="nav-link btn-enquire" href="{% url 'mining:contact' %}">Enquire</a></li>
+                <li class="nav-item"><a class="back-to-group" href="/">← Group</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+{% if messages %}
+<div class="messages-box position-fixed top-0 end-0 p-3 z-3" style="max-width: 350px;">
+    {% for m in messages %}
+    <div class="alert alert-{{ m.tags|default:'info' }} alert-dismissible fade show shadow-lg rounded-4" role="alert">
+        {{ m }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<main>{% block content %}{% endblock %}</main>
+
+<footer>
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-4">
+                <h5>{{ msite.company_name }}</h5>
+                <div class="fd"></div>
+                <p style="font-size:0.85rem;line-height:1.7;">{{ msite.tagline }}. Responsible mineral extraction across Malawi.</p>
+            </div>
+            <div class="col-lg-2">
+                <h5>Navigation</h5>
+                <div class="fd"></div>
+                <a href="{% url 'mining:home' %}">Home</a>
+                <a href="{% url 'mining:about' %}">About</a>
+                <a href="{% url 'mining:minerals' %}">Minerals</a>
+                <a href="{% url 'mining:operations' %}">Operations</a>
+                <a href="{% url 'mining:contact' %}">Contact</a>
+            </div>
+            <div class="col-lg-3">
+                <h5>Other Companies</h5>
+                <div class="fd"></div>
+                <a href="/"><i class="bi bi-house me-1"></i>Group Home</a>
+                <a href="/products/"><i class="bi bi-droplet me-1"></i>Building Products</a>
+                <a href="/construction/"><i class="bi bi-building me-1"></i>Construction</a>
+            </div>
+            <div class="col-lg-3">
+                <h5>Contact</h5>
+                <div class="fd"></div>
+                {% if msite.phone %}<p><i class="bi bi-telephone-fill me-2" style="color:var(--primary)"></i>{{ msite.phone }}</p>{% endif %}
+                {% if msite.email %}<p><i class="bi bi-envelope-fill me-2" style="color:var(--primary)"></i>{{ msite.email }}</p>{% endif %}
+                {% if msite.address %}<p><i class="bi bi-geo-alt-fill me-2" style="color:var(--primary)"></i>{{ msite.address }}</p>{% endif %}
+            </div>
+        </div>
+        <div class="fb">
+            &copy; {% now "Y" %} {{ msite.company_name }}. All Rights Reserved. | Part of J&amp;N Group of Companies
+        </div>
+    </div>
+</footer>
+
+{% if msite.whatsapp %}
+<div class="wa-float">
+    <a href="https://wa.me/{{ msite.whatsapp }}?text=Hello {{ msite.company_name }}, I would like to enquire." target="_blank" title="WhatsApp">
+        <i class="bi bi-whatsapp"></i>
+    </a>
+</div>
+{% endif %}
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/htmx.org@1.9.12"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    // Initialize AOS
+    AOS.init({
+        duration: 800,
+        once: true,
+        offset: 100,
+    });
+    
+    // Navbar background change on scroll
+    window.addEventListener('scroll', function() {
+        const nav = document.getElementById('mainNav');
+        if (window.scrollY > 50) {
+            nav.classList.add('scrolled');
+        } else {
+            nav.classList.remove('scrolled');
+        }
+    });
+    
+    // Page loader
+    window.addEventListener('load', () => {
+        const loader = document.getElementById('page-loader');
+        if(loader) setTimeout(() => loader.classList.add('loaded'), 300);
+    });
+    
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const target = document.querySelector(this.getAttribute('href'));
+            if(target) {
+                e.preventDefault();
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

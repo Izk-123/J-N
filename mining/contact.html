@@ -1,0 +1,171 @@
+{% extends 'mining/base_mining.html' %}
+{% load static %}
+{% block title %}Contact{% endblock %}
+
+{% block extra_css %}
+<style>
+    .contact-hero {
+        background: var(--black);
+        padding: 120px 0 60px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .contact-form-wrapper {
+        background: rgba(20,20,20,0.6);
+        backdrop-filter: blur(12px);
+        border-radius: 32px;
+        padding: 2.5rem;
+        border: 1px solid rgba(255,255,255,0.05);
+    }
+    .form-control-custom {
+        background: #1a1a1a;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 16px;
+        padding: 0.9rem 1.2rem;
+        color: #fff;
+        transition: all 0.3s;
+    }
+    .form-control-custom:focus {
+        border-color: var(--primary);
+        background: #222;
+        box-shadow: 0 0 0 3px rgba(180,83,9,0.2);
+        outline: none;
+        color: #fff;
+    }
+    .contact-info-card {
+        background: var(--primary);
+        border-radius: 32px;
+        padding: 2rem;
+        color: #fff;
+        height: 100%;
+    }
+    .contact-icon {
+        width: 50px;
+        height: 50px;
+        background: rgba(255,255,255,0.15);
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-right: 1rem;
+    }
+    .whatsapp-btn {
+        background: #25D366;
+        color: #fff;
+        border-radius: 40px;
+        padding: 0.8rem 1.8rem;
+        font-weight: 600;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+    }
+    .whatsapp-btn:hover {
+        background: #20b859;
+        transform: translateY(-2px);
+        color: #fff;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Contact Hero -->
+<section class="contact-hero">
+    <div class="container" data-aos="fade-up">
+        <span class="section-label">Get In Touch</span>
+        <h1 class="section-title text-white mt-2">Enquire <span>Now</span></h1>
+        <div class="divider-m"></div>
+        <p class="lead text-white-50 col-lg-8">Reach out to our team for mineral pricing, availability, or any questions.</p>
+    </div>
+</section>
+
+<!-- Contact Form & Info -->
+<section class="py-5" style="background: #0A0A0A;">
+    <div class="container">
+        <div class="row g-5">
+            <!-- Contact Form -->
+            <div class="col-lg-7" data-aos="fade-right">
+                <div class="contact-form-wrapper">
+                    <h2 class="text-white mb-3">Send an Enquiry</h2>
+                    <div class="divider-m"></div>
+                    <form method="POST" action="{% url 'contacts:contact' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="subject" value="Mining Enquiry">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <input type="text" name="name" placeholder="Full Name *" required class="form-control-custom w-100">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="tel" name="phone" placeholder="Phone *" required class="form-control-custom w-100">
+                            </div>
+                            <div class="col-12">
+                                <input type="email" name="email" placeholder="Email" class="form-control-custom w-100">
+                            </div>
+                            <div class="col-12">
+                                <textarea name="message" placeholder="What minerals / quantities are you interested in? *" rows="5" required class="form-control-custom w-100"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn-primary-m w-100 py-3">Send Enquiry <i class="bi bi-send ms-2"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Contact Info Card -->
+            <div class="col-lg-5" data-aos="fade-left">
+                <div class="contact-info-card">
+                    <h2 class="text-white mb-4">Contact Info</h2>
+                    <div class="mb-4" style="width: 50px; height: 3px; background: rgba(255,255,255,0.5);"></div>
+                    
+                    {% if msite.phone %}
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="contact-icon"><i class="bi bi-telephone-fill"></i></div>
+                        <div>
+                            <div class="small text-white-50">Phone</div>
+                            <a href="tel:{{ msite.phone }}" class="text-white text-decoration-none fs-5">{{ msite.phone }}</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if msite.email %}
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="contact-icon"><i class="bi bi-envelope-fill"></i></div>
+                        <div>
+                            <div class="small text-white-50">Email</div>
+                            <a href="mailto:{{ msite.email }}" class="text-white text-decoration-none">{{ msite.email }}</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if msite.address %}
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="contact-icon"><i class="bi bi-geo-alt-fill"></i></div>
+                        <div>
+                            <div class="small text-white-50">Address</div>
+                            <span class="text-white">{{ msite.address|linebreaksbr }}</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if msite.whatsapp %}
+                    <div class="mt-4">
+                        <a href="https://wa.me/{{ msite.whatsapp }}" target="_blank" class="whatsapp-btn">
+                            <i class="bi bi-whatsapp fs-5"></i> Chat on WhatsApp
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Map / Additional Info (Optional) -->
+<section class="py-4" style="background: #111;">
+    <div class="container text-center">
+        <p class="text-white-50 small">Our team typically responds within 24 hours. For urgent inquiries, please call us directly.</p>
+    </div>
+</section>
+{% endblock %}
