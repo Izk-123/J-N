@@ -4,56 +4,63 @@
 {% block content %}
 {% include 'construction/includes/page_header.html' with title="Contact Us" active_page="Contact" page_header_image=csite.page_header_image %}
 
-<div class="container-xxl py-5">
-    <div class="container">
-        <div class="row g-5">
-            <div class="col-lg-6 wow fadeInLeft" data-wow-duration="1s" style="min-height: 450px;">
-                <div class="position-relative h-100">
-                    <iframe class="position-relative w-100 h-100 rounded"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3001156.4288297426!2d-78.01371936852176!3d42.72876761954724!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4ccc4bf0f123a5a9%3A0xddcfc6c1de189567!2sNew%20York%2C%20USA!5e0!3m2!1sen!2sbd!4v1603794290143!5m2!1sen!2sbd"
-                        frameborder="0" allowfullscreen></iframe>
+<div class="container py-5">
+    <div class="row g-5">
+        <div class="col-lg-5" data-aos="fade-right">
+            <div class="glass-card p-4 h-100">
+                <h3 class="fw-bold mb-4">Get in Touch</h3>
+                <p>We're here to answer your questions and discuss your construction needs.</p>
+                <div class="mt-4">
+                    <p><i class="fas fa-phone-alt text-primary me-3"></i> {{ csite.phone }}</p>
+                    <p><i class="fas fa-envelope text-primary me-3"></i> {{ csite.email }}</p>
+                    <p><i class="fas fa-map-marker-alt text-primary me-3"></i> {{ csite.address }}</p>
+                </div>
+                <hr class="my-4">
+                <h5>Follow Us</h5>
+                <div class="d-flex gap-3">
+                    {% if csite.facebook %}<a href="{{ csite.facebook }}" class="btn btn-outline-primary rounded-circle"><i class="fab fa-facebook-f"></i></a>{% endif %}
+                    {% if csite.instagram %}<a href="{{ csite.instagram }}" class="btn btn-outline-primary rounded-circle"><i class="fab fa-instagram"></i></a>{% endif %}
+                    {% if csite.linkedin %}<a href="{{ csite.linkedin }}" class="btn btn-outline-primary rounded-circle"><i class="fab fa-linkedin-in"></i></a>{% endif %}
                 </div>
             </div>
-            <div class="col-lg-6 wow fadeInRight" data-wow-duration="1s">
-                <div class="border-start border-5 border-primary ps-4 mb-5">
-                    <h6 class="text-body text-uppercase mb-2">Contact Us</h6>
-                    <h1 class="display-6 mb-0">If You Have Any Query, Please Contact Us</h1>
-                </div>
+        </div>
+        <div class="col-lg-7" data-aos="fade-left">
+            <div class="glass-card p-4 p-lg-5">
+                <h3 class="fw-bold mb-4">Send a Message</h3>
                 <form method="POST" action="{% url 'contacts:contact' %}">
                     {% csrf_token %}
                     <input type="hidden" name="source" value="construction_contact">
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control border-0 bg-light" id="name" name="name" placeholder="Your Name" required>
-                                <label for="name">Your Name</label>
-                            </div>
+                            <input type="text" class="form-control form-control-lg bg-white" name="name" placeholder="Your Name" required>
                         </div>
                         <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="email" class="form-control border-0 bg-light" id="email" name="email" placeholder="Your Email">
-                                <label for="email">Your Email</label>
-                            </div>
+                            <input type="tel" class="form-control form-control-lg bg-white" name="phone" placeholder="Phone Number" required>
                         </div>
                         <div class="col-12">
-                            <div class="form-floating">
-                                <input type="text" class="form-control border-0 bg-light" id="subject" name="subject" placeholder="Subject">
-                                <label for="subject">Subject</label>
-                            </div>
+                            <input type="email" class="form-control form-control-lg bg-white" name="email" placeholder="Email Address">
                         </div>
                         <div class="col-12">
-                            <div class="form-floating">
-                                <textarea class="form-control border-0 bg-light" name="message" id="message" style="height: 150px" placeholder="Message" required></textarea>
-                                <label for="message">Message</label>
-                            </div>
+                            <input type="text" class="form-control form-control-lg bg-white" name="subject" placeholder="Subject">
                         </div>
                         <div class="col-12">
-                            <button class="btn btn-primary py-3 px-5 btn-pulse" type="submit">Send Message</button>
+                            <textarea class="form-control bg-white" name="message" rows="5" placeholder="Your message..." required></textarea>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-modern w-100 py-3">Send Message <i class="fas fa-paper-plane ms-2"></i></button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- Google Maps (optional) -->
+<div class="container pb-5" data-aos="fade-up">
+    <div class="ratio ratio-21x9 rounded-4 overflow-hidden shadow">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3001156.4288297426!2d-78.01371936852176!3d42.72876761954724!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4ccc4bf0f123a5a9%3A0xddcfc6c1de189567!2sNew%20York%2C%20USA!5e0!3m2!1sen!2sbd!4v1603794290143!5m2!1sen!2sbd" 
+                allowfullscreen="" loading="lazy"></iframe>
     </div>
 </div>
 {% endblock %}

@@ -2,293 +2,228 @@
 {% load static %}
 
 {% block content %}
-<!-- Hero Carousel -->
-<div class="container-fluid p-0 mb-5 wow zoomIn" data-wow-duration="1.5s">
-    <div id="header-carousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img class="w-100" src="{% if csite.hero_image %}{{ csite.hero_image.url }}{% else %}{% static 'images/hero-bg.jpg' %}{% endif %}" alt="Hero" style="height: 600px; object-fit: cover;">
-                <div class="carousel-caption">
-                    <div class="container">
-                        <div class="row justify-content-center">
-                            <div class="col-12 col-lg-10">
-                                <h5 class="text-light text-uppercase mb-3 animated slideInDown">{{ csite.tagline }}</h5>
-                                <h1 class="display-2 text-light mb-3 animated slideInDown">{{ csite.hero_heading }}</h1>
-                                <ol class="breadcrumb mb-4 pb-2">
-                                    <li class="breadcrumb-item fs-5 text-light">Commercial</li>
-                                    <li class="breadcrumb-item fs-5 text-light">Residential</li>
-                                    <li class="breadcrumb-item fs-5 text-light">Industrial</li>
-                                </ol>
-                                <a href="{% url 'construction:services' %}" class="btn btn-primary py-3 px-5 btn-pulse">Explore Services</a>
-                            </div>
-                        </div>
-                    </div>
+
+<!-- Hero Section with Parallax -->
+<section class="hero" style="background-image: url('{% if csite.hero_image %}{{ csite.hero_image.url }}{% else %}{% static 'img/hero-bg.jpg' %}{% endif %}'); background-attachment: fixed;">
+    <div class="hero-overlay"></div>
+    <div class="container hero-content" data-aos="fade-up" data-aos-duration="1200">
+        <div class="row">
+            <div class="col-lg-8">
+                <span class="badge bg-primary text-white px-3 py-2 mb-3 rounded-pill">{{ csite.tagline }}</span>
+                <h1 class="display-3 fw-bold text-white">{{ csite.hero_heading }}</h1>
+                <p class="lead text-white-50 my-4">{{ csite.hero_sub|default:"We deliver excellence in construction, renovation, and industrial solutions." }}</p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="{% url 'construction:services' %}" class="btn btn-modern">Our Services <i class="fas fa-arrow-right ms-2"></i></a>
+                    <a href="{% url 'contacts:contact' %}" class="btn btn-outline-light rounded-pill px-4">Get a Quote</a>
                 </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Counters (glassmorphism) -->
+<div class="container py-5 my-4 stats-section">
+    <div class="row g-4 text-center">
+        <div class="col-md-3 col-6" data-aos="zoom-in" data-aos-delay="100">
+            <div class="glass-card p-4">
+                <h2 class="display-4 fw-bold text-primary counter" data-target="{{ csite.years_exp|default:'15' }}">0</h2>
+                <p class="mb-0">Years of Excellence</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-6" data-aos="zoom-in" data-aos-delay="200">
+            <div class="glass-card p-4">
+                <h2 class="display-4 fw-bold text-primary counter" data-target="{{ csite.projects_done|default:'350' }}">0</h2>
+                <p class="mb-0">Projects Completed</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-6" data-aos="zoom-in" data-aos-delay="300">
+            <div class="glass-card p-4">
+                <h2 class="display-4 fw-bold text-primary counter" data-target="{{ csite.clients|default:'280' }}">0</h2>
+                <p class="mb-0">Happy Clients</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-6" data-aos="zoom-in" data-aos-delay="400">
+            <div class="glass-card p-4">
+                <h2 class="display-4 fw-bold text-primary">24/7</h2>
+                <p class="mb-0">Support Available</p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- About Section -->
-<div class="container-xxl py-5">
-    <div class="container">
-        <div class="row g-5">
-            <div class="col-lg-6 wow fadeInLeft" data-wow-duration="1s">
-                <div class="position-relative overflow-hidden ps-5 pt-5 h-100" style="min-height: 400px;">
-                    <img class="position-absolute w-100 h-100" src="{% if csite.about_image %}{{ csite.about_image.url }}{% else %}{% static 'images/about.jpg' %}{% endif %}" style="object-fit: cover;">
-                    <div class="position-absolute top-0 start-0 bg-white pe-3 pb-3" style="width: 200px; height: 200px;">
-                        <div class="d-flex flex-column justify-content-center text-center bg-primary h-100 p-3">
-                            <h1 class="text-white">{{ csite.years_exp }}</h1>
-                            <h2 class="text-white">Years</h2>
-                            <h5 class="text-white mb-0">Experience</h5>
-                        </div>
+<!-- About Section with Parallax -->
+<section class="parallax py-5" style="background-image: url('{% static 'img/about-bg.jpg' %}'); background-attachment: fixed;">
+    <div class="container py-5">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6" data-aos="fade-right">
+                <div class="position-relative">
+                    <img src="{% if csite.about_image %}{{ csite.about_image.url }}{% else %}{% static 'img/about.jpg' %}{% endif %}" class="img-fluid rounded-4 shadow-lg" alt="About">
+                    <div class="position-absolute top-0 start-0 translate-middle bg-primary text-white rounded-circle p-4 shadow">
+                        <i class="fas fa-medal fa-2x"></i>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6 wow fadeInRight" data-wow-duration="1s">
-                <div class="h-100">
-                    <div class="border-start border-5 border-primary ps-4 mb-5">
-                        <h6 class="text-body text-uppercase mb-2">About Us</h6>
-                        <h1 class="display-6 mb-0">Unique Solutions For Residentials & Industries!</h1>
+            <div class="col-lg-6" data-aos="fade-left">
+                <span class="text-primary fw-semibold">— Who We Are</span>
+                <h2 class="display-5 fw-bold mt-2">Building Dreams,<br>Creating Reality</h2>
+                <p class="mt-4">{{ csite.about_text|default:"We combine innovation, safety, and sustainability to deliver world-class construction projects." }}</p>
+                <div class="row mt-4">
+                    <div class="col-sm-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle text-primary fa-2x me-3"></i>
+                            <div><strong>Quality Assured</strong><br><small>ISO certified processes</small></div>
+                        </div>
                     </div>
-                    <p>{{ csite.about_text|default:"Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit." }}</p>
-                    <div class="border-top mt-4 pt-4">
-                        <div class="row g-4">
-                            <div class="col-sm-4 d-flex">
-                                <i class="fa fa-check fa-2x text-primary flex-shrink-0 me-3"></i>
-                                <h6 class="mb-0">Ontime at services</h6>
-                            </div>
-                            <div class="col-sm-4 d-flex">
-                                <i class="fa fa-check fa-2x text-primary flex-shrink-0 me-3"></i>
-                                <h6 class="mb-0">24/7 hours services</h6>
-                            </div>
-                            <div class="col-sm-4 d-flex">
-                                <i class="fa fa-check fa-2x text-primary flex-shrink-0 me-3"></i>
-                                <h6 class="mb-0">Verified professionals</h6>
-                            </div>
+                    <div class="col-sm-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-users text-primary fa-2x me-3"></i>
+                            <div><strong>Expert Team</strong><br><small>Over 50 specialists</small></div>
                         </div>
                     </div>
                 </div>
+                <a href="{% url 'construction:about' %}" class="btn btn-modern mt-2">Learn More</a>
             </div>
         </div>
     </div>
-</div>
+</section>
 
-<!-- Facts Section (dynamic) – only if you have facts -->
-{% if facts %}
-<div class="container-fluid my-5 p-0 stats-section">
-    <div class="row g-0">
-        {% for fact in facts %}
-        <div class="col-xl-3 col-sm-6 wow flipInY" data-wow-delay="0.{{ forloop.counter|add:1 }}s" data-wow-duration="0.8s">
-            <div class="position-relative">
-                <img class="img-fluid w-100" src="{{ fact.image.url }}" alt="{{ fact.title }}" style="min-height: 350px; object-fit: cover;">
-                <div class="facts-overlay">
-                    <h1 class="display-1">{{ fact.number|stringformat:"02d" }}</h1>
-                    <h4 class="text-white mb-3">{{ fact.title }}</h4>
-                    <p class="text-white">{{ fact.description|truncatewords:20 }}</p>
-                    <a class="text-white small" href="{{ fact.link_url|default:'#' }}">
-                        {{ fact.link_text }}<i class="fa fa-arrow-right ms-3"></i>
-                    </a>
+<!-- Services Section -->
+<div class="container py-5">
+    <div class="text-center mb-5" data-aos="fade-up">
+        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">Our Core Services</span>
+        <h2 class="display-5 fw-bold mt-2">Comprehensive Construction Solutions</h2>
+        <p class="col-md-8 mx-auto">From residential renovations to industrial mega-projects, we have you covered.</p>
+    </div>
+    <div class="row g-4">
+        {% for service in featured_services %}
+        <div class="col-lg-4 col-md-6" data-aos="flip-left" data-aos-delay="{{ forloop.counter0|add:100 }}">
+            <div class="card h-100 border-0 shadow-sm hover-glow tilt-card rounded-4 overflow-hidden">
+                <img src="{% if service.image %}{{ service.image.url }}{% else %}{% static 'img/service-placeholder.jpg' %}{% endif %}" class="card-img-top" alt="{{ service.title }}" style="height: 220px; object-fit: cover;">
+                <div class="card-body p-4">
+                    <i class="fas {{ service.icon|default:'fa-tools' }} fa-2x text-primary mb-3"></i>
+                    <h5 class="card-title fw-bold">{{ service.title }}</h5>
+                    <p class="card-text">{{ service.short_description|truncatewords:15 }}</p>
+                    <a href="{% url 'construction:services' %}" class="text-decoration-none fw-semibold">Read More <i class="fas fa-arrow-right ms-1"></i></a>
                 </div>
             </div>
         </div>
+        {% empty %}
+        <div class="col-12 text-center">No services added yet.</div>
         {% endfor %}
     </div>
 </div>
-{% endif %}
 
-<!-- Services Section -->
-<div class="container-xxl py-5">
-    <div class="container">
-        <div class="row g-5 align-items-end mb-5">
-            <div class="col-lg-6 wow fadeInUp">
-                <div class="border-start border-5 border-primary ps-4">
-                    <h6 class="text-body text-uppercase mb-2">Our Services</h6>
-                    <h1 class="display-6 mb-0">Construction And Renovation Solutions</h1>
-                </div>
-            </div>
-            <div class="col-lg-6 text-lg-end wow fadeInUp">
-                <a href="{% url 'construction:services' %}" class="btn btn-primary py-3 px-5 btn-pulse">All Services</a>
-            </div>
-        </div>
-        <div class="row g-4 justify-content-center">
-            {% for service in featured_services %}
-            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.{{ forloop.counter|add:1 }}s">
-                <div class="service-item bg-light overflow-hidden h-100 position-relative scale-hover rounded">
-                    <img class="img-fluid w-100" src="{% if service.image %}{{ service.image.url }}{% else %}{% static 'images/service-placeholder.jpg' %}{% endif %}" alt="{{ service.title }}" style="height: 220px; object-fit: cover;">
-                    <div class="service-text position-relative text-center h-100 p-4">
-                        <h5 class="mb-3">{{ service.title }}</h5>
-                        <p>{{ service.short_description|truncatewords:15 }}</p>
-                        <a href="{% url 'construction:services' %}" class="small">READ MORE<i class="fa fa-arrow-right ms-3"></i></a>
-                    </div>
-                </div>
-            </div>
-            {% empty %}
-            <div class="col-12 text-center py-5">No services added yet.</div>
-            {% endfor %}
-        </div>
-    </div>
-</div>
-
-<!-- Projects Section -->
-<div class="container-xxl py-5 bg-light">
-    <div class="container">
-        <div class="row g-5 align-items-end mb-5">
-            <div class="col-lg-6 wow zoomIn">
-                <div class="border-start border-5 border-primary ps-4">
-                    <h6 class="text-body text-uppercase mb-2">Our Projects</h6>
-                    <h1 class="display-6 mb-0">Completed Works</h1>
-                </div>
-            </div>
-            <div class="col-lg-6 text-lg-end wow zoomIn">
-                <a href="{% url 'construction:projects' %}" class="btn btn-primary py-3 px-5 btn-pulse">View All</a>
-            </div>
+<!-- Featured Projects with 3D tilt -->
+<div class="bg-light py-5">
+    <div class="container py-4">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <span class="badge bg-dark text-white px-3 py-2 rounded-pill">Recent Works</span>
+            <h2 class="display-5 fw-bold mt-2">Our Signature Projects</h2>
         </div>
         <div class="row g-4">
             {% for project in featured_projects %}
-            <div class="col-lg-4 col-md-6 wow zoomIn" data-wow-delay="0.{{ forloop.counter|add:1 }}s">
-                <div class="position-relative overflow-hidden h-100 scale-hover">
-                    <img class="img-fluid w-100" src="{% if project.cover_image %}{{ project.cover_image.url }}{% else %}{% static 'images/project-placeholder.jpg' %}{% endif %}" alt="{{ project.title }}" style="height: 260px; object-fit: cover;">
-                    <div class="facts-overlay">
-                        <h4 class="text-white mb-2">{{ project.title }}</h4>
-                        <p class="text-white small mb-2">{{ project.location }}</p>
-                        <a href="{% url 'construction:project_detail' project.slug %}" class="text-white small">READ MORE<i class="fa fa-arrow-right ms-3"></i></a>
+            <div class="col-lg-4 col-md-6" data-aos="zoom-in-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+                <div class="card border-0 shadow rounded-4 overflow-hidden tilt-card h-100">
+                    <div class="position-relative">
+                        <img src="{% if project.cover_image %}{{ project.cover_image.url }}{% else %}{% static 'img/project-placeholder.jpg' %}{% endif %}" class="card-img-top" alt="{{ project.title }}" style="height: 260px; object-fit: cover;">
+                        <div class="position-absolute bottom-0 start-0 w-100 bg-dark bg-opacity-75 text-white p-3">
+                            <h6 class="mb-0">{{ project.title }}</h6>
+                            <small>{{ project.location }}</small>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">{{ project.description|truncatewords:12 }}</p>
+                        <a href="{% url 'construction:project_detail' project.slug %}" class="btn btn-outline-primary rounded-pill btn-sm">View Project</a>
                     </div>
                 </div>
             </div>
             {% empty %}
-            <div class="col-12 text-center py-5">No projects yet.</div>
+            <div class="col-12 text-center">No projects yet.</div>
             {% endfor %}
         </div>
     </div>
 </div>
 
-<!-- Team Section -->
-<div class="container-xxl py-5">
-    <div class="container">
-        <div class="row g-5 align-items-end mb-5">
-            <div class="col-lg-6 wow bounceIn">
-                <div class="border-start border-5 border-primary ps-4">
-                    <h6 class="text-body text-uppercase mb-2">Our Team</h6>
-                    <h1 class="display-6 mb-0">Our Expert Worker</h1>
-                </div>
-            </div>
-            <div class="col-lg-6 wow bounceIn" data-wow-delay="0.2s">
-                <p class="mb-0">Dedicated professionals committed to excellence.</p>
-            </div>
-        </div>
-        <div class="row g-4">
-            {% for member in team %}
-            <div class="col-lg-4 col-md-6 wow bounceIn" data-wow-delay="0.{{ forloop.counter|add:1 }}s">
-                <div class="team-item position-relative scale-hover">
-                    <img class="img-fluid w-100" src="{% if member.photo %}{{ member.photo.url }}{% else %}{% static 'images/team-placeholder.jpg' %}{% endif %}" alt="{{ member.name }}" style="height: 350px; object-fit: cover;">
-                    <div class="team-text bg-white p-4">
-                        <h5>{{ member.name }}</h5>
-                        <span>{{ member.role }}</span>
-                    </div>
-                </div>
-            </div>
-            {% empty %}
-            <div class="col-12 text-center py-5">Team members coming soon.</div>
-            {% endfor %}
-        </div>
-    </div>
-</div>
-
-<!-- Testimonial Carousel (if testimonials exist) -->
+<!-- Testimonials with carousel (glass style) -->
 {% if testimonials %}
-<div class="container-xxl py-5">
-    <div class="container">
-        <div class="row g-5">
-            <div class="col-lg-5 wow fadeInLeft">
-                <div class="border-start border-5 border-primary ps-4 mb-5">
-                    <h6 class="text-body text-uppercase mb-2">Testimonial</h6>
-                    <h1 class="display-6 mb-0">What Our Happy Clients Say!</h1>
-                </div>
-                <div class="row g-4 stats-section">
-                    <div class="col-sm-6">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="fa fa-users fa-2x text-primary flex-shrink-0"></i>
-                            <h1 class="ms-3 mb-0 counter" data-target="{{ csite.clients }}">0</h1>
+<div class="container py-5">
+    <div class="text-center mb-5" data-aos="fade-up">
+        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">Testimonials</span>
+        <h2 class="display-5 fw-bold mt-2">What Clients Say</h2>
+    </div>
+    <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            {% for t in testimonials %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="glass-card p-5 text-center">
+                            <img src="{% if t.image %}{{ t.image.url }}{% else %}{% static 'img/avatar-placeholder.jpg' %}{% endif %}" class="rounded-circle mb-3" width="80" height="80" alt="{{ t.name }}">
+                            <p class="fs-4 fst-italic">“{{ t.message|truncatewords:25 }}”</p>
+                            <h5 class="fw-bold">{{ t.name }}</h5>
+                            <span class="text-primary">{{ t.role|default:"Client" }}</span>
                         </div>
-                        <h5>Happy Clients</h5>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="fa fa-check fa-2x text-primary flex-shrink-0"></i>
-                            <h1 class="ms-3 mb-0 counter" data-target="{{ csite.projects_done }}">0</h1>
-                        </div>
-                        <h5>Projects Done</h5>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-7 wow fadeInRight">
-                <div class="owl-carousel testimonial-carousel">
-                    {% for t in testimonials %}
-                    <div class="testimonial-item">
-                        <img class="img-fluid mb-4" src="{% if t.image %}{{ t.image.url }}{% else %}{% static 'images/testimonial-placeholder.jpg' %}{% endif %}" alt="{{ t.name }}">
-                        <p class="fs-5">{{ t.message|truncatewords:30 }}</p>
-                        <div class="bg-primary mb-3" style="width: 60px; height: 5px"></div>
-                        <h5>{{ t.name }}</h5>
-                        <span>{{ t.role|default:"Client" }}</span>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
+            {% endfor %}
         </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
+        </button>
     </div>
 </div>
 {% endif %}
 
-<!-- Appointment Form -->
-<div class="container-fluid appointment my-5 py-5 wow fadeInUp parallax" data-wow-duration="1.2s"
-     style="background: linear-gradient(rgba(0,0,0,.7), rgba(0,0,0,.7)), url('{% if csite.hero_image %}{{ csite.hero_image.url }}{% else %}{% static 'images/hero-bg.jpg' %}{% endif %}') center/cover fixed;">
-    <div class="container py-5">
-        <div class="row g-5">
-            <div class="col-lg-5 col-md-6 wow fadeInLeft">
-                <div class="border-start border-5 border-primary ps-4 mb-5">
-                    <h6 class="text-white text-uppercase mb-2">Appointment</h6>
-                    <h1 class="display-6 text-white mb-0">A Company Involved In Service And Maintenance</h1>
-                </div>
-                <p class="text-white mb-0">{{ csite.tagline }}</p>
+<!-- Call to Action with Parallax -->
+<section class="parallax py-5" style="background-image: url('{% if csite.hero_image %}{{ csite.hero_image.url }}{% else %}{% static 'img/cta-bg.jpg' %}{% endif %}'); background-attachment: fixed;">
+    <div class="container py-5 text-center text-white">
+        <div class="row justify-content-center">
+            <div class="col-lg-8" data-aos="zoom-in">
+                <h2 class="display-5 fw-bold">Ready to Start Your Project?</h2>
+                <p class="lead mb-4">Contact us today for a free consultation and quote.</p>
+                <a href="{% url 'contacts:contact' %}" class="btn btn-modern btn-lg">Request a Quote <i class="fas fa-chevron-right ms-2"></i></a>
             </div>
-            <div class="col-lg-7 col-md-6 wow fadeInRight">
+        </div>
+    </div>
+</section>
+
+<!-- Contact Form (modern, inline) -->
+<div class="container py-5">
+    <div class="row g-5 align-items-center">
+        <div class="col-lg-5" data-aos="fade-right">
+            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">Get in Touch</span>
+            <h2 class="display-5 fw-bold mt-2">Let's Discuss Your Vision</h2>
+            <p class="mt-3">Fill the form and our team will get back to you within 24 hours.</p>
+            <div class="mt-4">
+                <p><i class="fas fa-phone-alt text-primary me-3"></i> {{ csite.phone }}</p>
+                <p><i class="fas fa-envelope text-primary me-3"></i> {{ csite.email }}</p>
+                <p><i class="fas fa-map-marker-alt text-primary me-3"></i> {{ csite.address }}</p>
+            </div>
+        </div>
+        <div class="col-lg-7" data-aos="fade-left">
+            <div class="glass-card p-4 p-lg-5">
                 <form method="POST" action="{% url 'contacts:contact' %}">
                     {% csrf_token %}
                     <input type="hidden" name="source" value="construction_home">
                     <div class="row g-3">
-                        <div class="col-sm-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control bg-dark border-0 text-white" id="name" name="name" placeholder="Your Name" required>
-                                <label for="name" class="text-white-50">Your Name</label>
-                            </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control form-control-lg bg-white" name="name" placeholder="Your Name" required>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="form-floating">
-                                <input type="email" class="form-control bg-dark border-0 text-white" id="email" name="email" placeholder="Your Email">
-                                <label for="email" class="text-white-50">Your Email</label>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-floating">
-                                <input type="tel" class="form-control bg-dark border-0 text-white" id="phone" name="phone" placeholder="Your Mobile" required>
-                                <label for="phone" class="text-white-50">Your Mobile</label>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control bg-dark border-0 text-white" id="service" name="service_type" placeholder="Service Type">
-                                <label for="service" class="text-white-50">Service Type</label>
-                            </div>
+                        <div class="col-md-6">
+                            <input type="tel" class="form-control form-control-lg bg-white" name="phone" placeholder="Phone Number" required>
                         </div>
                         <div class="col-12">
-                            <div class="form-floating">
-                                <textarea class="form-control bg-dark border-0 text-white" name="message" id="message" style="height: 100px" placeholder="Message" required></textarea>
-                                <label for="message" class="text-white-50">Message</label>
-                            </div>
+                            <input type="email" class="form-control form-control-lg bg-white" name="email" placeholder="Email Address">
                         </div>
                         <div class="col-12">
-                            <button class="btn btn-primary w-100 py-3 btn-pulse" type="submit">Get Appointment</button>
+                            <textarea class="form-control bg-white" name="message" rows="4" placeholder="Tell us about your project..." required></textarea>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-modern w-100 py-3">Send Message <i class="fas fa-paper-plane ms-2"></i></button>
                         </div>
                     </div>
                 </form>
@@ -296,4 +231,33 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Animated counter script (add to base already, but ensure it runs on this page)
+    function startCounters() {
+        document.querySelectorAll('.counter').forEach(counter => {
+            const update = () => {
+                const target = parseInt(counter.getAttribute('data-target'));
+                let current = parseInt(counter.innerText);
+                const inc = target / 50;
+                if (current < target) {
+                    counter.innerText = Math.ceil(current + inc);
+                    setTimeout(update, 20);
+                } else {
+                    counter.innerText = target;
+                }
+            };
+            update();
+        });
+    }
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                startCounters();
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.stats-section').forEach(section => observer.observe(section));
+</script>
 {% endblock %}
