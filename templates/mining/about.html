@@ -1,27 +1,164 @@
 {% extends 'mining/base_mining.html' %}
 {% load static image_tags %}
 {% block title %}About{% endblock %}
+
+{% block extra_css %}
+<style>
+    .about-hero {
+        background: var(--black);
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        padding: 120px 0 60px;
+    }
+    .story-section {
+        background: #0A0A0A;
+    }
+    .story-image {
+        border-radius: 28px;
+        overflow: hidden;
+        box-shadow: 0 20px 35px -15px rgba(0,0,0,0.5);
+        transition: transform 0.4s;
+    }
+    .story-image:hover {
+        transform: scale(1.01);
+    }
+    .story-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s;
+    }
+    .story-image:hover img {
+        transform: scale(1.03);
+    }
+    .compliance-badge {
+        background: rgba(180,83,9,0.1);
+        border-left: 3px solid var(--primary);
+        padding: 1.5rem;
+        border-radius: 20px;
+        margin-top: 1.5rem;
+    }
+    .stats-wrapper {
+        background: rgba(255,255,255,0.02);
+        border-radius: 32px;
+        padding: 2rem;
+    }
+    .stat-item {
+        text-align: center;
+        padding: 1rem;
+    }
+    .stat-number-lg {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--primary);
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div style="background:var(--black);padding:72px 0 44px;border-bottom:3px solid var(--primary);">
-  <div class="container"><span class="section-label">Who We Are</span><h1 class="section-title text-white mt-2">About <span>Us</span></h1><div class="divider-m"></div></div>
-</div>
-<section style="padding:0;">
-  <div class="row g-0">
-    <div class="col-lg-6" style="min-height:460px;position:relative;overflow:hidden;background:#111;">
-      <img src="{% safe_image_url msite.about_image 800 500 msite.company_name %}" alt="{{ msite.company_name }}" style="width:100%;height:100%;object-fit:cover;opacity:.8;filter:saturate(.8);">
+<!-- About Hero -->
+<section class="about-hero">
+    <div class="container" data-aos="fade-up">
+        <span class="section-label">Who We Are</span>
+        <h1 class="section-title text-white mt-2">About <span>Us</span></h1>
+        <div class="divider-m"></div>
+        <p class="lead text-white-50 col-lg-8 mt-3">A responsible mining company extracting and processing minerals across Malawi with integrity and excellence.</p>
     </div>
-    <div class="col-lg-6" style="background:var(--accent);padding:70px 56px;display:flex;flex-direction:column;justify-content:center;">
-      <h2 style="font-family:'Oswald',sans-serif;font-size:2.1rem;color:#fff;text-transform:uppercase;margin-bottom:14px;">Our Story</h2>
-      <div style="width:40px;height:3px;background:var(--primary);margin-bottom:24px;"></div>
-      <p style="color:rgba(255,255,255,.82);font-size:1rem;line-height:1.85;">{{ msite.about_text|striptags|default:"A responsible mining company extracting and processing minerals across Malawi." }}</p>
-      {% if msite.compliance_text %}<div style="margin-top:24px;padding:18px;border:1px solid rgba(180,83,9,.3);"><p style="color:rgba(255,255,255,.65);font-size:.88rem;line-height:1.7;margin:0;">{{ msite.compliance_text|striptags }}</p></div>{% endif %}
+</section>
+
+<!-- Story Section -->
+<section class="story-section py-5 py-xl-5">
+    <div class="container">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6" data-aos="fade-right">
+                <div class="story-image">
+                    <img src="{% safe_image_url msite.about_image 800 500 msite.company_name %}" alt="{{ msite.company_name }}" class="img-fluid w-100">
+                </div>
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <h2 class="text-white display-6 fw-bold">Our Story</h2>
+                <div class="divider-m"></div>
+                <p class="text-white-75 lead" style="line-height: 1.8;">
+                    {{ msite.about_text|striptags|default:"A responsible mining company extracting and processing minerals across Malawi." }}
+                </p>
+                {% if msite.compliance_text %}
+                <div class="compliance-badge">
+                    <i class="bi bi-shield-check-fill text-primary fs-4 me-2"></i>
+                    <span class="text-white-75">{{ msite.compliance_text|striptags }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
-  </div>
 </section>
-<section style="padding:80px 0;background:#111;" class="reveal">
-  <div class="container text-center">
-    <h2 style="color:#fff;text-transform:uppercase;font-size:1.9rem;margin-bottom:32px;">Interested in Our Minerals?</h2>
-    <a href="{% url 'mining:contact' %}" class="btn-primary-m">Contact Our Team</a>
-  </div>
+
+<!-- Stats & Achievements -->
+<section class="py-5" style="background: #111111;">
+    <div class="container">
+        <div class="stats-wrapper" data-aos="zoom-in">
+            <div class="row g-4 text-center">
+                <div class="col-md-4">
+                    <div class="stat-item">
+                        <div class="stat-number-lg counter" data-target="{{ msite.years_exp }}">0</div>
+                        <div class="text-uppercase small text-white-50 fw-semibold">Years of Experience</div>
+                    </div>
+                </div>
+                {% if msite.tonnes_mined %}
+                <div class="col-md-4">
+                    <div class="stat-item">
+                        <div class="stat-number-lg counter" data-target="{{ msite.tonnes_mined|cut:'+' }}">0</div>
+                        <div class="text-uppercase small text-white-50 fw-semibold">Tonnes Mined</div>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="col-md-4">
+                    <div class="stat-item">
+                        <div class="stat-number-lg counter" data-target="{{ msite.sites }}">0</div>
+                        <div class="text-uppercase small text-white-50 fw-semibold">Active Mining Sites</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
+
+<!-- CTA -->
+<section class="py-5" style="background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);" data-aos="fade-up">
+    <div class="container text-center">
+        <h2 class="text-white display-5 fw-bold">Interested in Our Minerals?</h2>
+        <p class="text-white-75 lead mb-4">Contact our team for bulk orders, pricing, and technical specifications.</p>
+        <a href="{% url 'mining:contact' %}" class="btn btn-light rounded-pill px-5 py-3 fw-semibold" style="color: var(--accent);">Contact Our Team <i class="bi bi-arrow-right ms-2"></i></a>
+    </div>
+</section>
+
+<script>
+    // Counter animation (same as home)
+    document.addEventListener('DOMContentLoaded', function() {
+        const counters = document.querySelectorAll('.counter');
+        const animateCounter = (counter) => {
+            const target = parseInt(counter.getAttribute('data-target'));
+            let count = 0;
+            const updateCount = () => {
+                const increment = Math.ceil(target / 30);
+                if(count < target) {
+                    count += increment;
+                    if(count > target) count = target;
+                    counter.innerText = count.toLocaleString();
+                    setTimeout(updateCount, 20);
+                } else {
+                    counter.innerText = target.toLocaleString();
+                }
+            };
+            updateCount();
+        };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    animateCounter(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        counters.forEach(counter => observer.observe(counter));
+    });
+</script>
 {% endblock %}
