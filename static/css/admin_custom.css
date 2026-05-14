@@ -1,58 +1,186 @@
-/* ===== Sidebar Scrollbar Styling ===== */
-.unfold-sidebar {
-    scrollbar-width: thin;
-    scrollbar-color: rgb(var(--color-primary-600)) transparent;
-}
-.unfold-sidebar::-webkit-scrollbar {
-    width: 6px;
-}
-.unfold-sidebar::-webkit-scrollbar-track {
-    background: transparent;
-}
-.unfold-sidebar::-webkit-scrollbar-thumb {
-    background-color: rgb(var(--color-primary-500));
-    border-radius: 20px;
-    border: 2px solid transparent;
-}
-.unfold-sidebar::-webkit-scrollbar-thumb:hover {
-    background-color: rgb(var(--color-primary-600));
+/* ================================================================
+   J&N Building Products — Admin Custom Styles
+   Adds: animations, sidebar scrollbar, dark-mode polish
+   ================================================================ */
+
+/* ── 1. SIDEBAR SCROLLBAR (using SimpleBar already in Unfold) ── */
+#nav-sidebar {
+  overflow: hidden !important; /* let SimpleBar take over */
 }
 
-/* ===== Smooth Page‑Level Animations ===== */
+#nav-sidebar-inner {
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(214, 40, 40, 0.35) transparent;
+}
+
+#nav-sidebar-inner::-webkit-scrollbar {
+  width: 4px;
+}
+#nav-sidebar-inner::-webkit-scrollbar-track {
+  background: transparent;
+}
+#nav-sidebar-inner::-webkit-scrollbar-thumb {
+  background: rgba(214, 40, 40, 0.35);
+  border-radius: 99px;
+}
+#nav-sidebar-inner::-webkit-scrollbar-thumb:hover {
+  background: rgba(214, 40, 40, 0.65);
+}
+
+/* ── 2. SIDEBAR ENTRY ANIMATIONS ───────────────────────────── */
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-18px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Each nav group fades in with a stagger */
+#nav-sidebar-inner > nav > div,
+#nav-sidebar-inner nav ul li,
+#nav-sidebar-inner nav a {
+  animation: slideInLeft 0.32s cubic-bezier(.22,.68,0,1.2) both;
+}
+
+/* Stagger each group */
+#nav-sidebar-inner nav > div:nth-child(1) { animation-delay: 0.02s; }
+#nav-sidebar-inner nav > div:nth-child(2) { animation-delay: 0.06s; }
+#nav-sidebar-inner nav > div:nth-child(3) { animation-delay: 0.10s; }
+#nav-sidebar-inner nav > div:nth-child(4) { animation-delay: 0.14s; }
+#nav-sidebar-inner nav > div:nth-child(5) { animation-delay: 0.18s; }
+#nav-sidebar-inner nav > div:nth-child(6) { animation-delay: 0.22s; }
+#nav-sidebar-inner nav > div:nth-child(7) { animation-delay: 0.26s; }
+
+/* Sidebar nav link hover slide effect */
+#nav-sidebar-inner a {
+  position: relative;
+  transition: padding-left 0.18s ease, background 0.18s ease, color 0.18s ease !important;
+}
+#nav-sidebar-inner a:hover {
+  padding-left: calc(var(--pl, 0.75rem) + 4px) !important;
+}
+
+/* ── 3. PAGE CONTENT ENTRANCE ANIMATION ─────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 #main {
-    animation: fadeSlideIn 0.4s ease-out both;
-}
-@keyframes fadeSlideIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
+  animation: fadeUp 0.28s cubic-bezier(.22,.68,0,1.2) both;
+  animation-delay: 0.05s;
 }
 
-/* Sidebar link hover effect */
-.unfold-sidebar .unfold-nav-item a,
-.unfold-sidebar .unfold-nav-item a:link {
-    transition: all 0.2s ease;
-}
-.unfold-sidebar .unfold-nav-item a:hover {
-    transform: translateX(4px);
-    background-color: rgb(var(--color-primary-100) / 0.15);
+/* ── 4. CARD / TABLE ROW ANIMATIONS ─────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Custom theme toggle button – placed in Unfold’s header */
-.jn-theme-toggle {
-    padding: 0.4rem 0.9rem;
-    border-radius: 0.5rem;
-    border: 1px solid var(--color-border-primary);
-    background: var(--color-background-secondary);
-    color: var(--color-font-default-light);
-    cursor: pointer;
-    font-size: 0.82rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    transition: all 0.2s;
-    margin-right: 0.5rem;   /* space before built‑in toggle */
+/* Table rows stagger in */
+#result_list tbody tr {
+  animation: fadeIn 0.22s ease both;
 }
-.jn-theme-toggle:hover {
-    background: var(--color-background-primary);
-    border-color: rgb(var(--color-primary-500));
+#result_list tbody tr:nth-child(1)  { animation-delay: 0.03s; }
+#result_list tbody tr:nth-child(2)  { animation-delay: 0.06s; }
+#result_list tbody tr:nth-child(3)  { animation-delay: 0.09s; }
+#result_list tbody tr:nth-child(4)  { animation-delay: 0.12s; }
+#result_list tbody tr:nth-child(5)  { animation-delay: 0.15s; }
+#result_list tbody tr:nth-child(6)  { animation-delay: 0.18s; }
+#result_list tbody tr:nth-child(7)  { animation-delay: 0.21s; }
+#result_list tbody tr:nth-child(8)  { animation-delay: 0.24s; }
+#result_list tbody tr:nth-child(9)  { animation-delay: 0.27s; }
+#result_list tbody tr:nth-child(10) { animation-delay: 0.30s; }
+
+/* Table row hover lift */
+#result_list tbody tr {
+  transition: background 0.14s ease, box-shadow 0.14s ease;
+}
+#result_list tbody tr:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  position: relative;
+  z-index: 1;
+}
+
+/* ── 5. FORM FIELD FOCUS ANIMATIONS ─────────────────────────── */
+input:not([type=checkbox]):not([type=radio]):not([type=submit]),
+textarea,
+select {
+  transition: border-color 0.18s ease, box-shadow 0.18s ease !important;
+}
+
+input:not([type=checkbox]):not([type=radio]):focus,
+textarea:focus,
+select:focus {
+  box-shadow: 0 0 0 3px rgba(214, 40, 40, 0.12) !important;
+  border-color: rgb(214, 40, 40) !important;
+  outline: none !important;
+}
+
+/* ── 6. SUBMIT BUTTON PULSE ──────────────────────────────────── */
+@keyframes buttonReady {
+  0%   { box-shadow: 0 0 0 0 rgba(214, 40, 40, 0.4); }
+  70%  { box-shadow: 0 0 0 8px rgba(214, 40, 40, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(214, 40, 40, 0); }
+}
+
+[type="submit"],
+.submit-row input[type="submit"] {
+  transition: transform 0.14s ease, box-shadow 0.14s ease !important;
+}
+[type="submit"]:hover {
+  transform: translateY(-1px);
+}
+[type="submit"]:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* ── 7. DARK MODE REFINEMENTS ────────────────────────────────── */
+/* Sidebar logo container */
+.dark #nav-sidebar-inner {
+  scrollbar-color: rgba(214, 40, 40, 0.45) transparent;
+}
+
+/* Stat cards in dark mode */
+.dark .stat-card {
+  border-color: rgba(255,255,255,0.08) !important;
+}
+.dark .stat-card:hover {
+  border-color: rgba(214, 40, 40, 0.4) !important;
+}
+
+/* Badge contrast in dark mode */
+.dark .badge-new     { background: #78350f; color: #fde68a; }
+.dark .badge-read    { background: #1e1b4b; color: #c7d2fe; }
+.dark .badge-replied { background: #064e3b; color: #6ee7b7; }
+
+/* Dark mode alert boxes */
+.dark .alert-warning { background: #1c1400; border-color: #f59e0b; color: #fde68a; }
+.dark .alert-info    { background: #0c1a2e; border-color: #3b82f6; color: #bfdbfe; }
+
+/* ── 8. DARK MODE TOGGLE BUTTON ANIMATION ───────────────────── */
+[data-theme-toggle], button[x-on\\:click*="theme"] {
+  transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
+}
+[data-theme-toggle]:hover {
+  transform: rotate(20deg) scale(1.1);
+}
+
+/* ── 9. LOGO PULSE ON HOVER ─────────────────────────────────── */
+#nav-sidebar-inner img[src*="logo"] {
+  transition: transform 0.25s cubic-bezier(.34,1.56,.64,1), filter 0.25s ease;
+}
+#nav-sidebar-inner img[src*="logo"]:hover {
+  transform: scale(1.06);
+  filter: drop-shadow(0 2px 8px rgba(214,40,40,0.35));
+}
+
+/* ── 10. BREADCRUMB SEPARATOR ANIMATION ─────────────────────── */
+@keyframes breadcrumbIn {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+#main .breadcrumbs a {
+  animation: breadcrumbIn 0.22s ease both;
 }

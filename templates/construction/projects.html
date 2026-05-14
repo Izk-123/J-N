@@ -1,0 +1,27 @@
+{% extends 'construction/base_construction.html' %}
+{% load static %}
+
+{% block content %}
+{% include 'construction/includes/page_header.html' with title="Our Projects" active_page="Projects" page_header_image=csite.page_header_image %}
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-4">
+            {% for project in projects %}
+            <div class="col-lg-4 col-md-6 wow zoomIn" data-wow-delay="0.{{ forloop.counter|add:1 }}s">
+                <div class="position-relative overflow-hidden h-100 scale-hover rounded">
+                    <img class="img-fluid w-100" src="{% if project.cover_image %}{{ project.cover_image.url }}{% else %}{% static 'img/project-placeholder.jpg' %}{% endif %}" alt="{{ project.title }}" style="height: 260px; object-fit: cover;">
+                    <div class="facts-overlay">
+                        <h4 class="text-white mb-2">{{ project.title }}</h4>
+                        <p class="text-white small mb-2">{{ project.location }}</p>
+                        <a href="{% url 'construction:project_detail' project.slug %}" class="text-white small">READ MORE<i class="fa fa-arrow-right ms-3"></i></a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">No projects yet.</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

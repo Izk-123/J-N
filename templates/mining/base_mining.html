@@ -1,0 +1,203 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ msite.company_name }}{% endblock %} | {{ msite.tagline }}</title>
+    <meta name="description" content="{{ msite.meta_description|default:msite.tagline }}">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="{% static 'css/animations.css' %}" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary:   {{ msite.primary_color|default:'#B45309' }};
+            --accent:    {{ msite.accent_color|default:'#78350F' }};
+            --black:     #0A0A0A;
+            --white:     #FFFFFF;
+            --gray-light:#F5F3EF;
+            --gray:      #6B7280;
+        }
+        body { font-family: 'Source Sans 3', sans-serif; color: #1a1a1a; }
+        h1,h2,h3,h4,h5,h6 { font-family: 'Oswald', sans-serif; font-weight: 600; letter-spacing: .02em; }
+
+        /* Navbar */
+        .m-navbar {
+            background: var(--black) !important;
+            padding: 0; position: sticky; top: 0; z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,.5);
+            border-bottom: 2px solid var(--primary);
+        }
+        .m-navbar .navbar-brand img { height: 56px; width: auto; }
+        .m-navbar .nav-link {
+            color: rgba(255,255,255,.82) !important;
+            font-family: 'Oswald', sans-serif; font-size: .92rem; letter-spacing: .08em;
+            text-transform: uppercase; padding: 26px 14px !important; position: relative; transition: color .2s;
+        }
+        .m-navbar .nav-link::after {
+            content: ''; position: absolute; bottom: 0; left: 14px; right: 14px;
+            height: 3px; background: var(--primary); transform: scaleX(0); transition: transform .2s;
+        }
+        .m-navbar .nav-link:hover, .m-navbar .nav-link.active { color: #fff !important; }
+        .m-navbar .nav-link:hover::after, .m-navbar .nav-link.active::after { transform: scaleX(1); }
+        .m-navbar .btn-enquire {
+            background: var(--primary); color: #fff !important;
+            padding: 10px 22px !important; margin: 12px 0 12px 8px;
+            font-family: 'Oswald', sans-serif; font-size: .88rem; letter-spacing: .08em;
+            border: none; transition: background .2s;
+        }
+        .m-navbar .btn-enquire:hover { background: var(--accent) !important; }
+        .m-navbar .btn-enquire::after { display: none; }
+        .back-to-group {
+            font-family: 'Oswald', sans-serif; font-size: .75rem; letter-spacing: .12em;
+            text-transform: uppercase; color: rgba(255,255,255,.4) !important;
+            padding: 26px 14px !important; text-decoration: none; transition: color .2s;
+        }
+        .back-to-group:hover { color: rgba(255,255,255,.75) !important; }
+
+        /* Buttons */
+        .btn-primary-m {
+            background: var(--primary); color: #fff;
+            font-family: 'Oswald', sans-serif; letter-spacing: .1em; text-transform: uppercase;
+            padding: 12px 32px; border: none; font-size: .9rem; transition: all .2s;
+            text-decoration: none; display: inline-block;
+        }
+        .btn-primary-m:hover { background: var(--accent); color: #fff; transform: translateY(-1px); }
+        .btn-outline-m {
+            border: 2px solid var(--primary); color: var(--primary);
+            font-family: 'Oswald', sans-serif; letter-spacing: .1em; text-transform: uppercase;
+            padding: 10px 30px; background: transparent; font-size: .9rem; transition: all .2s;
+            text-decoration: none; display: inline-block;
+        }
+        .btn-outline-m:hover { background: var(--primary); color: #fff; }
+
+        /* Helpers */
+        .section-label { font-family: 'Oswald', sans-serif; font-size: .78rem; letter-spacing: .2em; text-transform: uppercase; color: var(--primary); }
+        .section-title { font-size: 2.2rem; text-transform: uppercase; }
+        .section-title span { color: var(--primary); }
+        .divider-m { width: 48px; height: 4px; background: var(--primary); margin: 10px 0 18px; }
+
+        /* WhatsApp float */
+        .wa-float { position: fixed; bottom: 28px; right: 28px; z-index: 9999; }
+        .wa-float a {
+            background: #25D366; color: #fff; width: 56px; height: 56px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 1.7rem;
+            text-decoration: none; box-shadow: 0 4px 20px rgba(37,211,102,.4); transition: transform .2s;
+        }
+        .wa-float a:hover { transform: scale(1.1); }
+
+        /* Footer */
+        footer { background: var(--black); color: rgba(255,255,255,.7); padding-top: 56px; border-top: 3px solid var(--primary); }
+        footer h5 { color: #fff; font-family: 'Oswald', sans-serif; letter-spacing: .1em; text-transform: uppercase; font-size: .95rem; margin-bottom: 16px; }
+        footer .fd { width: 32px; height: 3px; background: var(--primary); margin-bottom: 16px; }
+        footer a { color: rgba(255,255,255,.55); text-decoration: none; font-size: .88rem; display: block; margin-bottom: 7px; transition: color .2s; }
+        footer a:hover { color: var(--primary); }
+        footer .fb { border-top: 1px solid rgba(255,255,255,.1); padding: 14px 0; margin-top: 36px; font-size: .8rem; color: rgba(255,255,255,.3); }
+
+        .messages-box { position: fixed; top: 76px; right: 18px; z-index: 9000; width: 300px; }
+        {% block extra_css_vars %}{% endblock %}
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg m-navbar">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'mining:home' %}">
+            {% if msite.logo %}
+                <img src="{{ msite.logo.url }}" alt="{{ msite.company_name }}">
+            {% else %}
+                <span style="font-family:'Oswald',sans-serif;font-size:1.3rem;color:#fff;letter-spacing:.05em;">
+                    <span style="color:var(--primary)">⛏</span> {{ msite.company_name }}
+                </span>
+            {% endif %}
+        </a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navM">
+            <i class="bi bi-list text-white fs-4"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navM">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'mining:home' %}">Home</a></li>
+                <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'mining:about' %}">About</a></li>
+                <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'minerals' %}active{% endif %}" href="{% url 'mining:minerals' %}">Minerals</a></li>
+                <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'operations' %}active{% endif %}" href="{% url 'mining:operations' %}">Operations</a></li>
+                <li class="nav-item"><a class="nav-link btn-enquire" href="{% url 'mining:contact' %}">Enquire</a></li>
+                <li class="nav-item"><a class="back-to-group" href="/">← Group</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+{% if messages %}
+<div class="messages-box">
+    {% for m in messages %}
+    <div class="alert alert-{{ m.tags|default:'info' }} alert-dismissible fade show shadow-sm" style="font-size:.88rem;">
+        {{ m }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<main>{% block content %}{% endblock %}</main>
+
+<footer>
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <h5>{{ msite.company_name }}</h5>
+                <div class="fd"></div>
+                <p style="font-size:.88rem;line-height:1.8;">{{ msite.tagline }}. Responsible mineral extraction across Malawi.</p>
+            </div>
+            <div class="col-lg-2">
+                <h5>Navigation</h5>
+                <div class="fd"></div>
+                <a href="{% url 'mining:home' %}">Home</a>
+                <a href="{% url 'mining:about' %}">About</a>
+                <a href="{% url 'mining:minerals' %}">Minerals</a>
+                <a href="{% url 'mining:operations' %}">Operations</a>
+                <a href="{% url 'mining:contact' %}">Contact</a>
+            </div>
+            <div class="col-lg-3">
+                <h5>Other Companies</h5>
+                <div class="fd"></div>
+                <a href="/"><i class="bi bi-house me-1"></i>Group Home</a>
+                <a href="/products/"><i class="bi bi-droplet me-1"></i>Building Products</a>
+                <a href="/construction/"><i class="bi bi-building me-1"></i>Construction</a>
+            </div>
+            <div class="col-lg-3">
+                <h5>Contact</h5>
+                <div class="fd"></div>
+                {% if msite.phone %}<p style="font-size:.88rem;"><i class="bi bi-telephone-fill me-2" style="color:var(--primary)"></i>{{ msite.phone }}</p>{% endif %}
+                {% if msite.email %}<p style="font-size:.88rem;"><i class="bi bi-envelope-fill me-2" style="color:var(--primary)"></i>{{ msite.email }}</p>{% endif %}
+                {% if msite.address %}<p style="font-size:.88rem;"><i class="bi bi-geo-alt-fill me-2" style="color:var(--primary)"></i>{{ msite.address }}</p>{% endif %}
+            </div>
+        </div>
+        <div class="fb text-center">
+            &copy; {% now "Y" %} {{ msite.company_name }}. All Rights Reserved. | Part of J&amp;N Group of Companies
+        </div>
+    </div>
+</footer>
+
+{% if msite.whatsapp %}
+<div class="wa-float">
+    <a href="https://wa.me/{{ msite.whatsapp }}?text=Hello {{ msite.company_name }}, I would like to enquire." target="_blank" title="WhatsApp">
+        <i class="bi bi-whatsapp"></i>
+    </a>
+</div>
+{% endif %}
+
+<div id="page-loader"></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/htmx.org@1.9.12"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<script>
+window.addEventListener('load', () => { const l=document.getElementById('page-loader'); if(l) setTimeout(()=>l.classList.add('loaded'),60); });
+const ro = new IntersectionObserver(e=>e.forEach(x=>{ if(x.isIntersecting){x.target.classList.add('visible');ro.unobserve(x.target);} }),{threshold:.12,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal,.reveal-stagger').forEach(el=>ro.observe(el));
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

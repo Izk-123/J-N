@@ -2,85 +2,79 @@
 {% load i18n static %}
 
 {% block content %}
-<!-- Libraries -->
+<!-- Alpine.js for interactivity -->
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<!-- HTMX -->
 <script src="https://unpkg.com/htmx.org@1.9.12"></script>
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<script src="https://cdn.jsdelivr.net/npm/countup.js@2.3.2/dist/countUp.umd.js"></script>
+<!-- Bootstrap Icons for public-site icons -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
 <style>
-  /* ── Your existing dashboard styles (unchanged) ── */
   .jn-dash { color: var(--color-font-important-light); }
-  .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem; }
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 1.75rem; }
   .stat-card {
     background: var(--color-background-primary);
     border: 1px solid var(--color-border-primary);
     border-radius: 0.75rem;
-    padding: 1rem 0.8rem;
+    padding: 1.25rem 1rem;
     text-align: center;
-    text-decoration: none;
-    transition: transform 0.2s, box-shadow 0.2s;
     cursor: pointer;
+    transition: box-shadow .2s, transform .2s;
+    text-decoration: none;
     display: block;
   }
-  .stat-card:hover { transform: translateY(-3px); box-shadow: 0 6px 24px rgba(0,0,0,0.12); }
-  .stat-card .num { font-size: 1.8rem; font-weight: 700; line-height: 1.2; color: rgb(var(--color-primary-500)); }
+  .stat-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.12); transform: translateY(-3px); }
+  .stat-card .num { font-size: 2rem; font-weight: 700; line-height: 1; color: rgb(var(--color-primary-500)); }
   .stat-card .num.green { color: #057a55; }
   .stat-card .num.amber { color: #b45309; }
-  .stat-card .icon-wrap { font-size: 1.4rem; margin-bottom: 0.25rem; opacity: 0.6; }
-  .stat-card .label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.3rem; opacity: 0.6; }
-  .alert-box { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; border-radius: 0.5rem; margin-bottom: 0.75rem; font-size: 0.875rem; }
+  .stat-card .icon-wrap { font-size: 1.5rem; margin-bottom: .5rem; opacity: .6; }
+  .stat-card .label { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; margin-top: .4rem; opacity: .6; }
+  .alert-box {
+    display: flex; align-items: center; gap: .75rem;
+    padding: .75rem 1rem; border-radius: .5rem; margin-bottom: .75rem;
+    font-size: .875rem;
+  }
   .alert-warning { background: #fffbeb; border-left: 4px solid #f59e0b; color: #92400e; }
   .alert-info    { background: #eff6ff; border-left: 4px solid #3b82f6; color: #1e40af; }
-  .msg-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
-  .msg-table th { padding: 0.6rem 0.75rem; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.5; border-bottom: 1px solid var(--color-border-primary); text-align: left; }
-  .msg-table td { padding: 0.75rem; border-bottom: 1px solid var(--color-border-primary); vertical-align: middle; }
+  .msg-table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+  .msg-table th { padding: .6rem .75rem; font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; opacity: .5; border-bottom: 1px solid var(--color-border-primary); text-align: left; }
+  .msg-table td { padding: .75rem; border-bottom: 1px solid var(--color-border-primary); vertical-align: middle; }
   .msg-table tr:last-child td { border-bottom: none; }
   .msg-table tr:hover td { background: var(--color-background-secondary); }
-  .badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; }
   .badge-new     { background: #fef3c7; color: #92400e; }
   .badge-read    { background: #e0e7ff; color: #3730a3; }
   .badge-replied { background: #d1fae5; color: #065f46; }
-  .panel { background: var(--color-background-primary); border: 1px solid var(--color-border-primary); border-radius: 0.75rem; overflow: hidden; }
-  .panel-header { padding: 0.875rem 1.25rem; border-bottom: 1px solid var(--color-border-primary); font-weight: 600; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.6; }
-  .checklist-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 1.25rem; border-bottom: 1px solid var(--color-border-primary); font-size: 0.875rem; }
+  .panel { background: var(--color-background-primary); border: 1px solid var(--color-border-primary); border-radius: .75rem; overflow: hidden; }
+  .panel-header { padding: .875rem 1.25rem; border-bottom: 1px solid var(--color-border-primary); font-weight: 600; font-size: .82rem; text-transform: uppercase; letter-spacing: .08em; opacity: .6; }
+  .checklist-item { display: flex; align-items: center; gap: .75rem; padding: .65rem 1.25rem; border-bottom: 1px solid var(--color-border-primary); font-size: .875rem; }
   .checklist-item:last-child { border-bottom: none; }
   .tick-ok  { color: #057a55; font-size: 1.1rem; }
   .tick-no  { color: #d1d5db; font-size: 1.1rem; }
-  .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; padding: 0.75rem; }
+  .quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; padding: .75rem; }
   .quick-btn {
-    display: flex; align-items: center; gap: 0.6rem;
-    padding: 0.65rem 0.9rem; border-radius: 0.5rem; font-size: 0.82rem;
+    display: flex; align-items: center; gap: .6rem;
+    padding: .65rem .9rem; border-radius: .5rem; font-size: .82rem;
     border: 1px solid var(--color-border-primary);
     background: var(--color-background-secondary);
     color: var(--color-font-default-light);
-    text-decoration: none; transition: all 0.15s;
+    text-decoration: none; transition: all .15s;
   }
-  .quick-btn:hover { border-color: rgb(var(--color-primary-500)); background: var(--color-background-primary); color: rgb(var(--color-primary-500)); transform: scale(1.02); }
-  .two-col { display: grid; grid-template-columns: 2fr 1fr; gap: 1.25rem; }
-  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
-  @media (max-width: 900px) { .two-col, .chart-grid { grid-template-columns: 1fr; } .quick-grid { grid-template-columns: 1fr; } }
+  .quick-btn:hover { border-color: rgb(var(--color-primary-500)); background: var(--color-background-primary); color: rgb(var(--color-primary-500)); }
   .htmx-indicator { opacity: 0; transition: opacity 200ms ease-in; }
   .htmx-request .htmx-indicator { opacity: 1; }
-  #main { animation: fadeSlideIn 0.4s ease-out both; }
-  @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-  .unfold-sidebar { scrollbar-width: thin; scrollbar-color: rgb(var(--color-primary-600)) transparent; }
-  .unfold-sidebar::-webkit-scrollbar { width: 6px; }
-  .unfold-sidebar::-webkit-scrollbar-track { background: transparent; }
-  .unfold-sidebar::-webkit-scrollbar-thumb { background-color: rgb(var(--color-primary-500)); border-radius: 20px; }
-  .unfold-sidebar::-webkit-scrollbar-thumb:hover { background-color: rgb(var(--color-primary-600)); }
-  .unfold-sidebar .unfold-nav-item a, .unfold-sidebar .unfold-nav-item a:link { transition: all 0.2s ease; }
-  .unfold-sidebar .unfold-nav-item a:hover { transform: translateX(4px); background-color: rgb(var(--color-primary-100) / 0.15); }
+  .two-col { display: grid; grid-template-columns: 2fr 1fr; gap: 1.25rem; }
+  @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } .quick-grid { grid-template-columns: 1fr; } }
 </style>
 
 <div class="jn-dash" x-data="{ tab: 'messages' }">
-  <!-- Header -->
+
+  <!-- ── Logo + Header ─────────────────────────────────────── -->
   <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;padding:1.25rem 1.5rem;background:var(--color-background-primary);border:1px solid var(--color-border-primary);border-radius:.75rem;">
     <img src="{% static 'images/logo.png' %}" alt="J&N Logo" style="height:64px;width:auto;object-fit:contain;">
     <div>
       <h2 style="margin:0;font-size:1.3rem;font-weight:700;">J&amp;N Building Products</h2>
-      <p style="margin:.2rem 0 0;font-size:.85rem;opacity:.55;">Modern Analytics Dashboard — Make Your House Smile</p>
+      <p style="margin:.2rem 0 0;font-size:.85rem;opacity:.55;">Admin Dashboard — Make Your House Smile</p>
     </div>
     <div style="margin-left:auto;display:flex;gap:.5rem;">
       <a href="/" target="_blank" class="quick-btn" style="font-size:.78rem;padding:.4rem .9rem;">
@@ -89,318 +83,194 @@
     </div>
   </div>
 
-  <!-- Alerts -->
+  <!-- ── Alerts ─────────────────────────────────────────────── -->
   {% if alerts %}
-  <div style="margin-bottom:1.25rem;" x-data="{show: true}" x-show="show" x-transition.opacity>
+  <div style="margin-bottom:1.25rem;" x-data="{show: true}" x-show="show">
     {% for alert in alerts %}
     <div class="alert-box alert-{{ alert.type }}">
       <span>{{ alert.icon }}</span>
       <span style="flex:1;">{{ alert.text }}</span>
-      <button @click="show=false" style="background:none;border:none;cursor:pointer;opacity:.5;">✕</button>
+      <button @click="show=false" style="background:none;border:none;cursor:pointer;opacity:.5;font-size:1rem;">✕</button>
     </div>
     {% endfor %}
   </div>
   {% endif %}
 
-  <!-- Stat Cards -->
-  <div class="stat-grid" id="stat-grid-container">
-    {% include "admin/snippets/dashboard_stats_grid.html" %}
+  <!-- ── Stat Cards ─────────────────────────────────────────── -->
+  <div class="stat-grid">
+    <a href="{% url 'admin:contacts_contactmessage_changelist' %}?status__exact=new" class="stat-card">
+      <div class="icon-wrap">📩</div>
+      <div class="num amber">{{ dash_stats.messages_new }}</div>
+      <div class="label">New Enquiries</div>
+    </a>
+    <a href="{% url 'admin:contacts_contactmessage_changelist' %}" class="stat-card">
+      <div class="icon-wrap">💬</div>
+      <div class="num">{{ dash_stats.messages_month }}</div>
+      <div class="label">This Month</div>
+    </a>
+    <a href="{% url 'admin:products_product_changelist' %}" class="stat-card">
+      <div class="icon-wrap">📦</div>
+      <div class="num">{{ dash_stats.products }}</div>
+      <div class="label">Products</div>
+    </a>
+    <a href="{% url 'admin:services_service_changelist' %}" class="stat-card">
+      <div class="icon-wrap">🔧</div>
+      <div class="num">{{ dash_stats.services }}</div>
+      <div class="label">Services</div>
+    </a>
+    <a href="{% url 'admin:projects_project_changelist' %}" class="stat-card">
+      <div class="icon-wrap">🏗️</div>
+      <div class="num">{{ dash_stats.projects }}</div>
+      <div class="label">Projects</div>
+    </a>
+    <a href="{% url 'admin:gallery_galleryimage_changelist' %}" class="stat-card">
+      <div class="icon-wrap">🖼️</div>
+      <div class="num">{{ dash_stats.gallery }}</div>
+      <div class="label">Gallery</div>
+    </a>
+    <a href="{% url 'admin:core_testimonial_changelist' %}" class="stat-card">
+      <div class="icon-wrap">⭐</div>
+      <div class="num green">{{ dash_stats.testimonials }}</div>
+      <div class="label">Reviews</div>
+    </a>
   </div>
 
-  <!-- Charts (ApexCharts) -->
-  <div class="chart-grid">
-    <div class="panel">
-      <div class="panel-header">📈 Enquiries &amp; Visitors (Last 7 Days)</div>
-      <div style="padding:1rem;"><div id="enquiriesChart" style="height:240px;"></div></div>
-    </div>
-    <div class="panel">
-      <div class="panel-header">📊 Content Breakdown</div>
-      <div style="padding:1rem;"><div id="contentChart" style="height:240px;"></div></div>
-    </div>
-  </div>
-
-  <!-- Two-column layout -->
+  <!-- ── Two-column layout ──────────────────────────────────── -->
   <div class="two-col">
-    <!-- Left: Messages Panel -->
+
+    <!-- Left: Messages panel with tabs -->
     <div class="panel">
       <div class="panel-header" style="display:flex;align-items:center;justify-content:space-between;">
-        <span>📨 Recent Enquiries</span>
+        <span>📨 Latest Enquiries</span>
         <div style="display:flex;gap:.4rem;">
           <button @click="tab='messages'" :style="tab==='messages' ? 'background:rgb(var(--color-primary-500));color:white;' : ''"
-            style="font-size:.7rem;padding:3px 12px;border-radius:20px;border:none;cursor:pointer;">All</button>
+            style="font-size:.7rem;padding:3px 12px;border-radius:20px;border:none;cursor:pointer;transition:all .15s;">All</button>
           <button @click="tab='new'" :style="tab==='new' ? 'background:#f59e0b;color:white;' : ''"
-            style="font-size:.7rem;padding:3px 12px;border-radius:20px;border:none;cursor:pointer;">New only</button>
+            style="font-size:.7rem;padding:3px 12px;border-radius:20px;border:none;cursor:pointer;transition:all .15s;">New only</button>
         </div>
       </div>
-      <div id="messages-container">
-        {% include "admin/snippets/dashboard_messages.html" %}
-      </div>
+      {% if recent_messages %}
+      <table class="msg-table">
+        <thead>
+          <tr><th>Name</th><th>Phone</th><th>Subject</th><th>Status</th><th>Date</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+          {% for msg in recent_messages %}
+          <tr x-show="tab === 'messages' || (tab === 'new' && '{{ msg.status }}' === 'new')"
+              id="msg-row-{{ msg.pk }}">
+            <td>
+              <a href="{% url 'admin:contacts_contactmessage_change' msg.pk %}" style="font-weight:600;text-decoration:none;color:inherit;">
+                {{ msg.name }}
+              </a>
+            </td>
+            <td><a href="tel:{{ msg.phone }}" style="color:inherit;text-decoration:none;">{{ msg.phone }}</a></td>
+            <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.7;">
+              {{ msg.subject|default:"General enquiry"|truncatechars:22 }}
+            </td>
+            <td id="msg-status-{{ msg.pk }}">
+              <span class="badge badge-{{ msg.status }}">{{ msg.get_status_display }}</span>
+            </td>
+            <td style="opacity:.5;white-space:nowrap;font-size:.78rem;">{{ msg.created_at|date:"d M" }}</td>
+            <td style="white-space:nowrap;">
+              {% if msg.status == 'new' %}
+              <button
+                hx-post="{% url 'htmx_message_read' msg.pk %}"
+                hx-target="#msg-status-{{ msg.pk }}"
+                hx-swap="innerHTML"
+                hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                style="font-size:.7rem;padding:2px 8px;border-radius:4px;border:1px solid #d1d5db;cursor:pointer;background:white;color:#3730a3;"
+                title="Mark as read">
+                ✓ Read
+              </button>
+              {% endif %}
+              <a href="https://wa.me/{{ msg.phone|slice:'1:'|cut:' ' }}"
+                 target="_blank"
+                 style="font-size:.7rem;padding:2px 8px;border-radius:4px;background:#25D366;color:white;text-decoration:none;display:inline-block;margin-left:2px;">
+                WhatsApp
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
       <div style="padding:.75rem 1rem;text-align:right;border-top:1px solid var(--color-border-primary);">
         <a href="{% url 'admin:contacts_contactmessage_changelist' %}" style="font-size:.78rem;color:rgb(var(--color-primary-500));text-decoration:none;font-weight:600;">
           View all enquiries →
         </a>
       </div>
+      {% else %}
+      <div style="padding:2.5rem;text-align:center;opacity:.4;">
+        <div style="font-size:2.5rem;margin-bottom:.5rem;">📭</div>
+        No enquiries yet
+      </div>
+      {% endif %}
     </div>
 
-    <!-- Right column: quick actions + checklist -->
+    <!-- Right: Quick actions + checklist -->
     <div style="display:flex;flex-direction:column;gap:1.25rem;">
+
+      <!-- Quick actions -->
       <div class="panel">
         <div class="panel-header">⚡ Quick Actions</div>
         <div class="quick-grid">
-          <a href="{% url 'admin:products_product_add' %}" class="quick-btn">📦 Add Product</a>
-          <a href="{% url 'admin:services_service_add' %}" class="quick-btn">🔧 Add Service</a>
-          <a href="{% url 'admin:projects_project_add' %}" class="quick-btn">🏗️ Add Project</a>
-          <a href="{% url 'admin:gallery_galleryimage_add' %}" class="quick-btn">🖼️ Upload Image</a>
-          <a href="{% url 'admin:core_testimonial_add' %}" class="quick-btn">⭐ Add Review</a>
-          <a href="{% url 'admin:core_sitesettings_changelist' %}" class="quick-btn">⚙️ Settings</a>
+          <a href="{% url 'admin:products_product_add' %}" class="quick-btn">
+            <span>📦</span> Add Product
+          </a>
+          <a href="{% url 'admin:services_service_add' %}" class="quick-btn">
+            <span>🔧</span> Add Service
+          </a>
+          <a href="{% url 'admin:projects_project_add' %}" class="quick-btn">
+            <span>🏗️</span> Add Project
+          </a>
+          <a href="{% url 'admin:gallery_galleryimage_add' %}" class="quick-btn">
+            <span>🖼️</span> Upload Image
+          </a>
+          <a href="{% url 'admin:core_testimonial_add' %}" class="quick-btn">
+            <span>⭐</span> Add Review
+          </a>
+          <a href="{% url 'admin:core_sitesettings_changelist' %}" class="quick-btn">
+            <span>⚙️</span> Settings
+          </a>
         </div>
       </div>
 
+      <!-- Checklist -->
       <div class="panel">
         <div class="panel-header">✅ Website Checklist</div>
-        {% with stats=dash_stats %}
         <div class="checklist-item">
-          <span class="{% if stats.products > 0 %}tick-ok{% else %}tick-no{% endif %}">
-            {% if stats.products > 0 %}✓{% else %}○{% endif %}</span>
-          Products ({{ stats.products }})
+          <span class="{% if dash_stats.products > 0 %}tick-ok{% else %}tick-no{% endif %}">
+            {% if dash_stats.products > 0 %}✓{% else %}○{% endif %}
+          </span>
+          Products ({{ dash_stats.products }} added)
         </div>
         <div class="checklist-item">
-          <span class="{% if stats.services > 0 %}tick-ok{% else %}tick-no{% endif %}">
-            {% if stats.services > 0 %}✓{% else %}○{% endif %}</span>
-          Services ({{ stats.services }})
+          <span class="{% if dash_stats.services > 0 %}tick-ok{% else %}tick-no{% endif %}">
+            {% if dash_stats.services > 0 %}✓{% else %}○{% endif %}
+          </span>
+          Services ({{ dash_stats.services }} added)
         </div>
         <div class="checklist-item">
-          <span class="{% if stats.projects > 0 %}tick-ok{% else %}tick-no{% endif %}">
-            {% if stats.projects > 0 %}✓{% else %}○{% endif %}</span>
-          Projects ({{ stats.projects }})
+          <span class="{% if dash_stats.projects > 0 %}tick-ok{% else %}tick-no{% endif %}">
+            {% if dash_stats.projects > 0 %}✓{% else %}○{% endif %}
+          </span>
+          Projects ({{ dash_stats.projects }} added)
         </div>
         <div class="checklist-item">
-          <span class="{% if stats.gallery > 0 %}tick-ok{% else %}tick-no{% endif %}">
-            {% if stats.gallery > 0 %}✓{% else %}○{% endif %}</span>
-          Gallery ({{ stats.gallery }})
+          <span class="{% if dash_stats.gallery > 0 %}tick-ok{% else %}tick-no{% endif %}">
+            {% if dash_stats.gallery > 0 %}✓{% else %}○{% endif %}
+          </span>
+          Gallery images ({{ dash_stats.gallery }} uploaded)
         </div>
         <div class="checklist-item">
-          <span class="{% if stats.testimonials > 0 %}tick-ok{% else %}tick-no{% endif %}">
-            {% if stats.testimonials > 0 %}✓{% else %}○{% endif %}</span>
-          Reviews ({{ stats.testimonials }})
+          <span class="{% if dash_stats.testimonials > 0 %}tick-ok{% else %}tick-no{% endif %}">
+            {% if dash_stats.testimonials > 0 %}✓{% else %}○{% endif %}
+          </span>
+          Reviews ({{ dash_stats.testimonials }} added)
         </div>
-        {% endwith %}
       </div>
+
     </div>
   </div>
 
-  <!-- Recent Visitors Panel -->
-  <div class="panel" style="margin-top:1.5rem;">
-    <div class="panel-header">🕵️ Recent Visitors</div>
-    <div id="visitors-container">
-      {% include "admin/snippets/visitors_table.html" %}
-    </div>
-    <div style="padding:.75rem 1rem;text-align:right;border-top:1px solid var(--color-border-primary);">
-      <a href="{% url 'admin:core_visitor_changelist' %}" style="font-size:.78rem;color:rgb(var(--color-primary-500));text-decoration:none;font-weight:600;">
-        View all visitors →
-      </a>
-    </div>
-  </div>
 </div>
-
-<!-- ─── Scripts ────────────────────────────────────────────── -->
-<script>
-  // =============================
-  // ApexCharts initialisation (global)
-  // =============================
-  let lineChart, doughnutChart;
-  document.addEventListener('DOMContentLoaded', function() {
-    lineChart = new ApexCharts(document.querySelector("#enquiriesChart"), {
-      chart: { type: 'line', height: 240, toolbar: { show: false }, zoom: { enabled: false } },
-      series: [],
-      xaxis: { categories: [] },
-      colors: ['rgb(var(--color-primary-500))', '#3b82f6'],
-      stroke: { curve: 'smooth', width: 2 },
-      fill: { type: 'gradient', gradient: { opacityFrom: 0.3, opacityTo: 0 } },
-      title: { text: '' },
-      legend: { position: 'top' }
-    });
-    lineChart.render();
-
-    doughnutChart = new ApexCharts(document.querySelector("#contentChart"), {
-      chart: { type: 'donut', height: 240 },
-      series: [],
-      labels: [],
-      colors: ['#D62828', '#F77F00', '#FCBF49', '#EAE2B7', '#003049'],
-      legend: { position: 'bottom' },
-      dataLabels: { enabled: false }
-    });
-    doughnutChart.render();
-
-    // Make them globally accessible so HTMX can update them
-    window.dashboardLineChart = lineChart;
-    window.dashboardDoughnutChart = doughnutChart;
-  });
-
-  // =============================
-  // CountUp animation helpers
-  // =============================
-  const countUpInstances = {};
-  const csrf_token = '{{ csrf_token|escapejs }}';
-
-  function animateNumber(id, newVal) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const oldVal = parseFloat(el.innerText) || 0;
-    if (oldVal === newVal) return;
-    if (countUpInstances[id]) {
-      countUpInstances[id].update(newVal);
-    } else {
-      countUpInstances[id] = new countUp.CountUp(id, newVal, {
-        startVal: oldVal,
-        duration: 1.2,
-        separator: ','
-      });
-      if (!countUpInstances[id].error) {
-        countUpInstances[id].start();
-      }
-    }
-  }
-
-  // =============================
-  // Update UI with new data (WebSocket)
-  // =============================
-  function updateDashboard(data) {
-    const stats = data.stats;
-    animateNumber('stat-messages-new', stats.messages_new);
-    animateNumber('stat-messages-month', stats.messages_month);
-    animateNumber('stat-products', stats.products);
-    animateNumber('stat-services', stats.services);
-    animateNumber('stat-projects', stats.projects);
-    animateNumber('stat-gallery', stats.gallery);
-    animateNumber('stat-testimonials', stats.testimonials);
-    animateNumber('stat-visitors-today', stats.visitors_today);
-    animateNumber('stat-visitors-week', stats.visitors_week);
-    animateNumber('stat-wa-today', stats.whatsapp_today);
-    animateNumber('stat-wa-week', stats.whatsapp_week);
-
-    if (data.chart) {
-      const chart = data.chart;
-      window.dashboardLineChart.updateOptions({ xaxis: { categories: chart.weekdays } });
-      window.dashboardLineChart.updateSeries([
-        { name: 'Enquiries', data: chart.enquiries },
-        { name: 'Visitors', data: chart.visitors }
-      ]);
-      window.dashboardDoughnutChart.updateSeries(chart.content_values);
-      window.dashboardDoughnutChart.updateOptions({ labels: chart.content_labels });
-    }
-
-    // Messages table
-    if (data.messages) {
-      const tbody = document.querySelector('#messages-container');
-      if (tbody) {
-        let html = '';
-        if (data.messages.length === 0) {
-          html = `<div style="padding:2.5rem;text-align:center;opacity:.4;"><div style="font-size:2.5rem;">📭</div>No enquiries yet</div>`;
-        } else {
-          html = `<table class="msg-table"><thead><tr><th>Name</th><th>Phone</th><th>Subject</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>`;
-          data.messages.forEach(m => {
-            html += `<tr x-show="tab === 'messages' || (tab === 'new' && '${m.status}' === 'new')">
-              <td><a href="/admin/contacts/contactmessage/${m.id}/change/" style="font-weight:600;text-decoration:none;color:inherit;">${m.name}</a></td>
-              <td><a href="tel:${m.phone}" style="color:inherit;">${m.phone}</a></td>
-              <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.7;">${m.subject}</td>
-              <td><span class="badge badge-${m.status}">${m.status.toUpperCase()}</span></td>
-              <td style="opacity:.5;white-space:nowrap;font-size:.78rem;">${m.created_at}</td>
-              <td>${m.status === 'new' ? `<button hx-post="/htmx/message/${m.id}/read/" hx-target="closest tr" hx-swap="outerHTML" hx-headers='{"X-CSRFToken": "${csrf_token}"}' style="font-size:.7rem;padding:2px 8px;border-radius:4px;border:1px solid #d1d5db;cursor:pointer;background:white;color:#3730a3;">✓ Read</button>` : ''}
-              <a href="https://wa.me/${m.phone.replace(/[^0-9]/g,'')}" target="_blank" style="font-size:.7rem;padding:2px 8px;border-radius:4px;background:#25D366;color:white;text-decoration:none;margin-left:2px;">WhatsApp</a></td>
-            </tr>`;
-          });
-          html += '</tbody></table>';
-        }
-        tbody.innerHTML = html;
-      }
-    }
-
-    // Visitors table
-    if (data.visitors) {
-      const container = document.querySelector('#visitors-container');
-      if (container) {
-        if (data.visitors.length === 0) {
-          container.innerHTML = `<div style="padding:2rem;text-align:center;opacity:0.4;">No recent visitors</div>`;
-        } else {
-          let html = `<table class="msg-table" style="font-size:0.82rem;"><thead><tr><th>Path</th><th>IP</th><th>Device</th><th>Browser</th><th>Time</th></tr></thead><tbody>`;
-          data.visitors.forEach(v => {
-            html += `<tr><td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${v.path}</td><td>${v.ip}</td><td>${v.device}</td><td>${v.browser}</td><td>${v.time}</td></tr>`;
-          });
-          html += '</tbody></table>';
-          container.innerHTML = html;
-        }
-      }
-    }
-  }
-
-  // =============================
-  // WebSocket connection
-  // =============================
-  const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-  const wsUrl = `${wsProtocol}://${window.location.host}/ws/dashboard/`;
-  let ws = null;
-  let wsActive = false;
-
-  function connectWebSocket() {
-    ws = new WebSocket(wsUrl);
-    ws.onopen = function() { wsActive = true; };
-    ws.onmessage = function(e) { updateDashboard(JSON.parse(e.data)); };
-    ws.onclose = function() { wsActive = false; };
-    ws.onerror = function() { wsActive = false; };
-  }
-  connectWebSocket();
-
-  document.body.addEventListener('htmx:configRequest', function(evt) {
-    if (wsActive && (
-        evt.detail.path.includes('/admin/dashboard/stats/') ||
-        evt.detail.path.includes('/admin/dashboard/messages/') ||
-        evt.detail.path.includes('/admin/dashboard/visitors/') ||
-        evt.detail.path.includes('/admin/dashboard/charts/')
-    )) {
-      evt.preventDefault();
-    }
-  });
-</script>
-
-<!-- Fallback polling when WebSocket fails -->
-<script>
-  function enablePolling() {
-    const statGrid = document.getElementById('stat-grid-container');
-    if (statGrid && !statGrid.hasAttribute('hx-get')) {
-      statGrid.setAttribute('hx-get', "{% url 'dashboard_stats_api' %}");
-      statGrid.setAttribute('hx-trigger', 'every 30s');
-      statGrid.setAttribute('hx-swap', 'outerHTML');
-      htmx.process(statGrid);
-    }
-    const msgCont = document.getElementById('messages-container');
-    if (msgCont && !msgCont.hasAttribute('hx-get')) {
-      msgCont.setAttribute('hx-get', "{% url 'dashboard_messages_api' %}");
-      msgCont.setAttribute('hx-trigger', 'every 30s');
-      msgCont.setAttribute('hx-swap', 'outerHTML');
-      htmx.process(msgCont);
-    }
-    const visCont = document.getElementById('visitors-container');
-    if (visCont && !visCont.hasAttribute('hx-get')) {
-      visCont.setAttribute('hx-get', "{% url 'dashboard_visitors_api' %}");
-      visCont.setAttribute('hx-trigger', 'every 30s');
-      visCont.setAttribute('hx-swap', 'outerHTML');
-      htmx.process(visCont);
-    }
-    // Poll charts container
-    const chartsDiv = document.querySelector('.chart-grid');
-    if (chartsDiv && !chartsDiv.hasAttribute('hx-get')) {
-      chartsDiv.setAttribute('hx-get', "{% url 'dashboard_chart_api' %}");
-      chartsDiv.setAttribute('hx-trigger', 'every 30s');
-      chartsDiv.setAttribute('hx-swap', 'outerHTML');
-      htmx.process(chartsDiv);
-    }
-  }
-  setTimeout(function() {
-    if (!wsActive) {
-      enablePolling();
-      console.log('WebSocket not active – enabled HTMX polling');
-    }
-  }, 2000);
-</script>
 {% endblock %}

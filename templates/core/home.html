@@ -5,645 +5,509 @@
 
 {% block extra_css %}
 <style>
-    /* ======== HERO ======== */
-    .hero {
-        background: var(--black);
-        min-height: 90vh;
-        display: flex;
-        align-items: center;
-        position: relative;
-        overflow: hidden;
-    }
+/* ══ HERO — full-screen like Levels Group ══════════════════════ */
+.hero-fullscreen {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: var(--black);
+}
 
-    .hero::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: url('{% static "images/hero-bg.jpg" %}') center/cover no-repeat;
-        opacity: 0.25;
-    }
+.hero-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('{% static "images/hero-bg.jpg" %}');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.32;
+    transition: opacity 0.4s ease;
+}
 
-    .hero-stripe {
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        width: 6px;
-        background: var(--red);
-    }
+.hero-fullscreen:hover .hero-bg { opacity: 0.38; }
 
-    .hero-content {
-        position: relative;
-        z-index: 2;
-    }
+/* Dark gradient overlay — stronger at bottom */
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.25) 0%,
+        rgba(0,0,0,0.15) 40%,
+        rgba(0,0,0,0.65) 100%
+    );
+}
 
-    .hero-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background: rgba(214, 40, 40, 0.15);
-        border: 1px solid rgba(214, 40, 40, 0.4);
-        color: var(--red);
-        padding: 6px 16px;
-        font-family: 'Oswald', sans-serif;
-        font-size: 0.8rem;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-        margin-bottom: 24px;
-    }
+.hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 0 20px;
+    max-width: 900px;
+    width: 100%;
+}
 
-    .hero h1 {
-        font-size: clamp(2.5rem, 6vw, 4.5rem);
-        color: var(--white);
-        line-height: 1.05;
-        text-transform: uppercase;
-        letter-spacing: 0.03em;
-        margin-bottom: 20px;
-    }
+/* Logo in hero */
+.hero-logo {
+    width: clamp(200px, 40vw, 380px);
+    height: auto;
+    margin-bottom: 32px;
+    filter: drop-shadow(0 4px 24px rgba(0,0,0,0.5));
+    animation: heroLogoIn 0.7s cubic-bezier(.22,.68,0,1.1) both;
+}
+@keyframes heroLogoIn {
+    from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
 
-    .hero h1 .highlight {
-        color: var(--red);
-        display: block;
-    }
+.hero-tagline {
+    color: rgba(255,255,255,0.85);
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 52px;
+    animation: heroTextIn 0.6s ease both;
+    animation-delay: 0.3s;
+}
 
-    .hero p {
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 1.15rem;
-        max-width: 500px;
-        line-height: 1.7;
-        margin-bottom: 36px;
-    }
+/* ══ THREE HERO BUTTONS ════════════════════════════════════════ */
+.hero-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    justify-content: center;
+    animation: heroTextIn 0.6s ease both;
+    animation-delay: 0.45s;
+}
 
-    .hero-stats {
-        display: flex;
-        gap: 40px;
-        margin-top: 50px;
-        padding-top: 40px;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
+.hero-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 36px;
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(0.85rem, 1.8vw, 1rem);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 2px solid rgba(255,255,255,0.9);
+    color: white;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.25s cubic-bezier(.34,1.56,.64,1);
+    position: relative;
+    overflow: hidden;
+}
+.hero-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--red);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s ease;
+    z-index: -1;
+}
+.hero-btn:hover {
+    color: white;
+    border-color: var(--red);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(214,40,40,0.35);
+}
+.hero-btn:hover::before { transform: scaleX(1); }
+.hero-btn:active { transform: translateY(-1px); }
 
-    .hero-stat .num {
-        font-family: 'Oswald', sans-serif;
-        font-size: 2.2rem;
-        color: var(--white);
-        font-weight: 700;
-        line-height: 1;
-    }
+/* Flagship (Blue Rock Putty) button — always standout */
+.hero-btn-primary {
+    background: var(--red);
+    border-color: var(--red);
+    box-shadow: 0 6px 24px rgba(214,40,40,0.4);
+}
+.hero-btn-primary::before { background: rgba(0,0,0,0.3); }
+.hero-btn-primary:hover {
+    background: var(--red-dark);
+    border-color: var(--red-dark);
+}
 
-    .hero-stat .num span {
-        color: var(--red);
-    }
+.hero-btn i { font-size: 1.3rem; transition: transform 0.25s ease; }
+.hero-btn:hover i { transform: translateX(3px); }
 
-    .hero-stat .label {
-        font-size: 0.78rem;
-        color: rgba(255, 255, 255, 0.5);
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        margin-top: 4px;
-    }
+/* Scroll indicator */
+.hero-scroll {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    animation: bounceDown 2s ease-in-out infinite;
+    color: rgba(255,255,255,0.5);
+    font-size: 1.6rem;
+    text-decoration: none;
+}
+@keyframes bounceDown {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50%       { transform: translateX(-50%) translateY(8px); }
+}
 
-    .hero-image-col {
-        position: relative;
-    }
+/* ══ SECTIONS BELOW HERO ════════════════════════════════════════ */
+.strip-bar {
+    background: var(--red);
+    padding: 14px 0;
+    overflow: hidden;
+}
+.strip-bar .marquee-wrap {
+    display: flex;
+    gap: 60px;
+    animation: marquee 22s linear infinite;
+    white-space: nowrap;
+}
+.strip-bar .marquee-item {
+    font-family: 'Oswald', sans-serif;
+    color: white;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: 0.88rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+@keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
 
-    .hero-image-frame {
-        position: relative;
-        padding: 20px 20px 0 0;
-    }
+/* ══ FLAGSHIP PRODUCT SPOTLIGHT ════════════════════════════════ */
+.flagship-section {
+    padding: 90px 0;
+    background: var(--black);
+    position: relative;
+    overflow: hidden;
+}
+.flagship-section::before {
+    content: '';
+    position: absolute;
+    right: -100px; top: -100px;
+    width: 500px; height: 500px;
+    border: 2px solid rgba(214,40,40,0.08);
+    border-radius: 50%;
+}
+.flagship-badge {
+    display: inline-block;
+    background: var(--red);
+    color: white;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 5px 16px;
+    margin-bottom: 16px;
+}
+.flagship-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    color: white;
+    text-transform: uppercase;
+    line-height: 1.05;
+    margin-bottom: 16px;
+}
+.flagship-title span { color: var(--red); }
+.flagship-img-frame {
+    position: relative;
+    padding: 16px 16px 0 0;
+}
+.flagship-img-frame img {
+    width: 100%;
+    height: 420px;
+    object-fit: cover;
+    position: relative;
+    z-index: 1;
+}
+.flagship-img-frame::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: calc(100% - 16px);
+    height: calc(100% - 16px);
+    border: 3px solid var(--red);
+    z-index: 0;
+}
 
-    .hero-image-frame img {
-        width: 100%;
-        height: 480px;
-        object-fit: cover;
-        position: relative;
-        z-index: 2;
-    }
+/* ══ WHY CHOOSE US ══════════════════════════════════════════════ */
+.why-us { background: #F5F5F5; padding: 90px 0; }
+.feature-box {
+    background: white; padding: 32px 28px;
+    height: 100%; border-bottom: 4px solid transparent;
+    transition: all 0.3s;
+}
+.feature-box:hover { border-color: var(--red); transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.08); }
+.feature-box .icon {
+    width: 56px; height: 56px; background: var(--red);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 1.6rem; margin-bottom: 20px;
+    transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
+}
+.feature-box:hover .icon { transform: scale(1.15) rotate(-5deg); }
 
-    .hero-image-frame::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: calc(100% - 20px);
-        height: calc(100% - 20px);
-        border: 3px solid var(--red);
-        z-index: 1;
-    }
+/* ══ SERVICES (dark bg) ═════════════════════════════════════════ */
+.services-section { background: var(--black); padding: 90px 0; }
+.service-card {
+    border: 1px solid rgba(255,255,255,0.1); padding: 36px 28px; height: 100%;
+    transition: all 0.3s; position: relative; overflow: hidden;
+}
+.service-card::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+    background: var(--red); transform: scaleY(0); transition: transform 0.3s;
+    transform-origin: bottom;
+}
+.service-card:hover { border-color: rgba(214,40,40,0.3); }
+.service-card:hover::before { transform: scaleY(1); }
+.service-card .icon { font-size: 2.4rem; color: var(--red); margin-bottom: 20px; }
+.service-card h4 { color: white; font-size: 1.2rem; margin-bottom: 12px; }
+.service-card p { color: rgba(255,255,255,0.6); font-size: 0.9rem; line-height: 1.7; }
+.service-card a { color: var(--red); font-family: 'Oswald', sans-serif; font-size: 0.85rem;
+    letter-spacing: 0.1em; text-decoration: none; text-transform: uppercase;
+    margin-top: 16px; display: inline-block; }
 
-    /* ======== SERVICES STRIP ======== */
-    .services-strip {
-        background: var(--red);
-        padding: 18px 0;
-    }
+/* ══ PROJECTS ═══════════════════════════════════════════════════ */
+.projects-section { padding: 90px 0; }
+.project-card { position: relative; overflow: hidden; height: 300px; }
+.project-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+.project-card:hover img { transform: scale(1.08); }
+.project-card .overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 60%);
+    display: flex; flex-direction: column; justify-content: flex-end; padding: 24px;
+}
+.project-card h5 { color: white; font-size: 1.1rem; margin-bottom: 4px; }
+.project-card .location { color: rgba(255,255,255,0.6); font-size: 0.82rem; }
 
-    .services-strip .item {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        color: white;
-        font-family: 'Oswald', sans-serif;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        font-size: 0.95rem;
-    }
+/* ══ CTA ════════════════════════════════════════════════════════ */
+.cta-section {
+    background: var(--red); padding: 70px 0;
+    position: relative; overflow: hidden;
+}
+.cta-section::before {
+    content: ''; position: absolute; right: -80px; top: -80px;
+    width: 400px; height: 400px; border: 2px solid rgba(255,255,255,0.1); border-radius: 50%;
+}
+.cta-section h2 { color: white; font-size: 2.4rem; text-transform: uppercase; }
+.cta-section p { color: rgba(255,255,255,0.85); font-size: 1.05rem; }
+.btn-white {
+    background: white; color: var(--red); font-family: 'Oswald', sans-serif;
+    letter-spacing: 0.1em; text-transform: uppercase; padding: 14px 36px;
+    font-size: 0.95rem; border: none; transition: all 0.2s; text-decoration: none; display: inline-block;
+}
+.btn-white:hover { background: var(--black); color: white; transform: translateY(-2px); }
+.btn-wa-cta {
+    background: #25D366; color: white; font-family: 'Oswald', sans-serif;
+    letter-spacing: 0.1em; text-transform: uppercase; padding: 14px 36px;
+    font-size: 0.95rem; border: none; text-decoration: none; display: inline-block; transition: all 0.2s;
+}
+.btn-wa-cta:hover { background: #128C7E; color: white; transform: translateY(-2px); }
 
-    .services-strip .item i {
-        font-size: 1.4rem;
-        opacity: 0.85;
-    }
+/* ══ TESTIMONIALS ═══════════════════════════════════════════════ */
+.testimonials-section { background: #F5F5F5; padding: 90px 0; }
+.testimonial-card { background: white; padding: 32px; position: relative; height: 100%; }
+.testimonial-card .quote-icon { font-size: 3rem; color: var(--red); opacity: 0.2;
+    position: absolute; top: 16px; right: 24px; font-family: Georgia, serif; line-height: 1; }
+.testimonial-card .stars { color: #F5A623; margin-bottom: 16px; font-size: 0.9rem; }
+.testimonial-card p { font-style: italic; color: var(--gray); line-height: 1.7; margin-bottom: 20px; font-size: 0.95rem; }
+.testimonial-card .name { font-family: 'Oswald', sans-serif; font-size: 1rem; color: var(--black); }
+.testimonial-card .role { font-size: 0.78rem; color: var(--red); text-transform: uppercase; letter-spacing: 0.1em; }
 
-    /* ======== WHY US ======== */
-    .why-us {
-        background: var(--gray-light);
-        padding: 90px 0;
-    }
-
-    .feature-box {
-        background: white;
-        padding: 32px 28px;
-        height: 100%;
-        border-bottom: 4px solid transparent;
-        transition: all 0.3s;
-    }
-
-    .feature-box:hover {
-        border-color: var(--red);
-        transform: translateY(-4px);
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-    }
-
-    .feature-box .icon {
-        width: 56px;
-        height: 56px;
-        background: var(--red);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 1.6rem;
-        margin-bottom: 20px;
-    }
-
-    /* ======== PRODUCTS SECTION ======== */
-    .products-section {
-        padding: 90px 0;
-    }
-
-    .product-card {
-        background: white;
-        border: 1px solid #eee;
-        overflow: hidden;
-        transition: all 0.3s;
-    }
-
-    .product-card:hover {
-        border-color: var(--red);
-        box-shadow: 0 8px 30px rgba(214, 40, 40, 0.1);
-        transform: translateY(-4px);
-    }
-
-    .product-card .img-wrap {
-        height: 220px;
-        overflow: hidden;
-        background: var(--gray-light);
-    }
-
-    .product-card img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.5s;
-    }
-
-    .product-card:hover img {
-        transform: scale(1.08);
-    }
-
-    .product-card .body {
-        padding: 20px;
-    }
-
-    .product-card .category-tag {
-        font-size: 0.72rem;
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        color: var(--red);
-        font-weight: 600;
-    }
-
-    .product-card h5 {
-        font-family: 'Oswald', sans-serif;
-        font-size: 1.15rem;
-        margin: 6px 0 10px;
-    }
-
-    /* ======== SERVICES SECTION ======== */
-    .services-section {
-        background: var(--black);
-        padding: 90px 0;
-    }
-
-    .service-card {
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        padding: 36px 28px;
-        height: 100%;
-        transition: all 0.3s;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .service-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 4px;
-        height: 100%;
-        background: var(--red);
-        transform: scaleY(0);
-        transition: transform 0.3s;
-        transform-origin: bottom;
-    }
-
-    .service-card:hover {
-        border-color: rgba(214, 40, 40, 0.3);
-        background: rgba(255, 255, 255, 0.03);
-    }
-
-    .service-card:hover::before {
-        transform: scaleY(1);
-    }
-
-    .service-card .icon {
-        font-size: 2.4rem;
-        color: var(--red);
-        margin-bottom: 20px;
-    }
-
-    .service-card h4 {
-        color: white;
-        font-size: 1.2rem;
-        margin-bottom: 12px;
-    }
-
-    .service-card p {
-        color: rgba(255, 255, 255, 0.6);
-        font-size: 0.9rem;
-        line-height: 1.7;
-    }
-
-    .service-card a {
-        color: var(--red);
-        font-family: 'Oswald', sans-serif;
-        font-size: 0.85rem;
-        letter-spacing: 0.1em;
-        text-decoration: none;
-        text-transform: uppercase;
-        margin-top: 16px;
-        display: inline-block;
-    }
-
-    /* ======== PROJECTS ======== */
-    .projects-section {
-        padding: 90px 0;
-    }
-
-    .project-card {
-        position: relative;
-        overflow: hidden;
-        height: 300px;
-    }
-
-    .project-card img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.5s;
-    }
-
-    .project-card:hover img {
-        transform: scale(1.08);
-    }
-
-    .project-card .overlay {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, transparent 60%);
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        padding: 24px;
-        transition: opacity 0.3s;
-    }
-
-    .project-card h5 {
-        color: white;
-        font-size: 1.1rem;
-        margin-bottom: 4px;
-    }
-
-    .project-card .location {
-        color: rgba(255, 255, 255, 0.6);
-        font-size: 0.82rem;
-    }
-
-    /* ======== CTA ======== */
-    .cta-section {
-        background: var(--red);
-        padding: 70px 0;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .cta-section::before {
-        content: '';
-        position: absolute;
-        right: -80px;
-        top: -80px;
-        width: 400px;
-        height: 400px;
-        border: 2px solid rgba(255, 255, 255, 0.1);
-        border-radius: 50%;
-    }
-
-    .cta-section::after {
-        content: '';
-        position: absolute;
-        right: 20px;
-        top: -120px;
-        width: 280px;
-        height: 280px;
-        border: 2px solid rgba(255, 255, 255, 0.08);
-        border-radius: 50%;
-    }
-
-    .cta-section h2 {
-        color: white;
-        font-size: 2.4rem;
-        text-transform: uppercase;
-    }
-
-    .cta-section p {
-        color: rgba(255, 255, 255, 0.85);
-        font-size: 1.05rem;
-    }
-
-    .btn-white {
-        background: white;
-        color: var(--red);
-        font-family: 'Oswald', sans-serif;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        padding: 14px 36px;
-        font-size: 0.95rem;
-        border: none;
-        transition: all 0.2s;
-        text-decoration: none;
-        display: inline-block;
-    }
-
-    .btn-white:hover {
-        background: var(--black);
-        color: white;
-        transform: translateY(-2px);
-    }
-
-    .btn-wa-cta {
-        background: #25D366;
-        color: white;
-        font-family: 'Oswald', sans-serif;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        padding: 14px 36px;
-        font-size: 0.95rem;
-        border: none;
-        text-decoration: none;
-        display: inline-block;
-        transition: all 0.2s;
-    }
-
-    .btn-wa-cta:hover {
-        background: #128C7E;
-        color: white;
-        transform: translateY(-2px);
-    }
-
-    /* ======== TESTIMONIALS ======== */
-    .testimonials-section {
-        background: var(--gray-light);
-        padding: 90px 0;
-    }
-
-    .testimonial-card {
-        background: white;
-        padding: 32px;
-        position: relative;
-        height: 100%;
-    }
-
-    .testimonial-card .quote-icon {
-        font-size: 3rem;
-        color: var(--red);
-        opacity: 0.2;
-        position: absolute;
-        top: 16px;
-        right: 24px;
-        font-family: Georgia, serif;
-        line-height: 1;
-    }
-
-    .testimonial-card .stars {
-        color: #F5A623;
-        margin-bottom: 16px;
-        font-size: 0.9rem;
-    }
-
-    .testimonial-card p {
-        font-style: italic;
-        color: var(--gray);
-        line-height: 1.7;
-        margin-bottom: 20px;
-        font-size: 0.95rem;
-    }
-
-    .testimonial-card .name {
-        font-family: 'Oswald', sans-serif;
-        font-size: 1rem;
-        color: var(--black);
-    }
-
-    .testimonial-card .role {
-        font-size: 0.78rem;
-        color: var(--red);
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-    }
+@media (max-width: 576px) {
+    .hero-btn { padding: 14px 22px; font-size: 0.8rem; }
+    .hero-btns { flex-direction: column; align-items: center; }
+}
 </style>
 {% endblock %}
 
 {% block content %}
 
-<!-- HERO -->
-<section class="hero">
-    <div class="hero-stripe"></div>
+<!-- ══ FULL-SCREEN HERO ══════════════════════════════════════ -->
+<section class="hero-fullscreen">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+        <!-- Logo centred in hero -->
+        <img src="{% static 'images/logo.png' %}"
+             alt="J&N Building Products"
+             class="hero-logo"
+             onerror="this.style.display='none'">
+
+        <p class="hero-tagline">{{ site.tagline }}</p>
+
+        <!-- THREE BUTTONS: Putty | Construction | Mining -->
+        <div class="hero-btns">
+
+            <!-- Button 1: Blue Rock Wall Putty (flagship) -->
+            <a href="{% if flagship_product %}{% url 'product_detail' flagship_product.slug %}{% else %}{% url 'product_list' %}{% endif %}"
+               class="hero-btn hero-btn-primary"
+               onclick="fetch('/log-whatsapp-click/', {method:'POST', headers:{'X-CSRFToken':'{{ csrf_token }}','Content-Type':'application/x-www-form-urlencoded'}, body:'page_path=/'})">
+                <i class="bi bi-droplet-fill"></i>
+                Blue Rock Wall Putty
+            </a>
+
+            <!-- Button 2: Construction -->
+            <a href="{% url 'service_list' %}" class="hero-btn">
+                <i class="bi bi-building"></i>
+                Construction
+            </a>
+
+            <!-- Button 3: Mining -->
+            <a href="{% url 'product_list' %}?category=mining" class="hero-btn">
+                <i class="bi bi-gem"></i>
+                Mining
+            </a>
+
+        </div>
+    </div>
+
+    <!-- Scroll arrow -->
+    <a href="#below-hero" class="hero-scroll" aria-label="Scroll down">
+        <i class="bi bi-chevron-double-down"></i>
+    </a>
+</section>
+
+<!-- ══ MARQUEE STRIP ════════════════════════════════════════ -->
+<div class="strip-bar" id="below-hero">
+    <div class="marquee-wrap">
+        <!-- Duplicated for seamless loop -->
+        {% for item in "12345678"|make_list %}
+        <div class="marquee-item"><i class="bi bi-bricks"></i> Building Materials</div>
+        <div class="marquee-item"><i class="bi bi-house-gear"></i> Construction Services</div>
+        <div class="marquee-item"><i class="bi bi-droplet-fill"></i> Blue Rock Wall Putty</div>
+        <div class="marquee-item"><i class="bi bi-gem"></i> Mining Products</div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- ══ FLAGSHIP PRODUCT SPOTLIGHT ══════════════════════════ -->
+{% if flagship_product %}
+<section class="flagship-section reveal">
     <div class="container">
         <div class="row align-items-center g-5">
-            <div class="col-lg-6 hero-content">
-                <div class="hero-badge" data-aos="fade-down" data-aos-delay="100">
-                    <i class="bi bi-shield-check-fill"></i>
-                    {{ site.hero_badge_text }}
-                </div>
-                <h1 data-aos="fade-right" data-aos-delay="200">
-                    {{ site.hero_heading_prefix }}
-                    <span class="highlight">{{ site.hero_heading_highlight }}</span>
-                    {{ site.hero_heading_suffix }}
-                </h1>
-                <p data-aos="fade-right" data-aos-delay="300">{{ site.hero_subheading }}</p>
-                <div class="d-flex flex-wrap gap-3" data-aos="fade-up" data-aos-delay="400">
-                    <a href="{% url 'product_list' %}" class="btn-red">
-                        <i class="bi bi-grid me-2"></i>View Products
-                    </a>
-                    <a href="{% url 'contact' %}" class="btn-outline-red"
-                        style="display:inline-block;padding:12px 32px;">
-                        <i class="bi bi-chat-dots me-2"></i>Get a Quote
-                    </a>
-                </div>
-                <div class="hero-stats" data-aos="fade-up" data-aos-delay="500">
-                    <div class="hero-stat">
-                        <div class="num">{{ site.years_experience }}<span>+</span></div>
-                        <div class="label">Years Experience</div>
-                    </div>
-                    <div class="hero-stat">
-                        <div class="num">{{ site.projects_completed }}<span>+</span></div>
-                        <div class="label">Projects Done</div>
-                    </div>
-                    <div class="hero-stat">
-                        <div class="num">{{ site.happy_clients }}<span>+</span></div>
-                        <div class="label">Happy Clients</div>
-                    </div>
+            <div class="col-lg-5">
+                <div class="flagship-img-frame">
+                    <img src="{% safe_image_url flagship_product.image 600 420 'Blue Rock Wall Putty' %}"
+                         alt="{{ flagship_product.name }}">
                 </div>
             </div>
-            <div class="col-lg-6 d-none d-lg-block" data-aos="fade-left" data-aos-delay="300">
-                <div class="hero-image-frame">
-                    <img src="{% if site.hero_image %}{{ site.hero_image.url }}{% else %}{% static 'images/hero-building.jpg' %}{% endif %}"
-                        alt="J&N Building Products"
-                        onerror="this.onerror=null; this.src='https://placehold.co/600x480/2D2D2D/FFFFFF?text=J%26N+Building+Products';"
-                        loading="lazy">
+            <div class="col-lg-7">
+                <div class="flagship-badge">⭐ Flagship Product</div>
+                <h2 class="flagship-title">
+                    Blue Rock<br><span>Wall Putty</span>
+                </h2>
+                <p style="color:rgba(255,255,255,0.7);font-size:1.05rem;line-height:1.8;max-width:520px;margin-bottom:32px;">
+                    {{ flagship_product.description|striptags|truncatewords:40 }}
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'product_detail' flagship_product.slug %}" class="btn-red text-decoration-none" style="display:inline-block;padding:14px 32px;">
+                        <i class="bi bi-eye me-2"></i>View Product
+                    </a>
+                    <a href="https://wa.me/{{ site.whatsapp_number }}?text=Hello! I'm interested in Blue Rock Wall Putty."
+                       target="_blank"
+                       class="btn-wa-cta"
+                       onclick="fetch('/log-whatsapp-click/', {method:'POST', headers:{'X-CSRFToken':'{{ csrf_token }}','Content-Type':'application/x-www-form-urlencoded'}, body:'page_path=/&product_id={{ flagship_product.pk }}'})">
+                        <i class="bi bi-whatsapp me-2"></i>Enquire Now
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </section>
+{% endif %}
 
-<!-- QUICK SERVICES STRIP -->
-<div class="services-strip">
-    <div class="container">
-        <div class="row g-3">
-            <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="0">
-                <div class="item"><i class="bi bi-bricks"></i> Building Materials</div>
-            </div>
-            <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="100">
-                <div class="item"><i class="bi bi-house-gear"></i> Construction</div>
-            </div>
-            <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="200">
-                <div class="item"><i class="bi bi-tools"></i> Renovation</div>
-            </div>
-            <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="300">
-                <div class="item"><i class="bi bi-truck"></i> Fast Delivery</div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- WHY CHOOSE US -->
-<section class="why-us">
+<!-- ══ WHY CHOOSE US ════════════════════════════════════════ -->
+<section class="why-us reveal">
     <div class="container">
         <div class="row mb-5">
-            <div class="col-lg-6" data-aos="fade-right">
+            <div class="col-lg-6">
                 <span class="section-label">Why Choose Us</span>
                 <h2 class="section-title mt-2">The J&amp;N <span>Advantage</span></h2>
                 <div class="divider-red"></div>
             </div>
-            <div class="col-lg-6 d-flex align-items-center" data-aos="fade-left">
-                <p class="text-muted">We combine quality products, expert craftsmanship, and reliable service to help
-                    you build your dream — on time and within budget.</p>
+            <div class="col-lg-6 d-flex align-items-center">
+                <p class="text-muted">Quality products, expert craftsmanship, and reliable service — building your dream on time and within budget.</p>
             </div>
         </div>
-        <div class="row g-4">
-            <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="0">
+        <div class="row g-4 reveal-stagger">
+            <div class="col-md-6 col-lg-3">
                 <div class="feature-box">
                     <div class="icon"><i class="bi bi-award-fill"></i></div>
                     <h5 class="mb-2">Quality Guaranteed</h5>
-                    <p class="text-muted" style="font-size:0.9rem;">Every product meets high construction standards. We
-                        don't compromise on quality.</p>
+                    <p class="text-muted" style="font-size:0.9rem;">Every product meets high construction standards. We never compromise.</p>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="150">
+            <div class="col-md-6 col-lg-3">
                 <div class="feature-box">
                     <div class="icon"><i class="bi bi-wallet2"></i></div>
                     <h5 class="mb-2">Competitive Prices</h5>
-                    <p class="text-muted" style="font-size:0.9rem;">Fair pricing that gives you the best value for every
-                        kwacha spent on your project.</p>
+                    <p class="text-muted" style="font-size:0.9rem;">Fair pricing that gives you the best value for every kwacha spent.</p>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="300">
+            <div class="col-md-6 col-lg-3">
                 <div class="feature-box">
                     <div class="icon"><i class="bi bi-people-fill"></i></div>
                     <h5 class="mb-2">Expert Team</h5>
-                    <p class="text-muted" style="font-size:0.9rem;">Experienced professionals ready to advise and
-                        execute your construction projects.</p>
+                    <p class="text-muted" style="font-size:0.9rem;">Experienced professionals ready to advise on all your projects.</p>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="450">
+            <div class="col-md-6 col-lg-3">
                 <div class="feature-box">
                     <div class="icon"><i class="bi bi-clock-fill"></i></div>
                     <h5 class="mb-2">On-Time Delivery</h5>
-                    <p class="text-muted" style="font-size:0.9rem;">We respect your timeline. Projects and deliveries
-                        completed as scheduled.</p>
+                    <p class="text-muted" style="font-size:0.9rem;">We respect your timeline. Deliveries completed as scheduled.</p>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- FEATURED PRODUCTS -->
+<!-- ══ FEATURED PRODUCTS ════════════════════════════════════ -->
 {% if featured_products %}
-<section class="products-section">
+<section style="padding:90px 0;" class="reveal">
     <div class="container">
-        <div class="d-flex justify-content-between align-items-end mb-5">
-            <div data-aos="fade-up">
+        <div class="d-flex justify-content-between align-items-end mb-5 flex-wrap gap-3">
+            <div>
                 <span class="section-label">What We Offer</span>
                 <h2 class="section-title mt-2">Featured <span>Products</span></h2>
                 <div class="divider-red"></div>
             </div>
-            <a href="{% url 'product_list' %}" class="btn-outline-red d-none d-md-inline-block" data-aos="fade-left"
-                data-aos-delay="200" style="display:inline-block;padding:10px 28px;">
+            <a href="{% url 'product_list' %}" class="btn-outline-red text-decoration-none" style="display:inline-block;padding:10px 28px;">
                 View All Products <i class="bi bi-arrow-right ms-1"></i>
             </a>
         </div>
-        <div class="row g-4">
+        <div class="row g-4 reveal-stagger">
             {% for product in featured_products %}
-            <div class="col-md-6 col-lg-4" data-aos="fade-up"
-                data-aos-delay="{{ forloop.counter0|add:1|stringformat:'s' }}00">
-                <div class="product-card">
-                    <div class="img-wrap">
-                        <img src="{% safe_image_url product.image 600 400 product.name %}" alt="{{ product.name }}"
-                            loading="lazy">
+            <div class="col-md-6 col-lg-4">
+                <div style="background:white;border:1px solid #eee;overflow:hidden;transition:all 0.3s;height:100%;"
+                     onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 8px 30px rgba(214,40,40,0.1)';this.style.borderColor='var(--red)'"
+                     onmouseout="this.style.transform='';this.style.boxShadow='';this.style.borderColor='#eee'">
+                    <div style="height:230px;overflow:hidden;background:#f5f5f5;">
+                        <img src="{% safe_image_url product.image 600 230 product.name %}"
+                             alt="{{ product.name }}"
+                             style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s;">
                     </div>
-                    <div class="body">
-                        <div class="category-tag">{{ product.category.name }}</div>
-                        <h5>{{ product.name }}</h5>
-                        <p class="text-muted mb-3" style="font-size:0.88rem;">{{ product.description|striptags|truncatewords:18|safe }}
-                        </p>
+                    <div style="padding:20px;">
+                        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--red);font-weight:600;">{{ product.category.name }}</div>
+                        <h5 style="font-family:'Oswald',sans-serif;font-size:1.15rem;margin:6px 0 10px;">{{ product.name }}</h5>
+                        <p class="text-muted mb-3" style="font-size:0.88rem;">{{ product.description|striptags|truncatewords:15 }}</p>
+                        {% if product.price %}<p style="font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--red);margin-bottom:12px;">MK {{ product.price|floatformat:0 }}</p>{% endif %}
                         <div class="d-flex gap-2">
-                            <a href="{% url 'product_detail' product.slug %}" class="btn-red"
-                                style="font-size:0.82rem;padding:8px 20px;text-decoration:none;">
-                                View Details
-                            </a>
-                            <a href="https://wa.me/{{ site.whatsapp_number }}?text=Hello, I'm interested in {{ product.name }}"
-                                target="_blank" class="btn btn-sm"
-                                style="background:#25D366;color:white;font-family:'Oswald',sans-serif;letter-spacing:0.05em;">
-                                <i class="bi bi-whatsapp me-1"></i> Enquire
+                            <a href="{% url 'product_detail' product.slug %}" class="btn-red text-decoration-none" style="font-size:0.82rem;padding:8px 20px;">Details</a>
+                            <a href="https://wa.me/{{ site.whatsapp_number }}?text=Hi, I'm interested in {{ product.name }}"
+                               target="_blank"
+                               class="btn btn-sm"
+                               style="background:#25D366;color:white;font-family:'Oswald',sans-serif;">
+                                <i class="bi bi-whatsapp"></i> Enquire
                             </a>
                         </div>
                     </div>
@@ -651,39 +515,31 @@
             </div>
             {% endfor %}
         </div>
-        <div class="text-center mt-4 d-md-none" data-aos="fade-up">
-            <a href="{% url 'product_list' %}" class="btn-red" style="text-decoration:none;display:inline-block;">View
-                All Products</a>
-        </div>
     </div>
 </section>
 {% endif %}
 
-<!-- SERVICES -->
+<!-- ══ SERVICES ═════════════════════════════════════════════ -->
 {% if featured_services %}
-<section class="services-section">
+<section class="services-section reveal">
     <div class="container">
-        <div class="d-flex justify-content-between align-items-end mb-5">
-            <div data-aos="fade-right">
+        <div class="d-flex justify-content-between align-items-end mb-5 flex-wrap gap-3">
+            <div>
                 <span class="section-label" style="color:rgba(255,255,255,0.5);">What We Do</span>
                 <h2 class="section-title mt-2 text-white">Our <span>Services</span></h2>
                 <div class="divider-red"></div>
             </div>
-            <a href="{% url 'service_list' %}" class="btn-outline-red d-none d-md-inline-block" data-aos="fade-left"
-                style="display:inline-block;padding:10px 28px;border-color:rgba(214,40,40,0.5);color:rgba(255,255,255,0.7);">
+            <a href="{% url 'service_list' %}" class="text-decoration-none" style="color:rgba(255,255,255,0.6);font-family:'Oswald',sans-serif;letter-spacing:0.08em;text-transform:uppercase;font-size:0.85rem;">
                 All Services <i class="bi bi-arrow-right ms-1"></i>
             </a>
         </div>
-        <div class="row g-4">
+        <div class="row g-4 reveal-stagger">
             {% for service in featured_services %}
-            <div class="col-md-6 col-lg-3" data-aos="fade-up"
-                data-aos-delay="{{ forloop.counter0|add:1|stringformat:'s' }}00">
+            <div class="col-md-6 col-lg-3">
                 <div class="service-card">
-                    <div class="icon">
-                        <i class="{{ service.icon|default:'bi-house-gear' }}"></i>
-                    </div>
+                    <div class="icon"><i class="{{ service.icon|default:'bi-house-gear' }}"></i></div>
                     <h4>{{ service.title }}</h4>
-                    <p>{{ service.short_description|truncatewords:20|safe }}</p>
+                    <p>{{ service.short_description|truncatewords:20 }}</p>
                     <a href="{% url 'service_detail' service.slug %}">Learn More <i class="bi bi-arrow-right"></i></a>
                 </div>
             </div>
@@ -693,34 +549,29 @@
 </section>
 {% endif %}
 
-<!-- RECENT PROJECTS -->
+<!-- ══ RECENT PROJECTS ══════════════════════════════════════ -->
 {% if featured_projects %}
-<section class="projects-section">
+<section class="projects-section reveal">
     <div class="container">
-        <div class="d-flex justify-content-between align-items-end mb-5">
-            <div data-aos="fade-right">
+        <div class="d-flex justify-content-between align-items-end mb-5 flex-wrap gap-3">
+            <div>
                 <span class="section-label">Our Work</span>
                 <h2 class="section-title mt-2">Recent <span>Projects</span></h2>
                 <div class="divider-red"></div>
             </div>
-            <a href="{% url 'project_list' %}" class="btn-outline-red d-none d-md-inline-block" data-aos="fade-left"
-                style="display:inline-block;padding:10px 28px;">
+            <a href="{% url 'project_list' %}" class="btn-outline-red text-decoration-none" style="display:inline-block;padding:10px 28px;">
                 All Projects <i class="bi bi-arrow-right ms-1"></i>
             </a>
         </div>
         <div class="row g-3">
             {% for project in featured_projects %}
-            <div class="col-md-{% if forloop.first %}8{% else %}4{% endif %}" data-aos="fade-up"
-                data-aos-delay="{{ forloop.counter0|add:1|stringformat:'s' }}00">
+            <div class="col-md-{% if forloop.first %}8{% else %}4{% endif %}">
                 <a href="{% url 'project_detail' project.slug %}" class="d-block text-decoration-none">
                     <div class="project-card">
-                        <img src="{% safe_image_url project.cover_image 800 400 project.title %}"
-                            alt="{{ project.title }}" loading="lazy">
+                        <img src="{% safe_image_url project.cover_image 800 400 project.title %}" alt="{{ project.title }}">
                         <div class="overlay">
                             <h5>{{ project.title }}</h5>
-                            {% if project.location %}
-                            <span class="location"><i class="bi bi-geo-alt-fill me-1"></i>{{ project.location }}</span>
-                            {% endif %}
+                            {% if project.location %}<span class="location"><i class="bi bi-geo-alt-fill me-1"></i>{{ project.location }}</span>{% endif %}
                         </div>
                     </div>
                 </a>
@@ -731,24 +582,19 @@
 </section>
 {% endif %}
 
-<!-- CTA -->
-<section class="cta-section">
+<!-- ══ CTA ══════════════════════════════════════════════════ -->
+<section class="cta-section reveal">
     <div class="container" style="position:relative;z-index:2;">
         <div class="row align-items-center">
-            <div class="col-lg-7 mb-4 mb-lg-0" data-aos="fade-right">
+            <div class="col-lg-7 mb-4 mb-lg-0">
                 <h2>Ready to Start Your <br>Building Project?</h2>
-                <p class="mt-3">Contact us today for a free quote. Our experts are ready to help you build your vision
-                    in Malawi.</p>
+                <p class="mt-3">Contact us today for a free quote. Our experts are ready to help you build your vision in Malawi.</p>
             </div>
-            <div class="col-lg-5 text-lg-end" data-aos="fade-left">
+            <div class="col-lg-5 text-lg-end">
                 <div class="d-flex flex-wrap gap-3 justify-content-lg-end">
-                    <a href="{% url 'contact' %}" class="btn-white">
-                        <i class="bi bi-envelope me-2"></i>Get Free Quote
-                    </a>
+                    <a href="{% url 'contact' %}" class="btn-white"><i class="bi bi-envelope me-2"></i>Get Free Quote</a>
                     <a href="https://wa.me/{{ site.whatsapp_number }}?text=Hello! I want to start a building project."
-                        target="_blank" class="btn-wa-cta">
-                        <i class="bi bi-whatsapp me-2"></i>WhatsApp Us
-                    </a>
+                       target="_blank" class="btn-wa-cta"><i class="bi bi-whatsapp me-2"></i>WhatsApp Us</a>
                 </div>
                 <p class="mt-3" style="color:rgba(255,255,255,0.7);font-size:0.85rem;">
                     <i class="bi bi-telephone me-1"></i> Or call: <strong>{{ site.phone }}</strong>
@@ -758,28 +604,22 @@
     </div>
 </section>
 
-<!-- TESTIMONIALS -->
+<!-- ══ TESTIMONIALS ══════════════════════════════════════════ -->
 {% if testimonials %}
-<section class="testimonials-section">
+<section class="testimonials-section reveal">
     <div class="container">
-        <div class="text-center mb-5" data-aos="fade-down">
+        <div class="text-center mb-5">
             <span class="section-label">What Clients Say</span>
             <h2 class="section-title mt-2">Customer <span>Reviews</span></h2>
             <div class="divider-red mx-auto"></div>
         </div>
-        <div class="row g-4">
+        <div class="row g-4 reveal-stagger">
             {% for t in testimonials %}
-            <div class="col-md-6 col-lg-3" data-aos="flip-left"
-                data-aos-delay="{{ forloop.counter0|add:1|stringformat:'s' }}00">
+            <div class="col-md-6 col-lg-3">
                 <div class="testimonial-card">
                     <div class="quote-icon">"</div>
                     <div class="stars">
-                        {% for i in "12345" %}
-                        {% if forloop.counter <= t.rating %} <i class="bi bi-star-fill"></i>
-                            {% else %}
-                            <i class="bi bi-star"></i>
-                            {% endif %}
-                            {% endfor %}
+                        {% for i in "12345" %}{% if forloop.counter <= t.rating %}<i class="bi bi-star-fill"></i>{% else %}<i class="bi bi-star"></i>{% endif %}{% endfor %}
                     </div>
                     <p>"{{ t.message|truncatewords:30 }}"</p>
                     <div class="name">{{ t.name }}</div>

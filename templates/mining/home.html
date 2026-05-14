@@ -1,0 +1,170 @@
+{% extends 'mining/base_mining.html' %}
+{% load static image_tags %}
+{% block title %}Home{% endblock %}
+
+{% block extra_css %}
+<style>
+.hero { position:relative; min-height:100vh; display:flex; align-items:center; background:var(--black); overflow:hidden; }
+.hero-bg { position:absolute; inset:0; background-size:cover; background-position:center; opacity:0.28; }
+.hero-overlay { position:absolute; inset:0; background:linear-gradient(135deg, rgba(10,10,10,.9) 0%, rgba(120,53,15,.35) 100%); }
+.hero-content { position:relative; z-index:2; }
+.hero h1 { font-size:clamp(2.2rem,5.5vw,3.8rem); color:#fff; text-transform:uppercase; line-height:1.05; }
+.hero h1 span { color:var(--primary); display:block; }
+.hero p { color:rgba(255,255,255,.72); font-size:1.05rem; max-width:520px; line-height:1.75; margin-bottom:32px; }
+.hero-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(180,83,9,.15); border:1px solid rgba(180,83,9,.4); color:rgba(255,255,255,.8); padding:5px 16px; font-family:'Oswald',sans-serif; font-size:.78rem; letter-spacing:.18em; text-transform:uppercase; margin-bottom:22px; }
+.mineral-card { border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.03); padding:28px 22px; height:100%; transition:all .3s; position:relative; overflow:hidden; }
+.mineral-card::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:var(--primary); transform:scaleY(0); transition:transform .3s; transform-origin:bottom; }
+.mineral-card:hover { border-color:rgba(180,83,9,.3); background:rgba(255,255,255,.05); }
+.mineral-card:hover::before { transform:scaleY(1); }
+.op-card { position:relative; overflow:hidden; height:300px; }
+.op-card img { width:100%; height:100%; object-fit:cover; transition:transform .5s; filter:brightness(.75) saturate(.9); }
+.op-card:hover img { transform:scale(1.07); filter:brightness(.85) saturate(1); }
+.op-card .ov { position:absolute; inset:0; background:linear-gradient(to top,rgba(0,0,0,.88) 0%,transparent 55%); display:flex; flex-direction:column; justify-content:flex-end; padding:24px; }
+.op-card h5 { color:#fff; font-size:1.05rem; margin-bottom:4px; }
+.op-card .loc { color:rgba(255,255,255,.55); font-size:.8rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg" style="background-image:url('{% if msite.hero_image %}{{ msite.hero_image.url }}{% else %}{% static "images/hero-bg.jpg" %}{% endif %}');"></div>
+  <div class="hero-overlay"></div>
+  <div class="container hero-content">
+    <div class="row">
+      <div class="col-lg-7">
+        <div class="hero-badge"><i class="bi bi-gem" style="color:var(--primary)"></i> Responsible Mineral Extraction</div>
+        <h1>{{ msite.hero_heading|wordwrap:15|linebreaksbr }}</h1>
+        <p class="mt-3">{{ msite.hero_sub }}</p>
+        <div class="d-flex flex-wrap gap-3">
+          <a href="{% url 'mining:minerals' %}" class="btn-primary-m"><i class="bi bi-gem me-2"></i>Our Minerals</a>
+          <a href="{% url 'mining:contact' %}" class="btn-outline-m" style="color:rgba(255,255,255,.75);border-color:rgba(255,255,255,.35);">Enquire Now</a>
+        </div>
+        <div class="d-flex gap-5 mt-5 pt-4" style="border-top:1px solid rgba(255,255,255,.1);">
+          <div><div style="font-family:'Oswald',sans-serif;font-size:1.9rem;color:#fff;font-weight:700;">{{ msite.years_exp }}<span style="color:var(--primary);">+</span></div><div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em;margin-top:3px;">Years</div></div>
+          {% if msite.tonnes_mined %}<div><div style="font-family:'Oswald',sans-serif;font-size:1.9rem;color:#fff;font-weight:700;">{{ msite.tonnes_mined }}</div><div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em;margin-top:3px;">Tonnes Mined</div></div>{% endif %}
+          <div><div style="font-family:'Oswald',sans-serif;font-size:1.9rem;color:#fff;font-weight:700;">{{ msite.sites }}<span style="color:var(--primary);">+</span></div><div style="font-size:.72rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em;margin-top:3px;">Sites</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <a href="#minerals-section" style="position:absolute;bottom:28px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.35);font-size:1.5rem;text-decoration:none;animation:bounceDown 2s ease-in-out infinite;"><i class="bi bi-chevron-double-down"></i></a>
+</section>
+
+<!-- FEATURED MINERALS -->
+{% if featured_minerals %}
+<section id="minerals-section" style="padding:90px 0;background:#0A0A0A;" class="reveal">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-end mb-5 flex-wrap gap-3">
+      <div>
+        <span class="section-label">What We Extract</span>
+        <h2 class="section-title mt-2 text-white">Our <span>Minerals</span></h2>
+        <div class="divider-m"></div>
+      </div>
+      <a href="{% url 'mining:minerals' %}" class="btn-outline-m">View All <i class="bi bi-arrow-right ms-1"></i></a>
+    </div>
+    <div class="row g-4 reveal-stagger">
+      {% for m in featured_minerals %}
+      <div class="col-md-6 col-lg-4">
+        <div class="mineral-card">
+          <img src="{% safe_image_url m.image 400 220 m.name %}" alt="{{ m.name }}" style="width:100%;height:180px;object-fit:cover;margin-bottom:18px;">
+          <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:var(--primary);font-weight:600;margin-bottom:6px;">{{ m.category.name }}</div>
+          <h5 style="font-family:'Oswald',sans-serif;color:#fff;font-size:1.15rem;margin-bottom:8px;">{{ m.name }}</h5>
+          <p style="color:rgba(255,255,255,.55);font-size:.88rem;line-height:1.65;">{{ m.description|striptags|truncatewords:18 }}</p>
+          <a href="{% url 'mining:contact' %}" style="color:var(--primary);font-family:'Oswald',sans-serif;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;margin-top:10px;display:inline-block;">Enquire <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- OPERATIONS -->
+{% if operations %}
+<section style="padding:90px 0;background:#111;" class="reveal">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-end mb-5 flex-wrap gap-3">
+      <div>
+        <span class="section-label" style="color:rgba(255,255,255,.45);">Where We Work</span>
+        <h2 class="section-title mt-2 text-white">Mining <span>Operations</span></h2>
+        <div class="divider-m"></div>
+      </div>
+      <a href="{% url 'mining:operations' %}" class="btn-outline-m">All Sites <i class="bi bi-arrow-right ms-1"></i></a>
+    </div>
+    <div class="row g-3">
+      {% for op in operations %}
+      <div class="col-md-{% if forloop.first %}8{% else %}4{% endif %}">
+        <div class="op-card">
+          <img src="{% safe_image_url op.image 800 400 op.name %}" alt="{{ op.name }}">
+          <div class="ov">
+            <h5>{{ op.name }}</h5>
+            <span class="loc"><i class="bi bi-geo-alt-fill me-1"></i>{{ op.location }}</span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- WHY CHOOSE US -->
+<section style="padding:90px 0;background:#0A0A0A;" class="reveal">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="section-label">Our Edge</span>
+      <h2 class="section-title mt-2 text-white">Why Choose <span>Us</span></h2>
+      <div class="divider-m mx-auto"></div>
+    </div>
+    <div class="row g-4 reveal-stagger">
+      {% for icon,title,desc in "bi-shield-check-fill,Responsible Mining,We operate within all environmental regulations and community engagement standards.|bi-gear-fill,Advanced Equipment,Modern machinery and skilled operators for maximum efficiency and safety.|bi-people-fill,Local Expertise,Deep knowledge of Malawi's mineral geology and regulatory framework.|bi-clock-fill,Reliable Supply,Consistent production volumes and on-time delivery to all customers."|split:"|" %}
+      {% endfor %}
+      <div class="col-md-6 col-lg-3">
+        <div style="text-align:center;padding:36px 24px;border:1px solid rgba(255,255,255,.07);height:100%;transition:border-color .3s;" onmouseover="this.style.borderColor='rgba(180,83,9,.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,.07)'">
+          <div style="font-size:2.2rem;color:var(--primary);margin-bottom:16px;"><i class="bi bi-shield-check-fill"></i></div>
+          <h5 style="font-family:'Oswald',sans-serif;color:#fff;text-transform:uppercase;margin-bottom:10px;">Responsible Mining</h5>
+          <p style="color:rgba(255,255,255,.5);font-size:.88rem;line-height:1.7;">We operate within all environmental regulations and community engagement standards.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div style="text-align:center;padding:36px 24px;border:1px solid rgba(255,255,255,.07);height:100%;transition:border-color .3s;" onmouseover="this.style.borderColor='rgba(180,83,9,.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,.07)'">
+          <div style="font-size:2.2rem;color:var(--primary);margin-bottom:16px;"><i class="bi bi-gear-fill"></i></div>
+          <h5 style="font-family:'Oswald',sans-serif;color:#fff;text-transform:uppercase;margin-bottom:10px;">Advanced Equipment</h5>
+          <p style="color:rgba(255,255,255,.5);font-size:.88rem;line-height:1.7;">Modern machinery and skilled operators for maximum efficiency and safety.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div style="text-align:center;padding:36px 24px;border:1px solid rgba(255,255,255,.07);height:100%;transition:border-color .3s;" onmouseover="this.style.borderColor='rgba(180,83,9,.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,.07)'">
+          <div style="font-size:2.2rem;color:var(--primary);margin-bottom:16px;"><i class="bi bi-map-fill"></i></div>
+          <h5 style="font-family:'Oswald',sans-serif;color:#fff;text-transform:uppercase;margin-bottom:10px;">Local Expertise</h5>
+          <p style="color:rgba(255,255,255,.5);font-size:.88rem;line-height:1.7;">Deep knowledge of Malawi's mineral geology and regulatory framework.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div style="text-align:center;padding:36px 24px;border:1px solid rgba(255,255,255,.07);height:100%;transition:border-color .3s;" onmouseover="this.style.borderColor='rgba(180,83,9,.4)'" onmouseout="this.style.borderColor='rgba(255,255,255,.07)'">
+          <div style="font-size:2.2rem;color:var(--primary);margin-bottom:16px;"><i class="bi bi-clock-fill"></i></div>
+          <h5 style="font-family:'Oswald',sans-serif;color:#fff;text-transform:uppercase;margin-bottom:10px;">Reliable Supply</h5>
+          <p style="color:rgba(255,255,255,.5);font-size:.88rem;line-height:1.7;">Consistent production volumes and on-time delivery to all customers.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="background:var(--accent);border-top:3px solid var(--primary);padding:70px 0;">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-7 mb-4 mb-lg-0">
+        <h2 style="color:#fff;font-size:2.1rem;text-transform:uppercase;">Ready to Source Quality Minerals?</h2>
+        <p style="color:rgba(255,255,255,.75);margin-top:10px;">Contact our team for pricing, availability, and logistics.</p>
+      </div>
+      <div class="col-lg-5 text-lg-end d-flex flex-wrap gap-3 justify-content-lg-end">
+        <a href="{% url 'mining:contact' %}" style="background:#fff;color:var(--accent);font-family:'Oswald',sans-serif;letter-spacing:.1em;text-transform:uppercase;padding:14px 32px;text-decoration:none;display:inline-block;font-size:.9rem;">Enquire Now</a>
+        {% if msite.whatsapp %}<a href="https://wa.me/{{ msite.whatsapp }}" target="_blank" style="background:#25D366;color:#fff;font-family:'Oswald',sans-serif;letter-spacing:.1em;text-transform:uppercase;padding:14px 32px;text-decoration:none;display:inline-block;font-size:.9rem;"><i class="bi bi-whatsapp me-2"></i>WhatsApp</a>{% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

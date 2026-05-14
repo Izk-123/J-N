@@ -1,21 +1,12 @@
-from django.views.generic import ListView, DetailView
+from django.shortcuts import render, get_object_or_404
 from .models import Service
 
 
-class ServiceListView(ListView):
-    model = Service
-    template_name = 'services/service_list.html'
-    context_object_name = 'services'
-
-    def get_queryset(self):
-        return super().get_queryset().filter(is_active=True)
+def service_list(request):
+    services = Service.objects.filter(is_active=True)
+    return render(request, 'services/service_list.html', {'services': services})
 
 
-class ServiceDetailView(DetailView):
-    model = Service
-    template_name = 'services/service_detail.html'
-    context_object_name = 'service'
-    slug_url_kwarg = 'slug'
-
-    def get_queryset(self):
-        return super().get_queryset().filter(is_active=True)
+def service_detail(request, slug):
+    service = get_object_or_404(Service, slug=slug, is_active=True)
+    return render(request, 'services/service_detail.html', {'service': service})

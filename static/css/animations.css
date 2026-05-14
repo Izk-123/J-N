@@ -1,0 +1,151 @@
+/* ================================================================
+   J&N Building Products — Public Site Animations
+   Adds: entrance animations, hover effects, scroll-triggered reveals
+   ================================================================ */
+
+/* ── Page load: navbar slides down ───────────────────────────── */
+@keyframes navbarIn {
+  from { transform: translateY(-100%); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+.navbar-main {
+  animation: navbarIn 0.4s cubic-bezier(.22,.68,0,1.1) both;
+}
+
+/* ── Scroll-reveal base state ─────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.55s cubic-bezier(.22,.68,0,1.1),
+              transform 0.55s cubic-bezier(.22,.68,0,1.1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger children when parent becomes visible */
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+.reveal-stagger.visible > *:nth-child(1) { opacity:1; transform:none; transition-delay: 0.05s; }
+.reveal-stagger.visible > *:nth-child(2) { opacity:1; transform:none; transition-delay: 0.12s; }
+.reveal-stagger.visible > *:nth-child(3) { opacity:1; transform:none; transition-delay: 0.19s; }
+.reveal-stagger.visible > *:nth-child(4) { opacity:1; transform:none; transition-delay: 0.26s; }
+.reveal-stagger.visible > *:nth-child(5) { opacity:1; transform:none; transition-delay: 0.33s; }
+.reveal-stagger.visible > *:nth-child(6) { opacity:1; transform:none; transition-delay: 0.40s; }
+
+/* ── Hero counter number roll-up ─────────────────────────────── */
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(12px) scale(0.9); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.hero-stat .num {
+  animation: countUp 0.6s cubic-bezier(.22,.68,0,1.2) both;
+}
+.hero-stat:nth-child(1) .num { animation-delay: 0.5s; }
+.hero-stat:nth-child(2) .num { animation-delay: 0.65s; }
+.hero-stat:nth-child(3) .num { animation-delay: 0.80s; }
+
+/* ── Hero text cascade ───────────────────────────────────────── */
+@keyframes heroTextIn {
+  from { opacity: 0; transform: translateX(-24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.hero-badge  { animation: heroTextIn 0.4s ease both; animation-delay: 0.1s; }
+.hero h1     { animation: heroTextIn 0.5s ease both; animation-delay: 0.2s; }
+.hero p      { animation: heroTextIn 0.5s ease both; animation-delay: 0.3s; }
+.hero .d-flex.flex-wrap { animation: heroTextIn 0.5s ease both; animation-delay: 0.4s; }
+
+/* ── Floating hero image ─────────────────────────────────────── */
+@keyframes floatUpIn {
+  from { opacity: 0; transform: translateY(30px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.hero-image-frame {
+  animation: floatUpIn 0.7s cubic-bezier(.22,.68,0,1.1) both;
+  animation-delay: 0.25s;
+}
+
+/* Gentle float loop for hero image */
+@keyframes gentleFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+.hero-image-frame img {
+  animation: gentleFloat 5s ease-in-out infinite;
+}
+
+/* ── Services strip ticker ───────────────────────────────────── */
+.services-strip .item {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeUp 0.4s ease forwards;
+}
+.services-strip .item:nth-child(1) { animation-delay: 0.05s; }
+.services-strip .item:nth-child(2) { animation-delay: 0.12s; }
+.services-strip .item:nth-child(3) { animation-delay: 0.19s; }
+.services-strip .item:nth-child(4) { animation-delay: 0.26s; }
+
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── WhatsApp button attention pulse ─────────────────────────── */
+@keyframes waPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(37,211,102,0.5); }
+  70%  { box-shadow: 0 0 0 14px rgba(37,211,102,0); }
+  100% { box-shadow: 0 0 0 0 rgba(37,211,102,0); }
+}
+.whatsapp-float a {
+  animation: waPulse 2.2s ease-out infinite !important;
+}
+
+/* ── Feature boxes ───────────────────────────────────────────── */
+.feature-box {
+  transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease !important;
+}
+.feature-box .icon {
+  transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
+}
+.feature-box:hover .icon {
+  transform: scale(1.15) rotate(-5deg);
+}
+
+/* ── Product / service card micro-interactions ───────────────── */
+.product-card, .service-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease !important;
+}
+
+/* ── Section label slide-in ─────────────────────────────────── */
+@keyframes labelIn {
+  from { opacity: 0; letter-spacing: 0.4em; }
+  to   { opacity: 1; letter-spacing: 0.2em; }
+}
+.reveal.visible .section-label {
+  animation: labelIn 0.5s ease both;
+}
+.reveal.visible .divider-red {
+  animation: growWidth 0.5s ease both;
+  animation-delay: 0.2s;
+}
+@keyframes growWidth {
+  from { width: 0; }
+  to   { width: 50px; }
+}
+
+/* ── Page transition overlay ─────────────────────────────────── */
+#page-loader {
+  position: fixed; inset: 0; z-index: 99999;
+  background: #D62828;
+  transform: scaleX(1);
+  transform-origin: left;
+  transition: transform 0.45s cubic-bezier(.77,0,.18,1);
+  pointer-events: none;
+}
+#page-loader.loaded {
+  transform: scaleX(0);
+  transform-origin: right;
+}

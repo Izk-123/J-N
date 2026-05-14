@@ -12,7 +12,6 @@
         cursor: pointer;
         background: var(--black);
     }
-
     .gallery-item img {
         width: 100%;
         height: 220px;
@@ -20,12 +19,10 @@
         transition: transform 0.5s, opacity 0.3s;
         display: block;
     }
-
     .gallery-item:hover img {
         transform: scale(1.08);
         opacity: 0.7;
     }
-
     .gallery-item .overlay {
         position: absolute;
         inset: 0;
@@ -35,16 +32,11 @@
         opacity: 0;
         transition: opacity 0.3s;
     }
-
-    .gallery-item:hover .overlay {
-        opacity: 1;
-    }
-
+    .gallery-item:hover .overlay { opacity: 1; }
     .gallery-item .overlay i {
         color: white;
         font-size: 2rem;
     }
-
     .filter-btn {
         background: transparent;
         border: 2px solid #ddd;
@@ -59,9 +51,7 @@
         text-decoration: none;
         display: inline-block;
     }
-
-    .filter-btn:hover,
-    .filter-btn.active {
+    .filter-btn:hover, .filter-btn.active {
         background: var(--red);
         border-color: var(--red);
         color: white;
@@ -72,23 +62,18 @@
         display: none;
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.95);
+        background: rgba(0,0,0,0.95);
         z-index: 9998;
         align-items: center;
         justify-content: center;
         flex-direction: column;
     }
-
-    #lightbox.active {
-        display: flex;
-    }
-
+    #lightbox.active { display: flex; }
     #lightbox img {
         max-width: 90vw;
         max-height: 85vh;
         object-fit: contain;
     }
-
     #lightbox .close-btn {
         position: absolute;
         top: 20px;
@@ -100,12 +85,11 @@
         border: none;
         line-height: 1;
     }
-
     #lightbox .nav-btn {
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
-        background: rgba(214, 40, 40, 0.8);
+        background: rgba(214,40,40,0.8);
         color: white;
         border: none;
         width: 48px;
@@ -116,14 +100,8 @@
         align-items: center;
         justify-content: center;
     }
-
-    #lightbox .prev-btn {
-        left: 20px;
-    }
-
-    #lightbox .next-btn {
-        right: 20px;
-    }
+    #lightbox .prev-btn { left: 20px; }
+    #lightbox .next-btn { right: 20px; }
 </style>
 {% endblock %}
 
@@ -132,14 +110,12 @@
 
 <div style="background:var(--black);padding:60px 0 40px;">
     <div class="container">
-        <span class="section-label" data-aos="fade-down">Visual Portfolio</span>
-        <h1 class="section-title text-white mt-2" data-aos="fade-right">Our <span
-                style="color:var(--red)">Gallery</span></h1>
-        <div class="divider-red" data-aos="fade-right" data-aos-delay="100"></div>
-        <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
+        <span class="section-label">Visual Portfolio</span>
+        <h1 class="section-title text-white mt-2">Our <span style="color:var(--red)">Gallery</span></h1>
+        <div class="divider-red"></div>
+        <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0" style="font-size:0.85rem;">
-                <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color:rgba(255,255,255,0.5);">Home</a>
-                </li>
+                <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color:rgba(255,255,255,0.5);">Home</a></li>
                 <li class="breadcrumb-item active text-white-50">Gallery</li>
             </ol>
         </nav>
@@ -149,26 +125,20 @@
 <section style="padding:60px 0;">
     <div class="container">
         <!-- Filter buttons -->
-        <div class="d-flex flex-wrap gap-2 mb-5" data-aos="fade-up">
+        <div class="d-flex flex-wrap gap-2 mb-5">
             <a href="{% url 'gallery' %}" class="filter-btn {% if not active_category %}active{% endif %}">All</a>
-            <a href="?category=product"
-                class="filter-btn {% if active_category == 'product' %}active{% endif %}">Products</a>
-            <a href="?category=project"
-                class="filter-btn {% if active_category == 'project' %}active{% endif %}">Projects</a>
-            <a href="?category=general"
-                class="filter-btn {% if active_category == 'general' %}active{% endif %}">General</a>
+            <a href="?category=product" class="filter-btn {% if active_category == 'product' %}active{% endif %}">Products</a>
+            <a href="?category=project" class="filter-btn {% if active_category == 'project' %}active{% endif %}">Projects</a>
+            <a href="?category=general" class="filter-btn {% if active_category == 'general' %}active{% endif %}">General</a>
         </div>
 
         {% if images %}
         <div class="row g-2" id="galleryGrid">
             {% for img in images %}
-            <div class="col-6 col-md-4 col-lg-3" data-aos="fade-up"
-                data-aos-delay="{{ forloop.counter0|add:1|stringformat:'s' }}00">
+            <div class="col-6 col-md-4 col-lg-3">
                 <div class="gallery-item" onclick="openLightbox({{ forloop.counter0 }})">
-                    <img src="{% safe_image_url img.image 800 600 'Gallery' %}"
-                        alt="{{ img.title|default:'Gallery image' }}"
-                        data-src="{% safe_image_url img.image 800 600 'Gallery' %}"
-                        data-title="{{ img.title|default:'' }}" loading="lazy">
+                    <img src="{% safe_image_url img.image 800 600 'Gallery' %}" alt="{{ img.title|default:'Gallery image' }}"
+                         data-src="{% safe_image_url img.image 800 600 'Gallery' %}" data-title="{{ img.title|default:'' }}">
                     <div class="overlay">
                         <i class="bi bi-zoom-in"></i>
                     </div>
@@ -177,7 +147,7 @@
             {% endfor %}
         </div>
         {% else %}
-        <div class="text-center py-5" data-aos="fade-up">
+        <div class="text-center py-5">
             <i class="bi bi-images" style="font-size:3rem;color:#ccc;"></i>
             <p class="mt-3 text-muted">Gallery images coming soon.</p>
         </div>
@@ -185,7 +155,7 @@
     </div>
 </section>
 
-<!-- Lightbox unchanged -->
+<!-- Lightbox -->
 <div id="lightbox">
     <button class="close-btn" onclick="closeLightbox()"><i class="bi bi-x-lg"></i></button>
     <button class="nav-btn prev-btn" onclick="changeImage(-1)"><i class="bi bi-chevron-left"></i></button>
@@ -199,43 +169,43 @@
 {% load image_tags %}
 {% block extra_js %}
 <script>
-    const images = document.querySelectorAll('#galleryGrid .gallery-item img');
-    const srcs = Array.from(images).map(i => ({ src: i.dataset.src, title: i.dataset.title }));
-    let current = 0;
+const images = document.querySelectorAll('#galleryGrid .gallery-item img');
+const srcs = Array.from(images).map(i => ({ src: i.dataset.src, title: i.dataset.title }));
+let current = 0;
 
-    function openLightbox(index) {
-        current = index;
-        document.getElementById('lightboxImg').src = srcs[index].src;
-        document.getElementById('lightboxTitle').textContent = srcs[index].title;
-        document.getElementById('lightbox').classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
+function openLightbox(index) {
+    current = index;
+    document.getElementById('lightboxImg').src = srcs[index].src;
+    document.getElementById('lightboxTitle').textContent = srcs[index].title;
+    document.getElementById('lightbox').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
 
-    function closeLightbox() {
-        document.getElementById('lightbox').classList.remove('active');
-        document.body.style.overflow = '';
-    }
+function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('active');
+    document.body.style.overflow = '';
+}
 
-    function changeImage(dir) {
-        current = (current + dir + srcs.length) % srcs.length;
-        const lb = document.getElementById('lightboxImg');
-        lb.style.opacity = '0';
-        setTimeout(() => {
-            lb.src = srcs[current].src;
-            document.getElementById('lightboxTitle').textContent = srcs[current].title;
-            lb.style.opacity = '1';
-        }, 150);
-    }
+function changeImage(dir) {
+    current = (current + dir + srcs.length) % srcs.length;
+    const lb = document.getElementById('lightboxImg');
+    lb.style.opacity = '0';
+    setTimeout(() => {
+        lb.src = srcs[current].src;
+        document.getElementById('lightboxTitle').textContent = srcs[current].title;
+        lb.style.opacity = '1';
+    }, 150);
+}
 
-    document.getElementById('lightbox').addEventListener('click', function (e) {
-        if (e.target === this) closeLightbox();
-    });
+document.getElementById('lightbox').addEventListener('click', function(e) {
+    if (e.target === this) closeLightbox();
+});
 
-    document.addEventListener('keydown', function (e) {
-        if (!document.getElementById('lightbox').classList.contains('active')) return;
-        if (e.key === 'Escape') closeLightbox();
-        if (e.key === 'ArrowRight') changeImage(1);
-        if (e.key === 'ArrowLeft') changeImage(-1);
-    });
+document.addEventListener('keydown', function(e) {
+    if (!document.getElementById('lightbox').classList.contains('active')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowRight') changeImage(1);
+    if (e.key === 'ArrowLeft') changeImage(-1);
+});
 </script>
 {% endblock %}

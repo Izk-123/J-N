@@ -1,0 +1,567 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ site.company_name|default:"Blue Rock Wall Putty" }}{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}{{ site.meta_description|default:site.tagline }}{% endblock %}">
+    
+    <!-- Bootstrap 5 + Icons + Fonts -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- AOS (Animate on Scroll) -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        /* ---------- CSS Variables ---------- */
+        :root {
+            --primary: {{ site.primary_color|default:'#1e3a8a' }};
+            --primary-dark: {{ site.secondary_color|default:'#0f2b6d' }};
+            --accent: #f4b400;
+            --gray-50: #f9fafb;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --glass-bg: rgba(255, 255, 255, 0.92);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 8px 28px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.12);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-800);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        
+        h1, h2, h3, h4, h5, h6, .nav-link, .btn, .navbar-brand {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 600;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--gray-100);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+        
+        /* Advanced Spinner */
+        .advanced-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(0, 0, 0, 0.08);
+            border-top: 4px solid var(--primary);
+            border-right: 4px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.3);
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .htmx-indicator {
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .htmx-request .htmx-indicator {
+            opacity: 1;
+        }
+        
+        /* Glassmorphism Base */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        .glass-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+        
+        /* Navbar */
+        .navbar-gloss {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.02);
+            transition: all 0.3s;
+        }
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.7rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.01em;
+        }
+        .navbar-brand:hover {
+            opacity: 0.9;
+        }
+        .nav-link {
+            font-weight: 600;
+            color: var(--gray-800) !important;
+            padding: 0.5rem 0 !important;
+            margin: 0 0.75rem;
+            position: relative;
+            transition: color 0.2s;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary) !important;
+        }
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+        
+        /* Hero Section with Enhanced Animations */
+        .hero-modern {
+            position: relative;
+            background: linear-gradient(125deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 6rem 0 7rem;
+            margin-bottom: 3rem;
+            overflow: hidden;
+            border-radius: 0 0 3rem 3rem;
+        }
+        /* Particles */
+        .particles-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: floatParticle linear infinite;
+        }
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.6;
+            }
+            80% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100px) translateX(30px);
+                opacity: 0;
+            }
+        }
+        /* Floating shapes */
+        .hero-shape {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(60px);
+            pointer-events: none;
+            animation: floatShape alternate infinite ease-in-out;
+        }
+        @keyframes floatShape {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+            100% { transform: translate(30px, -30px) scale(1.15); opacity: 0.7; }
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        /* Text reveal */
+        .hero-title, .hero-subtitle, .hero-badge-wrapper {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        .hero-badge-wrapper { animation-delay: 0.1s; }
+        .hero-title { animation-delay: 0.2s; }
+        .hero-subtitle { animation-delay: 0.35s; }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* Floating image */
+        .hero-img {
+            transition: transform 0.3s ease-out, box-shadow 0.3s;
+            will-change: transform;
+            animation: floatImage 5s ease-in-out infinite;
+        }
+        @keyframes floatImage {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        .hero-image-wrapper:hover .hero-img {
+            transform: scale(1.02) rotateY(2deg);
+            box-shadow: 0 25px 40px rgba(0,0,0,0.2);
+        }
+        /* Glow button */
+        .glow-button {
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .glow-button:hover {
+            box-shadow: 0 0 15px rgba(255,255,255,0.5), 0 8px 20px rgba(0,0,0,0.15);
+            transform: translateY(-3px);
+        }
+        .glow-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+        .glow-button:hover::before {
+            width: 200px;
+            height: 200px;
+        }
+        .btn-glass {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            transition: 0.2s;
+        }
+        .btn-glass:hover {
+            background: white;
+            color: var(--primary);
+            border-color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* Product Card */
+        .product-tilt {
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transform-style: preserve-3d;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+        }
+        .product-tilt:hover {
+            transform: translateY(-8px) rotateX(2deg) scale(1.01);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+        .product-img {
+            transition: transform 0.6s ease;
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+        .product-tilt:hover .product-img {
+            transform: scale(1.05);
+        }
+        
+        /* Category Card */
+        .category-gloss {
+            text-align: center;
+            padding: 1.8rem 1rem;
+            border-radius: 32px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        .category-gloss:hover {
+            background: white;
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+        }
+        .category-icon {
+            font-size: 2.8rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            transition: transform 0.2s;
+        }
+        .category-gloss:hover .category-icon {
+            transform: scale(1.05);
+        }
+        
+        /* Testimonial */
+        .testimonial-glass {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 40px;
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--glass-border);
+        }
+        
+        /* Newsletter */
+        .newsletter-glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border-radius: 56px;
+            padding: 3rem 2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        
+        /* Buttons */
+        .btn {
+            font-weight: 600;
+            border-radius: 40px;
+            padding: 0.6rem 1.5rem;
+            transition: all 0.2s ease;
+        }
+        .btn-primary {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .btn-outline-primary {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .btn-outline-primary:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        /* Footer */
+        footer {
+            background: rgba(15, 23, 42, 0.96);
+            backdrop-filter: blur(8px);
+            color: #cbd5e1;
+            padding: 3rem 0 1.5rem;
+            margin-top: 5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        footer h5 {
+            color: white;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+        }
+        footer a {
+            color: #94a3b8;
+            transition: color 0.2s;
+            text-decoration: none;
+        }
+        footer a:hover {
+            color: var(--accent);
+        }
+        .social-icons a {
+            background: rgba(255,255,255,0.05);
+            width: 38px;
+            height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+        .social-icons a:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-modern {
+                padding: 3rem 0 4rem;
+                border-radius: 0 0 2rem 2rem;
+            }
+            .navbar-brand {
+                font-size: 1.3rem;
+            }
+            .hero-title {
+                font-size: 1.8rem;
+            }
+            .floating-img {
+                animation: none;
+            }
+            .particle {
+                display: none;
+            }
+        }
+        
+        /* Utilities */
+        .bg-accent { background: var(--accent); }
+        .text-primary { color: var(--primary) !important; }
+        .border-primary { border-color: var(--primary) !important; }
+        .htmx-request .product-tilt {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- Navbar (Enhanced Glass) -->
+<nav class="navbar navbar-expand-lg navbar-gloss sticky-top py-3">
+    <div class="container">
+        <a class="navbar-brand" href="/">{{ site.company_name|default:"Blue Rock" }}</a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto gap-2">
+                <li class="nav-item"><a class="nav-link" href="{% url 'products:product_list' %}">Products</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'contacts:contact' %}">Contact</a></li>
+                <li class="nav-item"><a class="nav-link" href="/">Group</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Mobile Offcanvas -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="mobileNav">
+    <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title">{{ site.company_name|default:"Blue Rock" }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="{% url 'products:product_list' %}">Products</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'contacts:contact' %}">Contact</a></li>
+            <li class="nav-item"><a class="nav-link" href="/">Group</a></li>
+        </ul>
+    </div>
+</div>
+
+<main>{% block content %}{% endblock %}</main>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-md-4">
+                <h5>{{ site.company_name }}</h5>
+                <p class="small text-white-50">{{ site.tagline }}</p>
+                <div class="social-icons d-flex gap-2 mt-3">
+                    <a href="{{ site.facebook|default:'#' }}" class="text-white-50"><i class="bi bi-facebook"></i></a>
+                    <a href="{{ site.instagram|default:'#' }}" class="text-white-50"><i class="bi bi-instagram"></i></a>
+                    <a href="https://wa.me/{{ site.whatsapp|default:'' }}" class="text-white-50"><i class="bi bi-whatsapp"></i></a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="{% url 'products:product_list' %}">Products</a></li>
+                    <li class="mb-2"><a href="{% url 'contacts:contact' %}">Contact</a></li>
+                    <li class="mb-2"><a href="/">Group Home</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Get in Touch</h5>
+                <address class="small">
+                    <i class="bi bi-geo-alt-fill me-2"></i> {{ site.address|default:"Malawi" }}<br>
+                    <i class="bi bi-telephone-fill me-2"></i> {{ site.phone|default:"+265 000 000 000" }}<br>
+                    <i class="bi bi-envelope-fill me-2"></i> {{ site.email|default:"info@example.com" }}
+                </address>
+            </div>
+        </div>
+        <hr class="mt-4 border-secondary">
+        <div class="text-center small text-white-50 pt-2">
+            &copy; {% now "Y" %} {{ site.company_name }}. Developed by <strong class="text-white">Pritech</strong>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/htmx.org@1.9.12"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({ duration: 800, once: false, mirror: true, offset: 20 });
+    
+    // Tilt effect for product cards
+    document.querySelectorAll('.product-tilt').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const rotateX = ((y / rect.height) - 0.5) * 6;
+            const rotateY = ((x / rect.width) - 0.5) * 6;
+            card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px)`;
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+        });
+    });
+    
+    // Optional mouse parallax for hero image
+    const heroImg = document.querySelector('.hero-img');
+    const heroWrapper = document.querySelector('.hero-image-wrapper');
+    if (heroImg && heroWrapper) {
+        heroWrapper.addEventListener('mousemove', (e) => {
+            const rect = heroWrapper.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width - 0.5;
+            const y = (e.clientY - rect.top) / rect.height - 0.5;
+            heroImg.style.transform = `translate(${x * 15}px, ${y * 15}px) scale(1.02)`;
+        });
+        heroWrapper.addEventListener('mouseleave', () => {
+            heroImg.style.transform = 'translate(0, 0) scale(1)';
+        });
+    }
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

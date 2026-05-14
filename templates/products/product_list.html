@@ -1,129 +1,169 @@
-{% extends 'base.html' %}
-{% load image_tags %}
+{% extends 'products/base.html' %}
 {% load static %}
 
-{% block title %}Products{% endblock %}
-
-{% block extra_css %}
-<style>
-    /* Same hover effect as home page featured products */
-    .product-card {
-        background: white;
-        border: 1px solid #eee;
-        overflow: hidden;
-        transition: all 0.3s;
-    }
-    .product-card:hover {
-        border-color: var(--red);
-        box-shadow: 0 8px 30px rgba(214,40,40,0.1);
-        transform: translateY(-4px);
-    }
-    .product-card .img-wrap {
-        height: 230px;
-        overflow: hidden;
-        background: var(--gray-light);
-    }
-    .product-card .img-wrap img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.5s;
-    }
-    .product-card:hover .img-wrap img {
-        transform: scale(1.08);
-    }
-
-    /* Keep any other custom styles */
-</style>
-{% endblock %}
+{% block title %}Products – {{ site.company_name }}{% endblock %}
 
 {% block content %}
-<!-- Page Header -->
-<div style="background:var(--black);padding:60px 0 40px;">
-    <div class="container">
-        <span class="section-label" data-aos="fade-down">Our Range</span>
-        <h1 class="section-title text-white mt-2" data-aos="fade-right">Building <span style="color:var(--red)">Products</span></h1>
-        <div class="divider-red" data-aos="fade-right" data-aos-delay="100"></div>
-        <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
-            <ol class="breadcrumb mb-0" style="font-size:0.85rem;">
-                <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color:rgba(255,255,255,0.5);">Home</a></li>
-                <li class="breadcrumb-item active text-white-50">Products</li>
-            </ol>
-        </nav>
+
+<!-- Hero Section (Enhanced Animations) -->
+<div class="hero-modern">
+    <div class="particles-container">
+        <div class="particle" style="top: 20%; left: 10%; width: 6px; height: 6px; animation-duration: 8s;"></div>
+        <div class="particle" style="top: 60%; left: 85%; width: 10px; height: 10px; animation-duration: 12s;"></div>
+        <div class="particle" style="top: 30%; left: 95%; width: 4px; height: 4px; animation-duration: 6s;"></div>
+        <div class="particle" style="top: 70%; left: 15%; width: 8px; height: 8px; animation-duration: 10s;"></div>
+        <div class="particle" style="top: 85%; left: 50%; width: 5px; height: 5px; animation-duration: 14s;"></div>
+        <div class="particle" style="top: 15%; left: 40%; width: 7px; height: 7px; animation-duration: 9s;"></div>
+    </div>
+    <div class="hero-shape" style="top: 10%; left: -5%; width: 300px; height: 300px; animation-duration: 12s;"></div>
+    <div class="hero-shape" style="bottom: 0; right: -5%; width: 400px; height: 400px; animation-duration: 18s; animation-delay: -3s;"></div>
+    <div class="hero-shape" style="top: 40%; right: 20%; width: 200px; height: 200px; animation-duration: 15s; animation-delay: -6s;"></div>
+    
+    <div class="container hero-content">
+        <div class="row align-items-center">
+            <div class="col-lg-6 text-white">
+                <div class="hero-badge-wrapper">
+                    <span class="badge bg-accent text-dark mb-3 px-4 py-2 rounded-pill" style="background: var(--accent);">
+                        {{ site.hero_badge_text|default:"Trusted Since 2010" }}
+                    </span>
+                </div>
+                <h1 class="display-4 fw-bold hero-title">{{ site.hero_heading|default:"Premium Wall Putty in Malawi" }}</h1>
+                <p class="lead my-4 hero-subtitle">{{ site.hero_subheading|default:"Quality wall putty for every surface." }}</p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="#products" class="btn btn-hero btn-lg rounded-pill px-5 glow-button">Shop Now <i class="bi bi-arrow-right ms-2"></i></a>
+                    <a href="{% url 'contacts:contact' %}" class="btn btn-glass btn-lg rounded-pill px-5">Get Quote</a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center mt-5 mt-lg-0 hero-image-wrapper">
+                <div class="hero-image-inner">
+                    {% if site.hero_image %}
+                        <img src="{{ site.hero_image.url }}" alt="Hero" class="img-fluid rounded-4 shadow-lg hero-img floating-img">
+                    {% else %}
+                        <img src="https://placehold.co/500x400?text=Blue+Rock+Wall+Putty" class="img-fluid rounded-4 hero-img floating-img">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<section style="padding:60px 0;">
-    <div class="container">
-        <!-- Category Filter -->
-        <div class="d-flex flex-wrap gap-2 mb-5" data-aos="fade-up">
-            <a href="{% url 'product_list' %}" class="btn btn-sm {% if not active_category %}btn-danger{% else %}btn-outline-secondary{% endif %}" 
-               style="font-family:'Oswald',sans-serif;letter-spacing:0.08em;text-transform:uppercase;font-size:0.8rem;"
-               data-aos="fade-right" data-aos-delay="0">
-                All
+<!-- Category Cards -->
+<div class="container py-5">
+    <div class="text-center mb-5" data-aos="fade-up">
+        <h2 class="fw-bold">Shop by <span class="text-primary">Category</span></h2>
+        <div class="mx-auto rounded-pill" style="width: 60px; height: 4px; background: var(--primary); margin-top: 12px;"></div>
+    </div>
+    <div class="row g-4">
+        {% for cat in categories %}
+        <div class="col-md-3 col-6" data-aos="zoom-in" data-aos-delay="{{ forloop.counter0|add:100 }}">
+            <a href="{% url 'products:product_list' %}?category={{ cat.slug }}" class="text-decoration-none">
+                <div class="category-gloss">
+                    <i class="bi bi-{{ cat.icon|default:'bricks' }} category-icon"></i>
+                    <h5 class="mt-2 text-dark">{{ cat.name }}</h5>
+                    <p class="small text-muted">{{ cat.description|truncatewords:8 }}</p>
+                </div>
             </a>
-            {% for cat in categories %}
-            <a href="?category={{ cat.slug }}" class="btn btn-sm {% if active_category == cat %}btn-danger{% else %}btn-outline-secondary{% endif %}" 
-               style="font-family:'Oswald',sans-serif;letter-spacing:0.08em;text-transform:uppercase;font-size:0.8rem;"
-               data-aos="fade-right" data-aos-delay="{{ forloop.counter|add:50 }}">
-                {{ cat.name }}
-            </a>
-            {% endfor %}
         </div>
+        {% empty %}
+        <p class="text-center text-muted">No categories yet. Add some in the admin panel.</p>
+        {% endfor %}
+    </div>
+</div>
 
-        {% if products %}
-        <div class="row g-4">
-            {% for product in products %}
-            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1|stringformat:'s' }}00">
-                <div class="product-card">
-                    <!-- Image -->
-                    <div class="img-wrap" 
-                         data-aos="zoom-in" data-aos-delay="{{ forloop.counter0|add:2|stringformat:'s' }}00">
-                        <img src="{% safe_image_url product.image 600 400 product.name %}" alt="{{ product.name }}" loading="lazy">
-                    </div>
-                    <div style="padding:20px;">
-                        <!-- Category -->
-                        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--red);font-weight:600;"
-                             data-aos="fade-right" data-aos-delay="{{ forloop.counter0|add:3|stringformat:'s' }}00">
-                            {{ product.category.name }}
-                        </div>
-                        <!-- Title -->
-                        <h5 style="font-family:'Oswald',sans-serif;font-size:1.15rem;margin:6px 0 10px;"
-                            data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:3|stringformat:'s' }}50">
-                            {{ product.name }}
-                        </h5>
-                        <!-- Description -->
-                        <p class="text-muted mb-3" style="font-size:0.88rem;"
-                           data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:4|stringformat:'s' }}00">
-                            {{ product.description|striptags|truncatewords:18|safe }}
-                        </p>
-                        {% if product.price %}
-                        <!-- Price -->
-                        <p class="mb-3" style="font-family:'Oswald',sans-serif;font-size:1.2rem;color:var(--red);"
-                           data-aos="zoom-in-up" data-aos-delay="{{ forloop.counter0|add:4|stringformat:'s' }}50">
-                            MK {{ product.price|floatformat:0 }}
-                        </p>
-                        {% endif %}
-                        <!-- Buttons -->
-                        <div class="d-flex gap-2" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:5|stringformat:'s' }}00">
-                            <a href="{% url 'product_detail' product.slug %}" class="btn-red text-decoration-none" 
-                               style="font-size:0.82rem;padding:8px 20px;">Details</a>
-                            <a href="https://wa.me/{{ site.whatsapp_number }}?text=Hi, I'm interested in {{ product.name }}" target="_blank" 
-                               class="btn btn-sm" style="background:#25D366;color:white;font-family:'Oswald',sans-serif;">
-                                <i class="bi bi-whatsapp"></i> Enquire
-                            </a>
-                        </div>
-                    </div>
+<!-- Products Section -->
+<div class="container py-5" id="products">
+    <div class="text-center mb-5" data-aos="fade-up">
+        <h2 class="fw-bold">Our <span class="text-primary">Products</span></h2>
+        <p class="text-muted">{{ site.tagline|default:"Smoothest Finish, Strongest Walls" }}</p>
+    </div>
+
+    <!-- Search & Filter -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-6">
+            <div class="input-group shadow-sm rounded-pill overflow-hidden">
+                <span class="input-group-text bg-white border-0"><i class="bi bi-search text-primary"></i></span>
+                <input type="search" id="searchInput" class="form-control form-control-lg border-0 py-3" placeholder="Search products..." value="{{ search|default:'' }}"
+                       hx-get="{% url 'products:product_list' %}" hx-trigger="input changed delay:300ms, search"
+                       hx-target="#product-grid-container" hx-include="[name='category']" hx-indicator="#search-spinner">
+                <span id="search-spinner" class="htmx-indicator input-group-text bg-white border-0">
+                    <div class="advanced-spinner" style="width: 24px; height: 24px;"></div>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex flex-wrap gap-2 justify-content-center mb-5">
+        <a href="{% url 'products:product_list' %}" 
+           hx-get="{% url 'products:product_list' %}" hx-target="#product-grid-container"
+           class="btn {% if not active_category %}btn-primary{% else %}btn-outline-primary{% endif %} rounded-pill px-4">All</a>
+        {% for cat in categories %}
+        <a href="?category={{ cat.slug }}" 
+           hx-get="{% url 'products:product_list' %}?category={{ cat.slug }}" hx-target="#product-grid-container"
+           class="btn {% if active_category.slug == cat.slug %}btn-primary{% else %}btn-outline-primary{% endif %} rounded-pill">{{ cat.name }}</a>
+        {% endfor %}
+    </div>
+
+    <div id="product-grid-container">
+        {% include 'products/_product_grid.html' %}
+    </div>
+</div>
+
+<!-- Testimonial Carousel -->
+<div class="container py-5">
+    <div class="text-center mb-5" data-aos="fade-up">
+        <h2 class="fw-bold">Trusted by <span class="text-primary">Professionals</span></h2>
+        <div class="mx-auto rounded-pill" style="width: 60px; height: 4px; background: var(--primary); margin-top: 12px;"></div>
+    </div>
+    <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="testimonial-glass mx-auto" style="max-width: 700px;">
+                    <i class="bi bi-quote display-1 text-primary opacity-25"></i>
+                    <p class="fs-5 fst-italic">“Blue Rock wall putty gave our project a mirror finish. Absolutely no cracks after two seasons.”</p>
+                    <h5 class="mt-3">John Banda</h5>
+                    <small class="text-muted">Contractor, Lilongwe</small>
                 </div>
             </div>
-            {% endfor %}
+            <div class="carousel-item">
+                <div class="testimonial-glass mx-auto" style="max-width: 700px;">
+                    <i class="bi bi-quote display-1 text-primary opacity-25"></i>
+                    <p class="fs-5 fst-italic">“The water repellent formula is a game changer. Exterior walls stay dry even in heavy rain.”</p>
+                    <h5 class="mt-3">Grace Mwale</h5>
+                    <small class="text-muted">Architect, Blantyre</small>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="testimonial-glass mx-auto" style="max-width: 700px;">
+                    <i class="bi bi-quote display-1 text-primary opacity-25"></i>
+                    <p class="fs-5 fst-italic">“Excellent coverage and easy to apply. My clients love the smooth finish.”</p>
+                    <h5 class="mt-3">Peter Phiri</h5>
+                    <small class="text-muted">Painting Contractor</small>
+                </div>
+            </div>
         </div>
-        {% else %}
-        <div class="text-center py-5" data-aos="fade-up">
-            <i class="bi bi-box" style="font-size:3rem;color:#ccc;"></i>
-            <p class="mt-3 text-muted">No products found. Check back soon!</p>
-        </div>
-        {% endif %}
+        <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon bg-primary rounded-circle p-3" aria-hidden="true"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon bg-primary rounded-circle p-3" aria-hidden="true"></span>
+        </button>
     </div>
-</section>
+</div>
+
+<!-- Newsletter -->
+<div class="container" data-aos="fade-up">
+    <div class="newsletter-glass text-center">
+        <i class="bi bi-envelope-paper display-4 text-primary mb-3"></i>
+        <h3 class="fw-bold">Get exclusive offers</h3>
+        <p>Subscribe to get 15% off your first order and updates on new products.</p>
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-6">
+                <div class="input-group shadow-sm rounded-pill overflow-hidden">
+                    <input type="email" class="form-control form-control-lg border-0 py-3" placeholder="Your email address">
+                    <button class="btn btn-primary px-4 rounded-0">Subscribe <i class="bi bi-arrow-right ms-2"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

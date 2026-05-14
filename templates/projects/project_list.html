@@ -68,10 +68,10 @@
 
 <div style="background:var(--black);padding:60px 0 40px;">
     <div class="container">
-        <span class="section-label" data-aos="fade-down">Our Portfolio</span>
-        <h1 class="section-title text-white mt-2" data-aos="fade-right">Completed <span style="color:var(--red)">Projects</span></h1>
-        <div class="divider-red" data-aos="fade-right" data-aos-delay="100"></div>
-        <nav aria-label="breadcrumb" data-aos="fade-up" data-aos-delay="200">
+        <span class="section-label">Our Portfolio</span>
+        <h1 class="section-title text-white mt-2">Completed <span style="color:var(--red)">Projects</span></h1>
+        <div class="divider-red"></div>
+        <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0" style="font-size:0.85rem;">
                 <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color:rgba(255,255,255,0.5);">Home</a></li>
                 <li class="breadcrumb-item active text-white-50">Projects</li>
@@ -85,10 +85,9 @@
         {% if projects %}
         <div class="row g-3">
             {% for project in projects %}
-            <div class="col-md-6 col-lg-{% cycle '8' '4' '4' '8' %}" 
-                 data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:1|stringformat:'s' }}00">
+            <div class="col-md-6 col-lg-{% cycle '8' '4' '4' '8' %}">
                 <a href="{% url 'project_detail' project.slug %}" class="project-grid-card">
-                    <img src="{% safe_image_url project.cover_image 800 300 project.title %}" alt="{{ project.title }}" style="height:{% cycle '340px' '340px' '340px' '340px' %};" loading="lazy">
+                    <img src="{% safe_image_url project.cover_image 800 300 project.title %}" alt="{{ project.title }}" style="height:{% cycle '340px' '340px' '340px' '340px' %};">
                     <div class="overlay">
                         <h5>{{ project.title }}</h5>
                         <div class="meta">
@@ -102,7 +101,7 @@
             {% endfor %}
         </div>
         {% else %}
-        <div class="text-center py-5" data-aos="fade-up">
+        <div class="text-center py-5">
             <i class="bi bi-building" style="font-size:3rem;color:#ccc;"></i>
             <p class="mt-3 text-muted">Projects coming soon. Check back later!</p>
             <a href="{% url 'contact' %}" class="btn-red text-decoration-none mt-3 d-inline-block">Start a Project With Us</a>

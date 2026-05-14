@@ -1,0 +1,25 @@
+{% extends 'timber/base_timber.html' %}
+{% load static %}
+{% block title %}Projects{% endblock %}
+{% block content %}
+<div style="background:var(--dark);min-height:38vh;display:flex;align-items:center;border-bottom:3px solid var(--primary);position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;{% if tsite.hero_image %}background-image:url('{{ tsite.hero_image.url }}');background-size:cover;background-position:center;opacity:.18;{% endif %}"></div>
+  <div class="container" style="padding:100px 32px 60px;position:relative;z-index:1;">
+    <span class="label" style="opacity:.55;">J&amp;N Timber</span>
+    <h1 class="display" style="font-size:clamp(2.8rem,6vw,5rem);color:#fff;margin:12px 0 20px;">Completed Projects</h1>
+    <span class="rule"></span>
+  </div>
+</div>
+<section style="padding:80px 0;">
+  <div class="container reveal">
+    <span class="label">J&amp;N Timber</span>
+    <h2 class="display" style="font-size:clamp(2rem,4vw,3rem);color:#1a1a1a;margin:12px 0 20px;">Completed Projects</h2>
+    <span class="rule"></span>
+    <p style="font-size:1.05rem;color:#555;line-height:1.9;max-width:640px;margin-top:8px;">See our portfolio of completed timber and construction projects.</p>
+    <div style="margin-top:36px;">
+      <a href="{% url 'timber:contact' %}" class="btn-p"><i class="bi bi-chat-dots" style="margin-right:8px;"></i>Get a Quote</a>
+      {% if tsite.whatsapp %}<a href="https://wa.me/{{ tsite.whatsapp }}" target="_blank" class="btn-o" style="margin-left:12px;"><i class="bi bi-whatsapp" style="margin-right:8px;"></i>WhatsApp Us</a>{% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

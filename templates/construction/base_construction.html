@@ -1,0 +1,528 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}{{ csite.company_name }}{% endblock %} – {{ csite.tagline }}</title>
+    <meta name="description" content="{{ csite.meta_description|default:csite.tagline }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Favicon -->
+    <link rel="icon" href="{% if csite.favicon %}{{ csite.favicon.url }}{% else %}{% static 'img/favicon.ico' %}{% endif %}">
+
+    <!-- Google Fonts (Apex) -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Fonts -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries (animate, owl) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" rel="stylesheet">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: {{ csite.primary_color|default:'#FDA12B' }};
+            --secondary: #8D9297;
+            --light: #F8F9FA;
+            --dark: #182333;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: var(--secondary);
+            background: #fff;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        /* Navbar */
+        .navbar.sticky-top { top: -100px; transition: .5s; }
+        .navbar .navbar-nav .nav-link {
+            margin-left: 30px;
+            padding: 25px 0;
+            color: var(--secondary);
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        .navbar .navbar-nav .nav-link:hover,
+        .navbar .navbar-nav .nav-link.active { color: var(--primary); }
+        .navbar .dropdown-toggle::after {
+            border: none;
+            content: "\f107";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            margin-left: 8px;
+        }
+        @media (max-width: 991.98px) {
+            .navbar .navbar-nav .nav-link { margin-left: 0; padding: 10px 0; }
+            .navbar .navbar-nav { margin-top: 25px; border-top: 1px solid #eee; }
+        }
+
+        /* Back to Group button – extra compact */
+        .back-to-group {
+            background-color: rgba(253, 161, 43, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 20px;
+            padding: 2px 10px !important;
+            margin-right: 15px;
+            transition: all 0.3s ease;
+            color: var(--primary) !important;
+            font-weight: 500;
+            font-size: 0.8rem;
+            text-align: center;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            height: auto;
+        }
+
+        .back-to-group:hover {
+            background-color: var(--primary);
+            color: #fff !important;
+            transform: translateX(-3px);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 991.98px) {
+            .back-to-group {
+                margin-right: 0;
+                margin-bottom: 10px;
+                width: fit-content;
+                padding: 4px 12px !important;
+            }
+        }
+
+        /* Back to Top */
+        .back-to-top {
+            position: fixed;
+            display: none;
+            right: 30px;
+            bottom: 30px;
+            z-index: 99;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            text-align: center;
+            line-height: 48px;
+            transition: .3s;
+        }
+        .back-to-top:hover { background-color: #e59400; color: #fff; }
+
+        /* Spinner */
+        #spinner {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity .5s ease-out, visibility 0s linear .5s;
+            z-index: 99999;
+        }
+        #spinner.show {
+            transition: opacity .5s ease-out, visibility 0s linear 0s;
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Buttons */
+        .btn.btn-primary, .btn.btn-outline-primary:hover { color: #fff; }
+        .btn-primary { background-color: var(--primary); border-color: var(--primary); }
+        .btn-primary:hover { background-color: #e59400; border-color: #e59400; }
+
+        /* Footer */
+        .footer {
+            background: var(--dark);
+            color: #999;
+        }
+        .footer .btn.btn-link {
+            display: block;
+            margin-bottom: 5px;
+            padding: 0;
+            text-align: left;
+            color: #999;
+            font-weight: normal;
+            text-transform: capitalize;
+        }
+        .footer .btn.btn-link::before {
+            content: "\f105";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            margin-right: 10px;
+        }
+        .footer .btn.btn-link:hover { color: var(--light); letter-spacing: 1px; }
+        .footer .copyright {
+            padding: 25px 0;
+            border-top: 1px solid rgba(256,256,256,.1);
+        }
+
+        /* Carousel overlay (Apex style) */
+        .carousel-caption {
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            align-items: center;
+            background: rgba(0,0,0,.65);
+            z-index: 1;
+        }
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            width: 4rem; height: 4rem;
+            background-color: var(--dark);
+            border: 15px solid var(--dark);
+            border-radius: 50%;
+        }
+        @media (max-width:768px) {
+            .carousel-control-prev-icon,
+            .carousel-control-next-icon {
+                width: 3rem; height: 3rem;
+                border-width: 12px;
+            }
+        }
+
+        /* Page Header dynamic background (used in inner pages) */
+        .page-header {
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+        }
+
+        /* Facts overlay */
+        .facts-overlay {
+            position: absolute;
+            padding: 30px;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: rgba(0,0,0,.65);
+            transition: transform 0.5s ease;
+        }
+        .facts-overlay:hover {
+            transform: scale(1.02);
+        }
+        .facts-overlay h1 {
+            font-size: 120px;
+            color: transparent;
+            -webkit-text-stroke: 2px var(--primary);
+        }
+        .facts-overlay a:hover { color: var(--primary) !important; }
+
+        /* Service hover effect */
+        .service-item .service-text::before {
+            position: absolute;
+            content: "";
+            width: 100%;
+            height: 0;
+            top: 0;
+            left: 0;
+            background: var(--primary);
+            opacity: 0;
+            transition: .5s;
+        }
+        .service-item:hover .service-text::before {
+            height: 100%;
+            opacity: 1;
+        }
+        .service-text * {
+            position: relative;
+            z-index: 1;
+        }
+        .service-item:hover .service-text * { color: #fff !important; }
+
+        /* Team hover effect */
+        .team-text {
+            position: absolute;
+            width: 75%;
+            bottom: 30px;
+            left: 0;
+            transition: .5s;
+        }
+        .team-item:hover .team-text { width: 100%; }
+        .team-text * { transition: .5s; }
+        .team-item:hover .team-text * { letter-spacing: 2px; }
+
+        /* Testimonial carousel */
+        .testimonial-carousel .owl-item img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .testimonial-carousel .owl-nav {
+            margin-top: 30px;
+            display: flex;
+            justify-content: start;
+        }
+        .testimonial-carousel .owl-nav .owl-prev,
+        .testimonial-carousel .owl-nav .owl-next {
+            margin-right: 15px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark);
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            font-size: 18px;
+            transition: .5s;
+        }
+        .testimonial-carousel .owl-nav .owl-prev:hover,
+        .testimonial-carousel .owl-nav .owl-next:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        /* Utility for appointment form background */
+        .appointment {
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* ========== ADVANCED ANIMATIONS ========== */
+        .scale-hover {
+            transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1), box-shadow 0.3s ease;
+        }
+        .scale-hover:hover {
+            transform: scale(1.02) translateY(-5px);
+            box-shadow: 0 25px 35px -12px rgba(0,0,0,0.2);
+        }
+        .btn-pulse {
+            transition: all 0.3s ease;
+        }
+        .btn-pulse:hover {
+            animation: pulse 0.7s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .rounded {
+            border-radius: 1rem !important;
+        }
+        .img-fluid.rounded {
+            border-radius: 1rem;
+        }
+        .parallax {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        .wow {
+            visibility: hidden;
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- Spinner -->
+<div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+    <div class="spinner-grow text-primary" role="status"></div>
+</div>
+
+<!-- Topbar -->
+<div class="container-fluid bg-light p-0">
+    <div class="row gx-0 d-none d-lg-flex">
+        <div class="col-lg-7 px-5 text-start">
+            <div class="h-100 d-inline-flex align-items-center border-start border-end px-3">
+                <i class="fa fa-phone-alt me-2"></i>
+                <small>{{ csite.phone }}</small>
+            </div>
+            <div class="h-100 d-inline-flex align-items-center border-end px-3">
+                <i class="far fa-envelope-open me-2"></i>
+                <small>{{ csite.email }}</small>
+            </div>
+        </div>
+        <div class="col-lg-5 px-5 text-end">
+            <div class="h-100 d-inline-flex align-items-center">
+                {% if csite.facebook %}<a class="btn btn-square border-end border-start" href="{{ csite.facebook }}"><i class="fab fa-facebook-f"></i></a>{% endif %}
+                {% if csite.instagram %}<a class="btn btn-square border-end" href="{{ csite.instagram }}"><i class="fab fa-instagram"></i></a>{% endif %}
+                {% if csite.linkedin %}<a class="btn btn-square border-end" href="{{ csite.linkedin }}"><i class="fab fa-linkedin-in"></i></a>{% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top px-4 px-lg-5 py-lg-0">
+    <a href="{% url 'construction:home' %}" class="navbar-brand d-flex align-items-center">
+        {% if csite.logo %}
+            <img src="{{ csite.logo.url }}" alt="{{ csite.company_name }}" style="height: 45px; margin-right: 10px;">
+        {% else %}
+            <h1 class="m-0"><i class="fa fa-building text-primary me-3"></i>{{ csite.company_name }}</h1>
+        {% endif %}
+    </a>
+    <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav ms-auto py-3 py-lg-0">
+            <a class="nav-item nav-link back-to-group" href="/">← Group</a>
+            <a href="{% url 'construction:home' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a>
+            <a href="{% url 'construction:about' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">About Us</a>
+            <a href="{% url 'construction:services' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'services' %}active{% endif %}">Our Services</a>
+            <a href="{% url 'construction:projects' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'projects' %}active{% endif %}">Projects</a>
+            <a href="{% url 'construction:contact' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact Us</a>
+        </div>
+    </div>
+</nav>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<!-- Footer -->
+<div class="container-fluid bg-dark footer mt-5 pt-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container py-5">
+        <div class="row g-5">
+            <div class="col-lg-3 col-md-6">
+                {% if csite.logo %}
+                    <img src="{{ csite.logo.url }}" alt="{{ csite.company_name }}" style="height: 45px; filter: brightness(0) invert(1); margin-bottom: 15px;">
+                {% else %}
+                    <h1 class="text-white mb-4"><i class="fa fa-building text-primary me-3"></i>{{ csite.company_name }}</h1>
+                {% endif %}
+                <p>{{ csite.about_text|default:"Professional construction services."|truncatewords:20 }}</p>
+                <div class="d-flex pt-2">
+                    {% if csite.facebook %}<a class="btn btn-square btn-outline-primary me-1" href="{{ csite.facebook }}"><i class="fab fa-facebook-f"></i></a>{% endif %}
+                    {% if csite.instagram %}<a class="btn btn-square btn-outline-primary me-1" href="{{ csite.instagram }}"><i class="fab fa-instagram"></i></a>{% endif %}
+                    {% if csite.linkedin %}<a class="btn btn-square btn-outline-primary me-0" href="{{ csite.linkedin }}"><i class="fab fa-linkedin-in"></i></a>{% endif %}
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h4 class="text-light mb-4">Address</h4>
+                <p><i class="fa fa-map-marker-alt me-3"></i>{{ csite.address }}</p>
+                <p><i class="fa fa-phone-alt me-3"></i>{{ csite.phone }}</p>
+                <p><i class="fa fa-envelope me-3"></i>{{ csite.email }}</p>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h4 class="text-light mb-4">Quick Links</h4>
+                <a class="btn btn-link" href="{% url 'construction:home' %}">Home</a>
+                <a class="btn btn-link" href="{% url 'construction:about' %}">About Us</a>
+                <a class="btn btn-link" href="{% url 'construction:services' %}">Our Services</a>
+                <a class="btn btn-link" href="{% url 'construction:projects' %}">Projects</a>
+                <a class="btn btn-link" href="{% url 'construction:contact' %}">Contact Us</a>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h4 class="text-light mb-4">Group</h4>
+                <a class="btn btn-link" href="/">J&N Group</a>
+                <a class="btn btn-link" href="/products/">Building Products</a>
+                <a class="btn btn-link" href="/mining/">Mining</a>
+                <a class="btn btn-link" href="/timber/">Timber</a>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid copyright">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    &copy; {% now "Y" %} {{ csite.company_name }}, All Right Reserved.
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    Developed by <a href="https://pritechmw.com" target="_blank">Pritech</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Back to Top -->
+<a href="#" class="back-to-top"><i class="bi bi-arrow-up"></i></a>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+<script>
+    (function() {
+        // Spinner
+        const spinner = document.getElementById('spinner');
+        if(spinner) setTimeout(() => spinner.classList.remove('show'), 300);
+        
+        // WOW init
+        new WOW().init();
+        
+        // Sticky navbar + back to top
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.sticky-top');
+            const backBtn = document.querySelector('.back-to-top');
+            if(window.scrollY > 300) {
+                if(navbar) { navbar.style.top = '0px'; navbar.classList.add('shadow-sm'); }
+                if(backBtn) backBtn.style.display = 'block';
+            } else {
+                if(navbar) { navbar.style.top = '-100px'; navbar.classList.remove('shadow-sm'); }
+                if(backBtn) backBtn.style.display = 'none';
+            }
+        });
+        document.querySelector('.back-to-top')?.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // Owl Carousel for testimonials (if present)
+        if($('.testimonial-carousel').length) {
+            $(".testimonial-carousel").owlCarousel({
+                autoplay: true,
+                smartSpeed: 1000,
+                items: 1,
+                dots: false,
+                loop: true,
+                nav: true,
+                navText: ['<i class="bi bi-chevron-left"></i>','<i class="bi bi-chevron-right"></i>']
+            });
+        }
+
+        // ========== ADVANCED ANIMATED COUNTERS ==========
+        function startCounters() {
+            document.querySelectorAll('.counter').forEach(counter => {
+                const updateCounter = () => {
+                    const target = parseInt(counter.getAttribute('data-target'));
+                    const current = parseInt(counter.innerText);
+                    const increment = target / 50;
+                    if (current < target) {
+                        counter.innerText = Math.ceil(current + increment);
+                        setTimeout(updateCounter, 20);
+                    } else {
+                        counter.innerText = target;
+                    }
+                };
+                updateCounter();
+            });
+        }
+
+        // Trigger counters when the stats section enters viewport
+        const observerOptions = { threshold: 0.5 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counters = entry.target.querySelectorAll('.counter');
+                    if (counters.length) startCounters();
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.stats-section').forEach(section => observer.observe(section));
+    })();
+</script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>
