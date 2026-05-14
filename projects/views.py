@@ -1,21 +1,12 @@
-from django.views.generic import ListView, DetailView
+from django.shortcuts import render, get_object_or_404
 from .models import Project
 
 
-class ProjectListView(ListView):
-    model = Project
-    template_name = 'projects/project_list.html'
-    context_object_name = 'projects'
-
-    def get_queryset(self):
-        return super().get_queryset().filter(is_active=True)
+def project_list(request):
+    projects = Project.objects.filter(is_active=True)
+    return render(request, 'projects/project_list.html', {'projects': projects})
 
 
-class ProjectDetailView(DetailView):
-    model = Project
-    template_name = 'projects/project_detail.html'
-    context_object_name = 'project'
-    slug_url_kwarg = 'slug'
-
-    def get_queryset(self):
-        return super().get_queryset().filter(is_active=True)
+def project_detail(request, slug):
+    project = get_object_or_404(Project, slug=slug, is_active=True)
+    return render(request, 'projects/project_detail.html', {'project': project})

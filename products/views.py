@@ -1,7 +1,6 @@
-from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, DetailView
-from .models import Product, Category
-
+from django.shortcuts import get_object_or_404
+from .models import Product, Category, BuildingSettings
 
 class ProductListView(ListView):
     model = Product
@@ -9,19 +8,29 @@ class ProductListView(ListView):
     context_object_name = 'products'
 
     def get_queryset(self):
-        qs = super().get_queryset().filter(is_active=True)
-        category_slug = self.request.GET.get('category')
+        qs = super().get_queryset().filter(is_active=True).select_related('category')
+        category_slug = self.request.GET.get('category', '')
+        search = self.request.GET.get('q', '').strip()
+
         if category_slug:
-            self.active_category = get_object_or_404(Category, slug=category_slug)
-            qs = qs.filter(category=self.active_category)
-        else:
-            self.active_category = None
+            qs = qs.filter(category__slug=category_slug)
+        if search:
+            qs = qs.filter(name__icontains=search) | qs.filter(description__icontains=search)
         return qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        category_slug = self.request.GET.get('category', '')
+        search = self.request.GET.get('q', '').strip()
+
         context['categories'] = Category.objects.all()
-        context['active_category'] = self.active_category
+        context['active_category'] = Category.objects.filter(slug=category_slug).first()
+        context['search'] = search
+        context['site'] = BuildingSettings.get()   # ✅ dynamic site settings
+
+        # HTMX partial response detection
+        if self.request.headers.get('HX-Request') == 'true':
+            self.template_name = 'products/_product_grid.html'
         return context
 
 
@@ -40,4 +49,5 @@ class ProductDetailView(DetailView):
         context['related'] = Product.objects.filter(
             category=product.category, is_active=True
         ).exclude(pk=product.pk)[:4]
+        context['site'] = BuildingSettings.get()   # ✅ dynamic site settings
         return context

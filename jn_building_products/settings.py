@@ -32,6 +32,9 @@ INSTALLED_APPS = [
     'projects',
     'gallery',
     'contacts',
+    'construction',
+    'mining',
+    'timber',
     'channels',
 ]
 
@@ -118,7 +121,6 @@ UNFOLD = {
         {"rel": "icon", "sizes": "32x32", "type": "image/png", "href": lambda request: static("images/logo.png")},
     ],
     "DASHBOARD_CALLBACK": "core.dashboard.dashboard_callback",
-    # "THEME": "system",
     "SHOW_HISTORY": True,
     "SHOW_VIEW_ON_SITE": True,
     "SHOW_BACK_BUTTON": True,
@@ -142,6 +144,7 @@ UNFOLD = {
         "show_search": True,
         "show_all_applications": False,
         "navigation": [
+            # ── Dashboard ──
             {
                 "title": "Dashboard",
                 "separator": False,
@@ -159,6 +162,7 @@ UNFOLD = {
                     },
                 ],
             },
+            # ── Enquiries ──
             {
                 "title": "Enquiries",
                 "separator": True,
@@ -171,8 +175,9 @@ UNFOLD = {
                     },
                 ],
             },
+            # ── Building Products (was "Catalogue") ──
             {
-                "title": "Catalogue",
+                "title": "Building Products",
                 "separator": True,
                 "items": [
                     {
@@ -185,24 +190,90 @@ UNFOLD = {
                         "icon": "category",
                         "link": reverse_lazy("admin:products_category_changelist"),
                     },
+                    {
+                        "title": "Building Settings",
+                        "icon": "settings",
+                        "link": reverse_lazy("admin:products_buildingsettings_change", args=[1]),
+                    },
                 ],
             },
+            # ── Construction Co. ──
             {
-                "title": "Construction",
+                "title": "🏗️ Construction Co.",
                 "separator": True,
                 "items": [
                     {
+                        "title": "Site Config",
+                        "icon": "tune",
+                        "link": reverse_lazy("admin:construction_constructionconfig_changelist"),
+                    },
+                    {
                         "title": "Services",
-                        "icon": "construction",
-                        "link": reverse_lazy("admin:services_service_changelist"),
+                        "icon": "handyman",
+                        "link": reverse_lazy("admin:construction_constructionservice_changelist"),
                     },
                     {
                         "title": "Projects",
-                        "icon": "business",
-                        "link": reverse_lazy("admin:projects_project_changelist"),
+                        "icon": "apartment",
+                        "link": reverse_lazy("admin:construction_constructionproject_changelist"),
+                    },
+                    {
+                        "title": "Team",
+                        "icon": "groups",
+                        "link": reverse_lazy("admin:construction_teammember_changelist"),
                     },
                 ],
             },
+            # ── Mining Co. ──
+            {
+                "title": "⛏️ Mining Co.",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Site Config",
+                        "icon": "tune",
+                        "link": reverse_lazy("admin:mining_miningconfig_changelist"),
+                    },
+                    {
+                        "title": "Minerals",
+                        "icon": "diamond",
+                        "link": reverse_lazy("admin:mining_mineralproduct_changelist"),
+                    },
+                    {
+                        "title": "Operations",
+                        "icon": "terrain",
+                        "link": reverse_lazy("admin:mining_miningoperation_changelist"),
+                    },
+                    {
+                        "title": "Equipment",
+                        "icon": "precision_manufacturing",
+                        "link": reverse_lazy("admin:mining_miningequipment_changelist"),
+                    },
+                ],
+            },
+            # ── Timber Co. ──
+            {
+                "title": "🌲 Timber Co.",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Site Config",
+                        "icon": "tune",
+                        "link": reverse_lazy("admin:timber_timbersettings_changelist"),
+                    },
+                    {
+                        "title": "Timber Products",
+                        "icon": "forest",
+                        "link": reverse_lazy("admin:timber_timberproduct_changelist"),
+                    },
+                    {
+                        "title": "Timber Projects",
+                        "icon": "landscape",
+                        "link": reverse_lazy("admin:timber_timberproject_changelist"),
+                    },
+                ],
+            },
+            # ── Media (Gallery) – remove if not needed ──
             {
                 "title": "Media",
                 "separator": True,
@@ -214,22 +285,24 @@ UNFOLD = {
                     },
                 ],
             },
+            # ── Group / Website settings ──
             {
-                "title": "Website",
+                "title": "Group",
                 "separator": True,
                 "items": [
+                    {
+                        "title": "Group Config",
+                        "icon": "corporate_fare",
+                        "link": reverse_lazy("admin:core_groupconfig_changelist"),
+                    },
                     {
                         "title": "Testimonials",
                         "icon": "star",
                         "link": reverse_lazy("admin:core_testimonial_changelist"),
                     },
-                    {
-                        "title": "Site Settings",
-                        "icon": "settings",
-                        "link": reverse_lazy("admin:core_sitesettings_changelist"),
-                    },
                 ],
             },
+            # ── System ──
             {
                 "title": "System",
                 "separator": True,
@@ -240,7 +313,8 @@ UNFOLD = {
                         "link": reverse_lazy("admin:auth_user_changelist"),
                     },
                 ],
-            },          
+            },
+            # ── Analytics ──
             {
                 "title": "Analytics",
                 "separator": True,
@@ -274,10 +348,10 @@ UNFOLD = {
             ],
         },
     ],
-     "STYLES": [
+    "STYLES": [
         lambda request: static("css/admin_custom.css"),
     ],
-     "SCRIPTS": [
+    "SCRIPTS": [
         lambda request: static("js/theme_toggle.js"),
     ],
 }

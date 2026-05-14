@@ -1,12 +1,11 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from django.utils.safestring import mark_safe
 from unfold.admin import ModelAdmin
 from unfold.decorators import display
 from unfold.contrib.forms.widgets import WysiwygWidget
 from django import forms
 
-from .models import Category, Product
+from .models import Category, Product, BuildingSettings
 
 
 class ProductForm(forms.ModelForm):
@@ -60,4 +59,22 @@ class ProductAdmin(ModelAdmin):
     def display_price(self, obj):
         if obj.price:
             return format_html('<span style="color:#057a55;font-weight:600;">MK {:,.0f}</span>', obj.price)
-        return mark_safe('<span style="color:#aaa;font-size:0.8rem;">—</span>')
+        return format_html('<span style="color:#aaa;font-size:0.8rem;">—</span>')
+
+@admin.register(BuildingSettings)
+class BuildingSettingsAdmin(ModelAdmin):
+    compressed_fields = True
+    warn_unsaved_form = True
+    fieldsets = (
+        ('🔴 Brand',    {'fields': ('company_name', 'tagline', 'logo')}),
+        ('🎨 Colours',  {'fields': ('primary_color', 'secondary_color')}),
+        ('📞 Contact',  {'fields': ('phone', 'email', 'address', 'whatsapp')}),
+        ('📱 Social',   {'classes': ('collapse',), 'fields': ('facebook', 'instagram')}),
+        ('🖼️ Hero',     {'fields': ('hero_heading', 'hero_subheading', 'hero_badge_text', 'hero_image')}),
+        ('📖 About',    {'fields': ('about_text',)}),
+        ('🔍 SEO',      {'classes': ('collapse',), 'fields': ('meta_description',)}),
+    )
+    def has_add_permission(self, request):
+        return not BuildingSettings.objects.exists()
+    def has_delete_permission(self, request, obj=None):
+        return False

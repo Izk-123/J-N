@@ -32,3 +32,44 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class BuildingSettings(models.Model):
+    """Singleton config for the Blue Rock Wall Putty / Building Products sub-site."""
+    company_name     = models.CharField(max_length=200, default="Blue Rock Wall Putty")
+    tagline          = models.CharField(max_length=300, default="Smoothest Finish, Strongest Walls")
+    logo             = models.ImageField(upload_to='products/logo/', blank=True, null=True)
+    hero_heading     = models.CharField(max_length=300, default="Premium Wall Putty in Malawi")
+    hero_subheading  = models.TextField(default="Quality wall putty for every surface.")
+    hero_badge_text  = models.CharField(max_length=200, default="Trusted Since 2010")
+    hero_image       = models.ImageField(upload_to='products/hero/', blank=True, null=True)
+    phone            = models.CharField(max_length=20, blank=True)
+    email            = models.EmailField(blank=True)
+    address          = models.TextField(blank=True)
+    whatsapp         = models.CharField(max_length=20, blank=True)
+    about_text       = models.TextField(blank=True)
+    primary_color    = models.CharField(max_length=7, default="#1e3a8a")
+    secondary_color  = models.CharField(max_length=7, default="#FFFFFF")
+    facebook         = models.URLField(blank=True)
+    instagram        = models.URLField(blank=True)
+    meta_description = models.CharField(max_length=300, blank=True)
+
+    class Meta:
+        verbose_name = "Building Products Config"
+        verbose_name_plural = "Building Products Config"
+
+    def __str__(self):
+        return self.company_name
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def get(cls):
+        obj, _ = cls.objects.get_or_create(pk=1, defaults={
+            'phone': '+265 000 000 000',
+            'address': 'Blantyre, Malawi',
+            'whatsapp': '+265000000000',
+        })
+        return obj
