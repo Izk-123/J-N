@@ -1,0 +1,396 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>{% block title %}{{ csite.company_name }}{% endblock %} – {{ csite.tagline }}</title>
+    <meta name="description" content="{{ csite.meta_description|default:csite.tagline }}">
+
+    <!-- Favicon -->
+    <link rel="icon" href="{% if csite.favicon %}{{ csite.favicon.url }}{% else %}{% static 'img/favicon.ico' %}{% endif %}">
+
+    <!-- Google Fonts: Modern sans & display -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.3 + Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Font Awesome 6 (free) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- AOS (Animate on Scroll) -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <style>
+        :root {
+            --primary: {{ csite.primary_color|default:'#FF6B35' }};
+            --primary-dark: #e55a2b;
+            --secondary: #1E2A47;
+            --accent: #00C9A7;
+            --light: #F9F9FC;
+            --dark: #0A1128;
+            --gray: #6C757D;
+            --glass-bg: rgba(255,255,255,0.1);
+            --glass-border: rgba(255,255,255,0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--gray);
+            background-color: var(--light);
+            overflow-x: hidden;
+            cursor: default;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        /* Custom cursor */
+        body, button, a, .card, .service-item {
+            cursor: none;
+        }
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease;
+        }
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transition: all 0.15s ease-out;
+        }
+
+        /* Glassmorphism */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        /* Navbar */
+        .navbar {
+            transition: all 0.4s ease;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 0.8rem 0;
+        }
+        .navbar.sticky-top {
+            background: rgba(255,255,255,0.98);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+        .nav-link {
+            font-weight: 600;
+            margin: 0 0.5rem;
+            position: relative;
+            color: var(--dark) !important;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--primary);
+            transition: 0.3s;
+        }
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+
+        /* Back to Group button */
+        .btn-group-return {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border: none;
+            border-radius: 40px;
+            padding: 6px 18px;
+            color: white !important;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            margin-right: 20px;
+        }
+        .btn-group-return:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 8px 20px rgba(255,107,53,0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(10,17,40,0.7) 0%, rgba(0,0,0,0.5) 100%);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            color: white;
+        }
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+        }
+
+        /* Parallax sections */
+        .parallax {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        /* Modern buttons */
+        .btn-modern {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .btn-modern:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255,107,53,0.3);
+        }
+
+        /* Cards with 3D tilt */
+        .tilt-card {
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+        }
+        .tilt-card:hover {
+            transform: translateY(-10px) rotateX(3deg) rotateY(3deg);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        /* Gradient borders on hover */
+        .hover-glow {
+            position: relative;
+            border: 1px solid transparent;
+            transition: 0.4s;
+        }
+        .hover-glow:hover {
+            border-image: linear-gradient(135deg, var(--primary), var(--accent)) 1;
+            box-shadow: 0 0 20px rgba(255,107,53,0.2);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark);
+            color: #adb5bd;
+        }
+        .footer a {
+            color: #adb5bd;
+            transition: 0.3s;
+        }
+        .footer a:hover {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Responsive utilities */
+        @media (max-width: 992px) {
+            .navbar .navbar-nav {
+                text-align: center;
+                padding: 1rem 0;
+            }
+            .btn-group-return {
+                margin-bottom: 10px;
+                display: inline-block;
+            }
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- Custom cursor (only for non-touch devices) -->
+<div class="cursor-dot"></div>
+<div class="cursor-outline"></div>
+
+<!-- Spinner (modern) -->
+<div id="spinner" class="position-fixed top-50 start-50 translate-middle bg-white p-4 rounded-5 shadow-lg" style="z-index: 9999; display: none;">
+    <div class="spinner-border text-primary" role="status"></div>
+</div>
+
+<!-- Topbar -->
+<div class="container-fluid bg-dark text-white py-2 d-none d-lg-block">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8 text-center text-md-start">
+                <i class="fas fa-phone-alt me-2"></i> {{ csite.phone }} &nbsp;&nbsp;
+                <i class="far fa-envelope me-2"></i> {{ csite.email }}
+            </div>
+            <div class="col-md-4 text-center text-md-end">
+                {% if csite.facebook %}<a href="{{ csite.facebook }}" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>{% endif %}
+                {% if csite.instagram %}<a href="{{ csite.instagram }}" class="text-white me-3"><i class="fab fa-instagram"></i></a>{% endif %}
+                {% if csite.linkedin %}<a href="{{ csite.linkedin }}" class="text-white"><i class="fab fa-linkedin-in"></i></a>{% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold fs-3" href="{% url 'construction:home' %}">
+            {% if csite.logo %}
+                <img src="{{ csite.logo.url }}" alt="{{ csite.company_name }}" height="45">
+            {% else %}
+                <i class="fas fa-hard-hat text-primary me-2"></i>{{ csite.company_name }}
+            {% endif %}
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarMain">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+                <li class="nav-item"><a class="nav-link" href="{% url 'construction:home' %}">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'construction:about' %}">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'construction:services' %}">Services</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'construction:projects' %}">Projects</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'construction:contact' %}">Contact</a></li>
+                <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+                    <a class="btn-group-return" href="/"><i class="fas fa-arrow-left me-1"></i> Group</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<!-- Footer -->
+<footer class="footer pt-5 pb-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <h5 class="text-white">{{ csite.company_name }}</h5>
+                <p>{{ csite.about_text|truncatewords:20|default:"Building the future with integrity and innovation." }}</p>
+                <div>
+                    {% if csite.facebook %}<a href="{{ csite.facebook }}" class="me-3"><i class="fab fa-facebook-f"></i></a>{% endif %}
+                    {% if csite.instagram %}<a href="{{ csite.instagram }}" class="me-3"><i class="fab fa-instagram"></i></a>{% endif %}
+                    {% if csite.linkedin %}<a href="{{ csite.linkedin }}"><i class="fab fa-linkedin-in"></i></a>{% endif %}
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <h5 class="text-white">Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'construction:home' %}">Home</a></li>
+                    <li><a href="{% url 'construction:about' %}">About Us</a></li>
+                    <li><a href="{% url 'construction:services' %}">Services</a></li>
+                    <li><a href="{% url 'construction:projects' %}">Projects</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4 mb-4">
+                <h5 class="text-white">Contact Info</h5>
+                <p><i class="fas fa-map-marker-alt me-2"></i> {{ csite.address }}</p>
+                <p><i class="fas fa-phone-alt me-2"></i> {{ csite.phone }}</p>
+                <p><i class="fas fa-envelope me-2"></i> {{ csite.email }}</p>
+            </div>
+        </div>
+        <hr class="bg-secondary">
+        <div class="text-center">
+            <small>&copy; {% now "Y" %} {{ csite.company_name }}. All rights reserved.</small>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<script>
+    // Initialize AOS
+    AOS.init({
+        duration: 800,
+        once: true,
+        offset: 100
+    });
+
+    // Custom cursor
+    const cursorDot = document.querySelector('.cursor-dot');
+    const cursorOutline = document.querySelector('.cursor-outline');
+    if (cursorDot && cursorOutline) {
+        window.addEventListener('mousemove', (e) => {
+            cursorDot.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
+            cursorOutline.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
+        });
+        document.querySelectorAll('a, button, .card, .service-item').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursorOutline.style.transform = 'scale(1.5)';
+                cursorOutline.style.borderColor = 'var(--accent)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursorOutline.style.transform = 'scale(1)';
+                cursorOutline.style.borderColor = 'var(--primary)';
+            });
+        });
+    }
+
+    // Spinner
+    window.addEventListener('load', () => {
+        const spinner = document.getElementById('spinner');
+        if(spinner) spinner.style.display = 'none';
+    });
+
+    // Navbar background on scroll
+    window.addEventListener('scroll', () => {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 50) {
+            navbar.classList.add('shadow-sm');
+        } else {
+            navbar.classList.remove('shadow-sm');
+        }
+    });
+</script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

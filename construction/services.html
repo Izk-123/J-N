@@ -1,0 +1,40 @@
+{% extends 'construction/base_construction.html' %}
+{% load static %}
+
+{% block content %}
+{% include 'construction/includes/page_header.html' with title="Our Services" active_page="Services" page_header_image=csite.page_header_image %}
+
+<div class="container py-5">
+    <div class="text-center mb-5" data-aos="fade-up">
+        <p class="text-primary fw-semibold">What We Offer</p>
+        <h2 class="display-5 fw-bold">Comprehensive Construction Services</h2>
+        <p class="col-md-8 mx-auto">From concept to completion, we handle every aspect of your project.</p>
+    </div>
+    <div class="row g-4">
+        {% for service in services %}
+        <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:50 }}">
+            <div class="card border-0 shadow-sm hover-glow tilt-card rounded-4 overflow-hidden h-100">
+                <img src="{% if service.image %}{{ service.image.url }}{% else %}{% static 'img/service-placeholder.jpg' %}{% endif %}" class="card-img-top" alt="{{ service.title }}" style="height: 220px; object-fit: cover;">
+                <div class="card-body p-4">
+                    <i class="fas {{ service.icon|default:'fa-tools' }} fa-2x text-primary mb-3"></i>
+                    <h5 class="card-title fw-bold">{{ service.title }}</h5>
+                    <p class="card-text">{{ service.short_description }}</p>
+                    <p class="card-text small">{{ service.description|truncatewords:20 }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">No services available yet.</div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Call to Action -->
+<div class="bg-primary bg-opacity-10 py-5">
+    <div class="container text-center py-4" data-aos="zoom-in">
+        <h3 class="fw-bold">Need a custom solution?</h3>
+        <p class="mb-4">Contact us for a tailored service package.</p>
+        <a href="{% url 'construction:contact' %}" class="btn btn-modern">Request a Quote</a>
+    </div>
+</div>
+{% endblock %}

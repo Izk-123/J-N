@@ -1,0 +1,40 @@
+{% extends 'construction/base_construction.html' %}
+{% load static %}
+
+{% block content %}
+{% include 'construction/includes/page_header.html' with title=project.title active_page="Projects" page_header_image=csite.page_header_image %}
+
+<div class="container py-5">
+    <div class="row g-5">
+        <div class="col-lg-8" data-aos="fade-right">
+            <img src="{% if project.cover_image %}{{ project.cover_image.url }}{% else %}{% static 'img/project-placeholder.jpg' %}{% endif %}" class="img-fluid rounded-4 shadow-lg mb-4" alt="{{ project.title }}">
+            <h2 class="fw-bold">{{ project.title }}</h2>
+            <p class="lead">{{ project.description }}</p>
+
+            {% if project.images.all %}
+            <h4 class="mt-5 mb-3">Project Gallery</h4>
+            <div class="row g-3">
+                {% for img in project.images.all %}
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:50 }}">
+                    <img src="{{ img.image.url }}" class="img-fluid rounded-3 shadow-sm hover-glow" alt="{{ img.caption }}">
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-lg-4" data-aos="fade-left">
+            <div class="glass-card p-4 sticky-top" style="top: 100px;">
+                <h4 class="fw-bold mb-4">Project Details</h4>
+                <ul class="list-unstyled">
+                    <li class="mb-3"><i class="fas fa-map-marker-alt text-primary me-2"></i> <strong>Location:</strong> {{ project.location|default:"—" }}</li>
+                    <li class="mb-3"><i class="fas fa-user-tie text-primary me-2"></i> <strong>Client:</strong> {{ project.client|default:"—" }}</li>
+                    <li class="mb-3"><i class="fas fa-calendar-alt text-primary me-2"></i> <strong>Completed:</strong> {{ project.completion_date|date:"F Y"|default:"—" }}</li>
+                    <li class="mb-3"><i class="fas fa-chart-line text-primary me-2"></i> <strong>Value:</strong> {{ project.value|default:"—" }}</li>
+                </ul>
+                <hr>
+                <a href="{% url 'construction:contact' %}" class="btn btn-modern w-100 mt-3">Request Similar Project</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
