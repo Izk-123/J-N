@@ -108,3 +108,6 @@ LOGGING = {
         },
     },
 }
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240   # default is 1000
+DATA_UPLOAD_MAX_NUMBER_FILES = 100      # default is 100
