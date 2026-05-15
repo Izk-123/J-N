@@ -4,6 +4,20 @@
 
 {% block extra_css %}
 <style>
+    /* Ensure no horizontal overflow on any page */
+    body, html {
+        overflow-x: hidden !important;
+        max-width: 100%;
+    }
+    .container, .container-fluid, .row, [class*="col-"] {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+    img, svg, video, iframe {
+        max-width: 100%;
+        height: auto;
+    }
+
     /* Parallax Hero */
     .hero-parallax {
         position: relative;
