@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>{% block title %}{{ site.company_name|default:"Blue Rock Wall Putty" }}{% endblock %}</title>
     <meta name="description" content="{% block meta_description %}{{ site.meta_description|default:site.tagline }}{% endblock %}">
     
@@ -47,24 +47,31 @@
             scroll-behavior: smooth;
         }
         
+        /* Prevent horizontal scroll on all containers */
+        .container, .container-fluid {
+            overflow-x: hidden;
+        }
+        
         h1, h2, h3, h4, h5, h6, .nav-link, .btn, .navbar-brand {
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-weight: 600;
         }
         
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--gray-100);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-dark);
+        /* Custom Scrollbar (only for desktop) */
+        @media (min-width: 768px) {
+            ::-webkit-scrollbar {
+                width: 8px;
+            }
+            ::-webkit-scrollbar-track {
+                background: var(--gray-100);
+            }
+            ::-webkit-scrollbar-thumb {
+                background: var(--primary);
+                border-radius: 10px;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                background: var(--primary-dark);
+            }
         }
         
         /* Advanced Spinner */
@@ -115,7 +122,14 @@
         }
         .navbar-brand {
             font-weight: 800;
-            font-size: 1.7rem;
+            font-size: 1.4rem;
+        }
+        @media (min-width: 768px) {
+            .navbar-brand {
+                font-size: 1.7rem;
+            }
+        }
+        .navbar-brand {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark), var(--accent));
             -webkit-background-clip: text;
             background-clip: text;
@@ -129,9 +143,14 @@
             font-weight: 600;
             color: var(--gray-800) !important;
             padding: 0.5rem 0 !important;
-            margin: 0 0.75rem;
+            margin: 0 0.5rem;
             position: relative;
             transition: color 0.2s;
+        }
+        @media (min-width: 992px) {
+            .nav-link {
+                margin: 0 0.75rem;
+            }
         }
         .nav-link::after {
             content: '';
@@ -155,21 +174,34 @@
         .hero-modern {
             position: relative;
             background: linear-gradient(125deg, var(--primary) 0%, var(--primary-dark) 100%);
-            padding: 6rem 0 7rem;
-            margin-bottom: 3rem;
+            padding: 4rem 0 5rem;
+            margin-bottom: 2rem;
             overflow: hidden;
-            border-radius: 0 0 3rem 3rem;
+            border-radius: 0 0 2rem 2rem;
         }
-        /* Particles */
+        @media (min-width: 768px) {
+            .hero-modern {
+                padding: 6rem 0 7rem;
+                margin-bottom: 3rem;
+                border-radius: 0 0 3rem 3rem;
+            }
+        }
+        /* Particles - hidden on mobile for performance */
         .particles-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            pointer-events: none;
-            z-index: 1;
+            display: none;
+        }
+        @media (min-width: 768px) {
+            .particles-container {
+                display: block;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                pointer-events: none;
+                z-index: 1;
+            }
         }
         .particle {
             position: absolute;
@@ -194,14 +226,19 @@
                 opacity: 0;
             }
         }
-        /* Floating shapes */
+        /* Floating shapes - scaled down on mobile */
         .hero-shape {
             position: absolute;
-            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
             border-radius: 50%;
-            filter: blur(60px);
+            filter: blur(40px);
             pointer-events: none;
             animation: floatShape alternate infinite ease-in-out;
+        }
+        @media (min-width: 768px) {
+            .hero-shape {
+                filter: blur(60px);
+            }
         }
         @keyframes floatShape {
             0% { transform: translate(0, 0) scale(1); opacity: 0.3; }
@@ -229,11 +266,39 @@
                 transform: translateY(0);
             }
         }
-        /* Floating image */
+        /* Hero text sizing */
+        .hero-title {
+            font-size: 1.8rem;
+        }
+        @media (min-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+        }
+        @media (min-width: 992px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+        }
+        .hero-subtitle {
+            font-size: 1rem;
+        }
+        @media (min-width: 768px) {
+            .hero-subtitle {
+                font-size: 1.25rem;
+            }
+        }
+        /* Floating image - only on desktop */
         .hero-img {
             transition: transform 0.3s ease-out, box-shadow 0.3s;
             will-change: transform;
-            animation: floatImage 5s ease-in-out infinite;
+            max-width: 100%;
+            height: auto;
+        }
+        @media (min-width: 768px) {
+            .hero-img {
+                animation: floatImage 5s ease-in-out infinite;
+            }
         }
         @keyframes floatImage {
             0% { transform: translateY(0px); }
@@ -244,7 +309,7 @@
             transform: scale(1.02) rotateY(2deg);
             box-shadow: 0 25px 40px rgba(0,0,0,0.2);
         }
-        /* Glow button */
+        /* Buttons */
         .glow-button {
             transition: all 0.3s;
             position: relative;
@@ -290,9 +355,15 @@
             transform-style: preserve-3d;
             background: var(--glass-bg);
             backdrop-filter: blur(12px);
-            border-radius: 28px;
+            border-radius: 24px;
             border: 1px solid var(--glass-border);
             overflow: hidden;
+            height: 100%;
+        }
+        @media (min-width: 768px) {
+            .product-tilt {
+                border-radius: 28px;
+            }
         }
         .product-tilt:hover {
             transform: translateY(-8px) rotateX(2deg) scale(1.01);
@@ -302,8 +373,13 @@
         .product-img {
             transition: transform 0.6s ease;
             width: 100%;
-            height: 220px;
+            height: 200px;
             object-fit: cover;
+        }
+        @media (min-width: 768px) {
+            .product-img {
+                height: 220px;
+            }
         }
         .product-tilt:hover .product-img {
             transform: scale(1.05);
@@ -312,13 +388,19 @@
         /* Category Card */
         .category-gloss {
             text-align: center;
-            padding: 1.8rem 1rem;
-            border-radius: 32px;
+            padding: 1rem;
+            border-radius: 24px;
             background: var(--glass-bg);
             backdrop-filter: blur(8px);
             border: 1px solid var(--glass-border);
             transition: all 0.3s ease;
             height: 100%;
+        }
+        @media (min-width: 768px) {
+            .category-gloss {
+                padding: 1.8rem 1rem;
+                border-radius: 32px;
+            }
         }
         .category-gloss:hover {
             background: white;
@@ -327,41 +409,75 @@
             border-color: var(--primary);
         }
         .category-icon {
-            font-size: 2.8rem;
+            font-size: 2rem;
             color: var(--primary);
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
             transition: transform 0.2s;
+        }
+        @media (min-width: 768px) {
+            .category-icon {
+                font-size: 2.8rem;
+                margin-bottom: 1rem;
+            }
         }
         .category-gloss:hover .category-icon {
             transform: scale(1.05);
+        }
+        .category-gloss h5 {
+            font-size: 0.9rem;
+        }
+        @media (min-width: 768px) {
+            .category-gloss h5 {
+                font-size: 1.25rem;
+            }
         }
         
         /* Testimonial */
         .testimonial-glass {
             background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(12px);
-            border-radius: 40px;
-            padding: 2rem;
+            border-radius: 32px;
+            padding: 1.5rem;
             box-shadow: var(--shadow-sm);
             border: 1px solid var(--glass-border);
+            margin: 0 0.5rem;
+        }
+        @media (min-width: 768px) {
+            .testimonial-glass {
+                border-radius: 40px;
+                padding: 2rem;
+            }
         }
         
         /* Newsletter */
         .newsletter-glass {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(20px);
-            border-radius: 56px;
-            padding: 3rem 2rem;
+            border-radius: 32px;
+            padding: 1.5rem;
             box-shadow: var(--shadow-md);
             border: 1px solid rgba(255,255,255,0.5);
+        }
+        @media (min-width: 768px) {
+            .newsletter-glass {
+                border-radius: 56px;
+                padding: 3rem 2rem;
+            }
         }
         
         /* Buttons */
         .btn {
             font-weight: 600;
             border-radius: 40px;
-            padding: 0.6rem 1.5rem;
+            padding: 0.5rem 1.2rem;
             transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+        @media (min-width: 768px) {
+            .btn {
+                padding: 0.6rem 1.5rem;
+                font-size: 1rem;
+            }
         }
         .btn-primary {
             background: var(--primary);
@@ -388,32 +504,48 @@
             background: rgba(15, 23, 42, 0.96);
             backdrop-filter: blur(8px);
             color: #cbd5e1;
-            padding: 3rem 0 1.5rem;
-            margin-top: 5rem;
+            padding: 2rem 0 1rem;
+            margin-top: 3rem;
             border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        @media (min-width: 768px) {
+            footer {
+                padding: 3rem 0 1.5rem;
+                margin-top: 5rem;
+            }
         }
         footer h5 {
             color: white;
             font-weight: 700;
-            margin-bottom: 1.2rem;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        @media (min-width: 768px) {
+            footer h5 {
+                font-size: 1.25rem;
+            }
         }
         footer a {
             color: #94a3b8;
             transition: color 0.2s;
             text-decoration: none;
-        }
-        footer a:hover {
-            color: var(--accent);
+            font-size: 0.85rem;
         }
         .social-icons a {
             background: rgba(255,255,255,0.05);
-            width: 38px;
-            height: 38px;
+            width: 32px;
+            height: 32px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
             transition: all 0.2s;
+        }
+        @media (min-width: 768px) {
+            .social-icons a {
+                width: 38px;
+                height: 38px;
+            }
         }
         .social-icons a:hover {
             background: var(--primary);
@@ -421,23 +553,16 @@
             transform: translateY(-3px);
         }
         
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero-modern {
-                padding: 3rem 0 4rem;
-                border-radius: 0 0 2rem 2rem;
-            }
-            .navbar-brand {
-                font-size: 1.3rem;
-            }
-            .hero-title {
-                font-size: 1.8rem;
-            }
-            .floating-img {
-                animation: none;
-            }
-            .particle {
-                display: none;
+        /* Carousel controls on mobile */
+        .carousel-control-prev-icon, .carousel-control-next-icon {
+            width: 30px;
+            height: 30px;
+            background-size: 60%;
+        }
+        @media (min-width: 768px) {
+            .carousel-control-prev-icon, .carousel-control-next-icon {
+                width: 40px;
+                height: 40px;
             }
         }
         
@@ -449,23 +574,34 @@
             opacity: 0.6;
             pointer-events: none;
         }
+        
+        /* Fix offcanvas on mobile */
+        .offcanvas {
+            max-width: 80%;
+        }
+        
+        /* Ensure no horizontal scroll on any element */
+        img, svg, iframe, video {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
 
 <!-- Navbar (Enhanced Glass) -->
-<nav class="navbar navbar-expand-lg navbar-gloss sticky-top py-3">
+<nav class="navbar navbar-expand-lg navbar-gloss sticky-top py-2 py-md-3">
     <div class="container">
         <a class="navbar-brand" href="/">{{ site.company_name|default:"Blue Rock" }}</a>
         <button class="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto gap-2">
+            <ul class="navbar-nav ms-auto gap-1 gap-lg-2">
+                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'products:product_list' %}">Products</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'contacts:contact' %}">Contact</a></li>
-                <li class="nav-item"><a class="nav-link" href="/">Group</a></li>
             </ul>
         </div>
     </div>
@@ -479,9 +615,9 @@
     </div>
     <div class="offcanvas-body">
         <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'products:product_list' %}">Products</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'contacts:contact' %}">Contact</a></li>
-            <li class="nav-item"><a class="nav-link" href="/">Group</a></li>
         </ul>
     </div>
 </div>
@@ -491,7 +627,7 @@
 <!-- Footer -->
 <footer>
     <div class="container">
-        <div class="row g-5">
+        <div class="row g-4">
             <div class="col-md-4">
                 <h5>{{ site.company_name }}</h5>
                 <p class="small text-white-50">{{ site.tagline }}</p>
@@ -530,35 +666,50 @@
 <script src="https://unpkg.com/htmx.org@1.9.12"></script>
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-    AOS.init({ duration: 800, once: false, mirror: true, offset: 20 });
+    AOS.init({ duration: 800, once: false, mirror: true, offset: 20, disable: window.innerWidth < 768 ? true : false });
     
-    // Tilt effect for product cards
-    document.querySelectorAll('.product-tilt').forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const rotateX = ((y / rect.height) - 0.5) * 6;
-            const rotateY = ((x / rect.width) - 0.5) * 6;
-            card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px)`;
+    // Tilt effect for product cards (disabled on mobile for performance)
+    if (window.innerWidth >= 768) {
+        document.querySelectorAll('.product-tilt').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const rotateX = ((y / rect.height) - 0.5) * 6;
+                const rotateY = ((x / rect.width) - 0.5) * 6;
+                card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+            });
         });
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+        
+        // Mouse parallax for hero image (desktop only)
+        const heroImg = document.querySelector('.hero-img');
+        const heroWrapper = document.querySelector('.hero-image-wrapper');
+        if (heroImg && heroWrapper) {
+            heroWrapper.addEventListener('mousemove', (e) => {
+                const rect = heroWrapper.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width - 0.5;
+                const y = (e.clientY - rect.top) / rect.height - 0.5;
+                heroImg.style.transform = `translate(${x * 15}px, ${y * 15}px) scale(1.02)`;
+            });
+            heroWrapper.addEventListener('mouseleave', () => {
+                heroImg.style.transform = 'translate(0, 0) scale(1)';
+            });
+        }
+    } else {
+        // On mobile, ensure no hover transforms cause layout shifts
+        document.querySelectorAll('.product-tilt').forEach(card => {
+            card.style.transform = 'none';
         });
-    });
+    }
     
-    // Optional mouse parallax for hero image
-    const heroImg = document.querySelector('.hero-img');
-    const heroWrapper = document.querySelector('.hero-image-wrapper');
-    if (heroImg && heroWrapper) {
-        heroWrapper.addEventListener('mousemove', (e) => {
-            const rect = heroWrapper.getBoundingClientRect();
-            const x = (e.clientX - rect.left) / rect.width - 0.5;
-            const y = (e.clientY - rect.top) / rect.height - 0.5;
-            heroImg.style.transform = `translate(${x * 15}px, ${y * 15}px) scale(1.02)`;
-        });
-        heroWrapper.addEventListener('mouseleave', () => {
-            heroImg.style.transform = 'translate(0, 0) scale(1)';
+    // Ensure carousel touch works (Bootstrap already supports, but force refresh)
+    if (typeof bootstrap !== 'undefined') {
+        var carousels = document.querySelectorAll('.carousel');
+        carousels.forEach(carousel => {
+            new bootstrap.Carousel(carousel, { interval: 5000, ride: 'carousel', touch: true });
         });
     }
 </script>
