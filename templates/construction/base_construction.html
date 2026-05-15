@@ -22,7 +22,6 @@
     <!-- AOS (Animate on Scroll) -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
-    <!-- Custom Styles -->
     <style>
         :root {
             --primary: {{ csite.primary_color|default:'#FF6B35' }};
@@ -42,12 +41,17 @@
             box-sizing: border-box;
         }
 
+        /* Prevent horizontal scroll */
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             color: var(--gray);
             background-color: var(--light);
-            overflow-x: hidden;
-            cursor: default;
         }
 
         h1, h2, h3, h4, h5, h6 {
@@ -56,29 +60,26 @@
             color: var(--dark);
         }
 
-        /* Custom cursor */
-        body, button, a, .card, .service-item {
-            cursor: none;
-        }
-        .cursor-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--primary);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            transition: transform 0.1s ease;
-        }
-        .cursor-outline {
-            width: 40px;
-            height: 40px;
-            border: 2px solid var(--primary);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9998;
-            transition: all 0.15s ease-out;
+        /* Custom cursor - only on non-touch devices */
+        @media (pointer: fine) {
+            .cursor-dot, .cursor-outline {
+                position: fixed;
+                pointer-events: none;
+                z-index: 99999;
+                transition: all 0.1s ease-out;
+            }
+            .cursor-dot {
+                width: 8px;
+                height: 8px;
+                background: var(--primary);
+                border-radius: 50%;
+            }
+            .cursor-outline {
+                width: 40px;
+                height: 40px;
+                border: 2px solid var(--primary);
+                border-radius: 50%;
+            }
         }
 
         /* Glassmorphism */
@@ -131,11 +132,15 @@
             font-weight: 600;
             font-size: 0.85rem;
             transition: all 0.3s;
-            margin-right: 20px;
+            margin-right: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
         .btn-group-return:hover {
             transform: translateX(-5px);
             box-shadow: 0 8px 20px rgba(255,107,53,0.3);
+            color: white !important;
         }
 
         /* Hero Section */
@@ -166,9 +171,6 @@
             font-weight: 800;
             line-height: 1.2;
         }
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.5rem; }
-        }
 
         /* Parallax sections */
         .parallax {
@@ -193,6 +195,7 @@
             background: var(--primary-dark);
             transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(255,107,53,0.3);
+            color: white;
         }
 
         /* Cards with 3D tilt */
@@ -230,16 +233,101 @@
             text-decoration: none;
         }
 
-        /* Responsive utilities */
+        /* ========== RESPONSIVE FIXES ========== */
+        @media (max-width: 768px) {
+            .display-1, .display-2, .display-3, .display-4, .display-5, .display-6 {
+                font-size: calc(1.5rem + 2vw) !important;
+            }
+            h1, .h1 { font-size: calc(1.3rem + 2vw); }
+            .hero h1 { font-size: 2rem !important; }
+            .hero .display-2 { font-size: 2.2rem !important; }
+            .hero {
+                background-attachment: scroll !important;
+                min-height: 70vh;
+            }
+            .carousel-caption h1 {
+                font-size: 1.6rem;
+            }
+            .navbar .container {
+                padding-left: 0.75rem !important;
+                padding-right: 0.75rem !important;
+            }
+            .stats-section .glass-card {
+                padding: 0.75rem !important;
+            }
+            .team-text {
+                width: 85%;
+                bottom: 15px;
+            }
+            .facts-overlay {
+                padding: 15px;
+            }
+            .facts-overlay h1 {
+                font-size: 60px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+            .glass-card {
+                padding: 1.25rem !important;
+            }
+            .form-floating label {
+                font-size: 0.85rem;
+            }
+            .facts-overlay h4 {
+                font-size: 1.1rem;
+            }
+            .facts-overlay p {
+                font-size: 0.8rem;
+            }
+        }
+
         @media (max-width: 992px) {
-            .navbar .navbar-nav {
+            .navbar-nav {
                 text-align: center;
                 padding: 1rem 0;
             }
-            .btn-group-return {
-                margin-bottom: 10px;
-                display: inline-block;
+            .navbar-nav .btn-group-return {
+                margin: 10px auto 0;
+                width: fit-content;
             }
+            .footer .btn-link {
+                text-align: center !important;
+            }
+        }
+
+        /* Prevent image overflow */
+        img, iframe, video {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Carousel control icons on mobile */
+        @media (max-width: 768px) {
+            .carousel-control-prev-icon,
+            .carousel-control-next-icon {
+                width: 2rem !important;
+                height: 2rem !important;
+                border-width: 8px !important;
+                background-size: 60%;
+            }
+        }
+
+        /* Stats counters row - prevent overflow */
+        .stats-section .row {
+            margin: 0;
+        }
+        .stats-section [class*="col-"] {
+            padding: 0.5rem;
+        }
+
+        /* Spinner */
+        #spinner {
+            z-index: 99999;
         }
     </style>
 
@@ -247,12 +335,12 @@
 </head>
 <body>
 
-<!-- Custom cursor (only for non-touch devices) -->
+<!-- Custom cursor elements (only rendered on desktops) -->
 <div class="cursor-dot"></div>
 <div class="cursor-outline"></div>
 
-<!-- Spinner (modern) -->
-<div id="spinner" class="position-fixed top-50 start-50 translate-middle bg-white p-4 rounded-5 shadow-lg" style="z-index: 9999; display: none;">
+<!-- Spinner (hidden by default) -->
+<div id="spinner" class="position-fixed top-50 start-50 translate-middle bg-white p-4 rounded-5 shadow-lg" style="display: none;">
     <div class="spinner-border text-primary" role="status"></div>
 </div>
 
@@ -325,6 +413,7 @@
                     <li><a href="{% url 'construction:about' %}">About Us</a></li>
                     <li><a href="{% url 'construction:services' %}">Services</a></li>
                     <li><a href="{% url 'construction:projects' %}">Projects</a></li>
+                    <li><a href="{% url 'construction:contact' %}">Contact</a></li>
                 </ul>
             </div>
             <div class="col-md-4 mb-4">
@@ -347,48 +436,73 @@
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
 <script>
-    // Initialize AOS
-    AOS.init({
-        duration: 800,
-        once: true,
-        offset: 100
-    });
-
-    // Custom cursor
-    const cursorDot = document.querySelector('.cursor-dot');
-    const cursorOutline = document.querySelector('.cursor-outline');
-    if (cursorDot && cursorOutline) {
-        window.addEventListener('mousemove', (e) => {
-            cursorDot.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
-            cursorOutline.style.transform = `translate(${e.clientX - 20}px, ${e.clientY - 20}px)`;
+    (function() {
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100
         });
-        document.querySelectorAll('a, button, .card, .service-item').forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                cursorOutline.style.transform = 'scale(1.5)';
-                cursorOutline.style.borderColor = 'var(--accent)';
-            });
-            el.addEventListener('mouseleave', () => {
-                cursorOutline.style.transform = 'scale(1)';
-                cursorOutline.style.borderColor = 'var(--primary)';
-            });
-        });
-    }
 
-    // Spinner
-    window.addEventListener('load', () => {
-        const spinner = document.getElementById('spinner');
-        if(spinner) spinner.style.display = 'none';
-    });
+        // Custom cursor - only on non-touch devices (desktops & laptops)
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        if (!isTouchDevice) {
+            const cursorDot = document.querySelector('.cursor-dot');
+            const cursorOutline = document.querySelector('.cursor-outline');
+            if (cursorDot && cursorOutline) {
+                let mouseX = 0, mouseY = 0;
+                let dotX = 0, dotY = 0;
+                let outlineX = 0, outlineY = 0;
 
-    // Navbar background on scroll
-    window.addEventListener('scroll', () => {
-        const navbar = document.querySelector('.navbar');
-        if (window.scrollY > 50) {
-            navbar.classList.add('shadow-sm');
-        } else {
-            navbar.classList.remove('shadow-sm');
+                document.addEventListener('mousemove', (e) => {
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                });
+
+                function animate() {
+                    dotX += (mouseX - dotX) * 0.2;
+                    dotY += (mouseY - dotY) * 0.2;
+                    cursorDot.style.transform = `translate(${dotX - 4}px, ${dotY - 4}px)`;
+
+                    outlineX += (mouseX - outlineX) * 0.1;
+                    outlineY += (mouseY - outlineY) * 0.1;
+                    cursorOutline.style.transform = `translate(${outlineX - 20}px, ${outlineY - 20}px)`;
+
+                    requestAnimationFrame(animate);
+                }
+                animate();
+
+                // Hover effects
+                const interactive = document.querySelectorAll('a, button, .card, .service-item, .tilt-card, .btn, .nav-link');
+                interactive.forEach(el => {
+                    el.addEventListener('mouseenter', () => {
+                        cursorOutline.style.transform = `scale(1.5)`;
+                        cursorOutline.style.borderColor = 'var(--accent)';
+                    });
+                    el.addEventListener('mouseleave', () => {
+                        cursorOutline.style.transform = `scale(1)`;
+                        cursorOutline.style.borderColor = 'var(--primary)';
+                    });
+                });
+            }
         }
-    });
+
+        // Hide spinner after load
+        window.addEventListener('load', () => {
+            const spinner = document.getElementById('spinner');
+            if (spinner) spinner.style.display = 'none';
+        });
+
+        // Navbar shadow on scroll
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('shadow-sm');
+            } else {
+                navbar.classList.remove('shadow-sm');
+            }
+        });
+    })();
 </script>
 
 {% block extra_js %}{% endblock %}
