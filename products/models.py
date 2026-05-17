@@ -23,6 +23,7 @@ class Product(models.Model):
     specifications = models.TextField(blank=True, help_text="Technical specs, sizes, materials etc.")
     image = models.ImageField(upload_to='products/')
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text="Optional")
+    rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.0, help_text="Average rating 0–5")
     is_featured = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)

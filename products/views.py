@@ -1,5 +1,6 @@
 from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404
+from core.models import Testimonial
 from .models import Product, Category, BuildingSettings
 
 class ProductListView(ListView):
@@ -27,6 +28,10 @@ class ProductListView(ListView):
         context['active_category'] = Category.objects.filter(slug=category_slug).first()
         context['search'] = search
         context['site'] = BuildingSettings.get()   # ✅ dynamic site settings
+        context['testimonials'] = Testimonial.objects.filter(
+            is_active=True, 
+            source='products'      # only show testimonials for this sub‑site
+        )[:6]
 
         # HTMX partial response detection
         if self.request.headers.get('HX-Request') == 'true':

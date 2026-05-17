@@ -89,17 +89,27 @@ class SiteSettings(models.Model):
         })
         return obj
 
-
 class Testimonial(models.Model):
+    SOURCE_CHOICES = (
+        ('group',       'Group Landing'),
+        ('products',    'Building Products'),
+        ('construction','Construction'),
+        ('mining',      'Mining'),
+        ('timber',      'Timber'),
+        ('general',     'General'),
+    )
+
     name = models.CharField(max_length=100)
     role = models.CharField(max_length=100, blank=True, help_text="e.g. Homeowner, Contractor")
     message = models.TextField()
     rating = models.PositiveSmallIntegerField(default=5, choices=[(i, i) for i in range(1, 6)])
+    source = models.CharField(max_length=20, choices=SOURCE_CHOICES, default='general',
+                              help_text="Which sub-site this testimonial is for")
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.name} - {self.rating}★"
+        return f"{self.name} - {self.rating}★ ({self.get_source_display()})"
 
 
 # ─── NEW: Visitor Analytics ─────────────────────────────────────────────
@@ -188,7 +198,10 @@ class GroupConfig(models.Model):
     logo           = models.ImageField(upload_to='group/brand/', blank=True, null=True)
     hero_image     = models.ImageField(upload_to='group/hero/', blank=True, null=True,
                                        help_text="Full-screen background image for the hero")
-    hero_video_url = models.URLField(blank=True, help_text="Optional YouTube embed ID for background video")
+    hero_video_url = models.CharField(
+        max_length=50, blank=True,
+        help_text="YouTube video ID (e.g., dQw4w9WgXcQ). Leave empty to use hero_image."
+    )
 
     # Hero text (new)
     hero_title          = models.CharField(max_length=200, default="Building Today.<br><span class='orange-text'>Empowering Tomorrow.</span>",

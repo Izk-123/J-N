@@ -60,14 +60,19 @@ class SiteSettingsAdmin(ModelAdmin):
 class TestimonialAdmin(ModelAdmin):
     compressed_fields = True
     warn_unsaved_form = True
-    list_display = ('name', 'role', 'display_rating', 'is_active', 'created_at')
-    list_filter = ('is_active', 'rating')
+    list_display = ('name', 'role', 'display_rating', 'source', 'is_active', 'created_at')
+    list_filter = ('is_active', 'rating', 'source')
     list_editable = ('is_active',)
-    search_fields = ('name', 'role', 'message')
+    search_fields = ('name', 'role', 'message', 'source')
     fieldsets = (
         ('Client Info', {'fields': ('name', 'role')}),
-        ('Review', {'fields': ('message', 'rating', 'is_active')}),
+        ('Review', {'fields': ('message', 'rating', 'is_active', 'source')}),
     )
+    
+        # inside TestimonialAdmin
+    @display(description='Source', ordering='source')
+    def display_source(self, obj):
+        return obj.get_source_display()
 
     @display(description='Rating', ordering='rating')
     def display_rating(self, obj):
