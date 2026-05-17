@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from .models import ContactMessage
 
 
@@ -52,3 +55,19 @@ def contact(request):
             messages.error(request, 'Please fill in your name, phone number, and message.')
 
     return render(request, 'contacts/contact.html')
+
+
+@require_POST
+def newsletter_signup(request):
+    email = request.POST.get('email', '').strip()
+    if email:
+        ContactMessage.objects.create(
+            name='Newsletter Subscriber',
+            email=email,
+            phone='',
+            subject='Newsletter signup',
+            message=f'Subscribed with email: {email}',
+            source='newsletter'
+        )
+        return JsonResponse({'success': True, 'message': 'Thanks for subscribing!'})
+    return JsonResponse({'success': False, 'message': 'Valid email required.'})
