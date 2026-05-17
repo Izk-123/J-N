@@ -5,7 +5,7 @@ from unfold.decorators import display
 from unfold.contrib.forms.widgets import WysiwygWidget
 from django import forms
 
-from .models import SiteSettings, Testimonial, Visitor, WhatsAppClick
+from .models import SiteSettings, Testimonial, Visitor, WhatsAppClick, GroupConfig
 
 
 class SiteSettingsForm(forms.ModelForm):
@@ -118,23 +118,76 @@ class WhatsAppClickAdmin(ModelAdmin):
     def has_change_permission(self, request, obj=None):
         return False
 
-from .models import GroupConfig
+
+class GroupConfigForm(forms.ModelForm):
+    story_text = forms.CharField(widget=WysiwygWidget(), required=False)
+    hero_title = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), required=False)
+    
+    class Meta:
+        model = GroupConfig
+        fields = '__all__'
 
 @admin.register(GroupConfig)
 class GroupConfigAdmin(ModelAdmin):
+    form = GroupConfigForm
     compressed_fields = True
     warn_unsaved_form = True
+    
     fieldsets = (
-        ('🏢 Group Brand', {'fields': ('group_name', 'tagline', 'sub_tagline', 'logo', 'hero_image', 'hero_video_url')}),
-        ('🔴 Building Products Button', {'fields': ('btn1_label', 'btn1_url', 'btn1_icon')}),
-        ('🔵 Construction Button',      {'fields': ('btn2_label', 'btn2_url', 'btn2_icon')}),
-        ('🟡 Mining Button',            {'fields': ('btn3_label', 'btn3_url', 'btn3_icon')}),
-        ('🌲 Timber Button',            {'fields': ('btn4_label', 'btn4_url', 'btn4_icon')}),
-        ('📖 Group Story',              {'fields': ('story_heading', 'story_text')}),
-        ('📞 Contact',                  {'fields': ('phone', 'email', 'address', 'whatsapp')}),
-        ('📱 Social',                   {'classes': ('collapse',), 'fields': ('facebook', 'linkedin')}),
+        ('🏢 Group Brand', {
+            'fields': ('group_name', 'tagline', 'sub_tagline', 'logo', 'hero_image', 'hero_video_url')
+        }),
+        ('📝 Hero Content', {
+            'fields': ('hero_title', 'hero_subheading'),
+            'description': 'Use HTML <br> and <span class="orange-text"> for styling.'
+        }),
+        ('🔴 Building Products Button', {
+            'fields': ('btn1_label', 'btn1_url', 'btn1_icon', 'card1_description', 'card1_bg_image')
+        }),
+        ('🔵 Construction Button', {
+            'fields': ('btn2_label', 'btn2_url', 'btn2_icon', 'card2_description', 'card2_bg_image')
+        }),
+        ('🟡 Mining Button', {
+            'fields': ('btn3_label', 'btn3_url', 'btn3_icon', 'card3_description', 'card3_bg_image')
+        }),
+        ('🌲 Timber Button', {
+            'fields': ('btn4_label', 'btn4_url', 'btn4_icon', 'card4_description', 'card4_bg_image')
+        }),
+        ('💎 Core Values (4 items)', {
+            'fields': (
+                ('value1_title', 'value1_desc', 'value1_icon'),
+                ('value2_title', 'value2_desc', 'value2_icon'),
+                ('value3_title', 'value3_desc', 'value3_icon'),
+                ('value4_title', 'value4_desc', 'value4_icon'),
+            )
+        }),
+        ('📖 Group Story', {
+            'fields': ('story_heading', 'story_text')
+        }),
+        ('📊 Statistics Counters', {
+            'fields': (
+                ('stat1_number', 'stat1_label'),
+                ('stat2_number', 'stat2_label'),
+                ('stat3_number', 'stat3_label'),
+            )
+        }),
+        ('🎯 Parallax Divider', {
+            'fields': ('divider_title', 'divider_subtitle')
+        }),
+        ('📞 Contact Details', {
+            'fields': ('phone', 'email', 'address', 'whatsapp')
+        }),
+        ('📱 Social Media', {
+            'classes': ('collapse',),
+            'fields': ('facebook', 'linkedin')
+        }),
+        ('📄 Footer', {
+            'fields': ('footer_copyright',)
+        }),
     )
+    
     def has_add_permission(self, request):
         return not GroupConfig.objects.exists()
+    
     def has_delete_permission(self, request, obj=None):
         return False

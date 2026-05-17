@@ -44,6 +44,8 @@ class HomeView(TemplateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['gcfg'] = GroupConfig.get()
+        ctx['testimonials_list'] = Testimonial.objects.filter(is_active=True).order_by('-created_at')[:6]
+        ctx['industry_cards'] = ctx['gcfg'].get_industry_cards()
         return ctx
 
 

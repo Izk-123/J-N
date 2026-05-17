@@ -179,9 +179,10 @@ class WhatsAppClick(models.Model):
 class GroupConfig(models.Model):
     """
     Configuration for the Group holding page (jandn.mw/).
-    Controls the cinematic hero, company cards, and group story.
+    Now fully dynamic – every visible element is editable in admin.
     """
-    group_name     = models.CharField(max_length=200, default="J&N Group of Companies")
+    # ── Brand & Hero ──────────────────────────────────────────────
+    group_name     = models.CharField(max_length=200, default="J&N Pvt Limited")
     tagline        = models.CharField(max_length=300, default="Industrial Excellence For The Future")
     sub_tagline    = models.CharField(max_length=300, default="Construction · Mining · Manufacturing")
     logo           = models.ImageField(upload_to='group/brand/', blank=True, null=True)
@@ -189,28 +190,84 @@ class GroupConfig(models.Model):
                                        help_text="Full-screen background image for the hero")
     hero_video_url = models.URLField(blank=True, help_text="Optional YouTube embed ID for background video")
 
-    # Four company buttons (Building Products, Construction, Mining, Timber)
+    # Hero text (new)
+    hero_title          = models.CharField(max_length=200, default="Building Today.<br><span class='orange-text'>Empowering Tomorrow.</span>",
+                                           help_text="Use <br> for line break, and <span class='orange-text'> for orange highlights.")
+    hero_subheading     = models.CharField(max_length=300, default="Mining · Construction · Timber · Building Products")
+
+    # ── Four company cards (using existing and new fields) ────────
     btn1_label     = models.CharField(max_length=100, default="Blue Rock Wall Putty")
     btn1_url       = models.CharField(max_length=200, default="/products/")
     btn1_icon      = models.CharField(max_length=60, default="bi-droplet-fill")
+    card1_description = models.TextField(max_length=200, default="Blue Rock Wall Putty & premium finishes.")
+    card1_bg_image = models.ImageField(
+        upload_to='group/cards/', blank=True, null=True,
+        help_text="Background image for Building Products card"
+    )
 
     btn2_label     = models.CharField(max_length=100, default="Construction Company")
     btn2_url       = models.CharField(max_length=200, default="/construction/")
     btn2_icon      = models.CharField(max_length=60, default="bi-building")
+    card2_description = models.TextField(max_length=200, default="Building structures, engineering the future.")
+    card2_bg_image = models.ImageField(
+        upload_to='group/cards/', blank=True, null=True,
+        help_text="Background image for Construction card"
+    )
 
     btn3_label     = models.CharField(max_length=100, default="Mining Company")
     btn3_url       = models.CharField(max_length=200, default="/mining/")
     btn3_icon      = models.CharField(max_length=60, default="bi-gem")
+    card3_description = models.TextField(max_length=200, default="Extracting value, powering industrial progress.")
+    card3_bg_image = models.ImageField(
+        upload_to='group/cards/', blank=True, null=True,
+        help_text="Background image for Mining card"
+    )
 
     btn4_label     = models.CharField(max_length=100, default="Timber Company")
     btn4_url       = models.CharField(max_length=200, default="/timber/")
     btn4_icon      = models.CharField(max_length=60, default="bi-tree-fill")
+    card4_description = models.TextField(max_length=200, default="Sustainable forestry & wood solutions.")
+    card4_bg_image = models.ImageField(
+        upload_to='group/cards/', blank=True, null=True,
+        help_text="Background image for Timber card"
+    )
 
-    # Group story section
+    # ── Values strip (4 pillars) ──────────────────────────────────
+    value1_title = models.CharField(max_length=100, default="Diverse Expertise")
+    value1_desc  = models.CharField(max_length=200, default="Four industries, one united vision")
+    value1_icon  = models.CharField(max_length=50, default="bi-gear-wide-connected")
+
+    value2_title = models.CharField(max_length=100, default="Quality & Safety")
+    value2_desc  = models.CharField(max_length=200, default="Highest international standards")
+    value2_icon  = models.CharField(max_length=50, default="bi-shield-check")
+
+    value3_title = models.CharField(max_length=100, default="Sustainability")
+    value3_desc  = models.CharField(max_length=200, default="Responsible industrial growth")
+    value3_icon  = models.CharField(max_length=50, default="bi-recycle")
+
+    value4_title = models.CharField(max_length=100, default="Innovation")
+    value4_desc  = models.CharField(max_length=200, default="Engineering modern Africa")
+    value4_icon  = models.CharField(max_length=50, default="bi-cpu")
+
+    # ── About section (story + stats) ─────────────────────────────
     story_heading  = models.CharField(max_length=200, default="About the Group")
     story_text     = models.TextField(default="J&N Group of Companies is a diversified industrial group based in Malawi, delivering excellence across building products, construction, and mining.")
 
-    # Contact
+    stat1_number = models.PositiveIntegerField(default=4, help_text="Number for first stat")
+    stat1_label  = models.CharField(max_length=100, default="Strategic Sectors")
+    stat2_number = models.PositiveIntegerField(default=12, help_text="Number for second stat")
+    stat2_label  = models.CharField(max_length=100, default="Years Excellence")
+    stat3_number = models.PositiveIntegerField(default=250, help_text="Number for third stat")
+    stat3_label  = models.CharField(max_length=100, default="Industry Partners")
+
+    # ── Parallax divider ──────────────────────────────────────────
+    divider_title    = models.CharField(max_length=200, default="Unmatched Industrial Strength")
+    divider_subtitle = models.CharField(max_length=200, default="Engineering Malawi's infrastructure & economy")
+
+    # ── Footer ────────────────────────────────────────────────────
+    footer_copyright = models.CharField(max_length=200, default="Industrial Excellence.")
+
+    # ── Contact & Social (already existed, keep as is) ────────────
     phone          = models.CharField(max_length=20, blank=True)
     email          = models.EmailField(blank=True)
     address        = models.TextField(blank=True)
@@ -228,6 +285,62 @@ class GroupConfig(models.Model):
     def save(self, *args, **kwargs):
         self.pk = 1
         super().save(*args, **kwargs)
+    
+    def get_industry_cards(self):
+        """Return a list of industry card dicts for the landing page."""
+        from django.templatetags.static import static
+        
+        cards = [
+            {
+                'id': 'products',
+                'url': self.btn1_url,
+                'icon': self.btn1_icon,
+                'label': self.btn1_label,
+                'description': self.card1_description,
+                'button_text': 'View',
+                'overlay_hue': 200,
+                'bg_image': self.card1_bg_image.url if self.card1_bg_image else static('images/hero-bg.jpg'),
+                'order': 4,
+                'active': bool(self.btn1_url),
+            },
+            {
+                'id': 'construction',
+                'url': self.btn2_url,
+                'icon': self.btn2_icon,
+                'label': self.btn2_label,
+                'description': self.card2_description,
+                'button_text': 'Discover',
+                'overlay_hue': 5,
+                'bg_image': self.card2_bg_image.url if self.card2_bg_image else static('images/hero-bg.jpg'),
+                'order': 2,
+                'active': bool(self.btn2_url),
+            },
+            {
+                'id': 'mining',
+                'url': self.btn3_url,
+                'icon': self.btn3_icon,
+                'label': self.btn3_label,
+                'description': self.card3_description,
+                'button_text': 'Explore',
+                'overlay_hue': 0,
+                'bg_image': self.card3_bg_image.url if self.card3_bg_image else static('images/hero-bg.jpg'),
+                'order': 1,
+                'active': bool(self.btn3_url),
+            },
+            {
+                'id': 'timber',
+                'url': self.btn4_url,
+                'icon': self.btn4_icon,
+                'label': self.btn4_label,
+                'description': self.card4_description,
+                'button_text': 'Explore',
+                'overlay_hue': 80,
+                'bg_image': self.card4_bg_image.url if self.card4_bg_image else static('images/hero-bg.jpg'),
+                'order': 3,
+                'active': bool(self.btn4_url),
+            },
+        ]
+        return sorted([c for c in cards if c['active']], key=lambda x: x['order'])
 
     @classmethod
     def get(cls):

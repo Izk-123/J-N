@@ -11,9 +11,7 @@
     <!-- Preconnect & Modern Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&family=Manrope:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Bootstrap 5.3 + Icons + AOS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -142,7 +140,7 @@
             width: 100%;
             display: flex;
             align-items: flex-end;
-            overflow: hidden; /* already here, but we'll reinforce below */
+            overflow: hidden;
         }
         .hero-bg-layer {
             position: absolute;
@@ -456,7 +454,7 @@
         }
 
         /* Force sections to clip any overflow (prevents horizontal shift from animations) */
-        #hero, #companies, .values-section, #about, #contact {
+        #hero, #companies, .values-section, #about, #contact, #testimonials {
             overflow-x: hidden;
         }
     </style>
@@ -496,10 +494,10 @@
                     <ul class="navbar-nav ms-auto gap-3">
                         <li class="nav-item"><a class="nav-link nav-link-custom" href="#companies">COMPANIES</a></li>
                         <li class="nav-item"><a class="nav-link nav-link-custom" href="#about">ABOUT</a></li>
+                        <li class="nav-item"><a class="nav-link nav-link-custom" href="#testimonials">TESTIMONIALS</a></li>
                         <li class="nav-item"><a class="nav-link nav-link-custom" href="#contact">CONTACT</a></li>
                         {% if request.user.is_staff %}
-                        <li class="nav-item"><a class="nav-link nav-link-custom orange-text"
-                                href="{% url 'admin:index' %}">ADMIN</a></li>
+                        <li class="nav-item"><a class="nav-link nav-link-custom orange-text" href="{% url 'admin:index' %}">ADMIN</a></li>
                         {% endif %}
                     </ul>
                 </div>
@@ -516,14 +514,13 @@
                         <span class="text-white-50 small">MALAWI INDUSTRIAL GROUP</span>
                     </div>
                     <h1 class="hero-title mb-4">
-                        Building Today.<br>
-                        <span class="orange-text">Empowering Tomorrow.</span>
+                        {{ gcfg.hero_title|safe }}
                     </h1>
                     <p class="hero-sub mb-4 fs-5">
-                        {{ gcfg.tagline|default:"Mining, Construction, Timber & Innovative Products" }}</p>
+                        {{ gcfg.hero_subheading }}
+                    </p>
                     <div class="d-flex flex-wrap gap-3 mt-3 hero-buttons">
-                        <a href="#companies" class="btn btn-orange-solid rounded-pill px-4 py-2">EXPLORE GROUP <i
-                                class="bi bi-arrow-right-short"></i></a>
+                        <a href="#companies" class="btn btn-orange-solid rounded-pill px-4 py-2">EXPLORE GROUP <i class="bi bi-arrow-right-short"></i></a>
                         <a href="#contact" class="btn btn-outline-light rounded-pill px-4 py-2 border-white">GET IN TOUCH</a>
                     </div>
                 </div>
@@ -538,101 +535,73 @@
         </div>
     </section>
 
-    <!-- 4 INDUSTRY CARDS -->
+    <!-- 4 INDUSTRY CARDS – fully dynamic including background images -->
     <section id="companies" class="py-5" style="background: var(--off-white);">
         <div class="container py-4">
             <div class="row g-4 justify-content-center">
-                <!-- Mining Card -->
-                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
-                    <a href="{{ gcfg.btn3_url }}" class="card-industry text-decoration-none">
-                        <div class="card-img-overlay-bg" style="background-image: url('{% static 'images/hero-bg.jpg' %}'); filter: brightness(0.9);"></div>
+                {% for card in industry_cards %}
+                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:100 }}">
+                    <a href="{{ card.url }}" class="card-industry text-decoration-none">
+                        <div class="card-img-overlay-bg" 
+                            style="background-image: url('{{ card.bg_image }}'); 
+                                    filter: brightness(0.9) hue-rotate({{ card.overlay_hue }}deg);">
+                        </div>
                         <div class="card-body">
-                            <div class="industry-icon"><i class="bi bi-minecart-loaded"></i></div>
-                            <h3 class="card-title-industry">Mining</h3>
-                            <p class="text-secondary">Extracting value, powering industrial progress.</p>
-                            <span class="btn-outline-orange mt-3 d-inline-flex">Explore <i class="bi bi-arrow-right"></i></span>
+                            <div class="industry-icon">
+                                <i class="{{ card.icon|default:'bi-building' }}"></i>
+                            </div>
+                            <h3 class="card-title-industry">{{ card.label }}</h3>
+                            <p class="text-secondary">{{ card.description }}</p>
+                            <span class="btn-outline-orange mt-3 d-inline-flex">
+                                {{ card.button_text }} <i class="bi bi-arrow-right"></i>
+                            </span>
                         </div>
                     </a>
                 </div>
-                <!-- Construction -->
-                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="150">
-                    <a href="{{ gcfg.btn2_url }}" class="card-industry text-decoration-none">
-                        <div class="card-img-overlay-bg" style="background-image: url('{% static 'images/hero-bg.jpg' %}'); filter: brightness(0.9) hue-rotate(5deg);"></div>
-                        <div class="card-body">
-                            <div class="industry-icon"><i class="bi bi-buildings"></i></div>
-                            <h3 class="card-title-industry">Construction</h3>
-                            <p class="text-secondary">Building structures, engineering the future.</p>
-                            <span class="btn-outline-orange mt-3">Discover <i class="bi bi-arrow-right"></i></span>
-                        </div>
-                    </a>
-                </div>
-                <!-- Timber -->
-                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
-                    <a href="{{ gcfg.btn4_url }}" class="card-industry text-decoration-none">
-                        <div class="card-img-overlay-bg" style="background-image: url('{% static 'images/hero-bg.jpg' %}'); filter: brightness(0.9) hue-rotate(80deg);"></div>
-                        <div class="card-body">
-                            <div class="industry-icon"><i class="bi bi-tree-fill"></i></div>
-                            <h3 class="card-title-industry">Timber</h3>
-                            <p class="text-secondary">Sustainable forestry & wood solutions.</p>
-                            <span class="btn-outline-orange mt-3">Explore <i class="bi bi-arrow-right"></i></span>
-                        </div>
-                    </a>
-                </div>
-                <!-- Building Products -->
-                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="250">
-                    <a href="{{ gcfg.btn1_url }}" class="card-industry text-decoration-none">
-                        <div class="card-img-overlay-bg" style="background-image: url('{% static 'images/hero-bg.jpg' %}'); filter: brightness(0.9) hue-rotate(200deg);"></div>
-                        <div class="card-body">
-                            <div class="industry-icon"><i class="bi bi-droplet-fill"></i></div>
-                            <h3 class="card-title-industry">Building Products</h3>
-                            <p class="text-secondary">Blue Rock Wall Putty & premium finishes.</p>
-                            <span class="btn-outline-orange mt-3">View <i class="bi bi-arrow-right"></i></span>
-                        </div>
-                    </a>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </section>
 
-    <!-- Values Strip -->
+    <!-- Values Strip – dynamic -->
     <section class="values-section py-5">
         <div class="container py-4">
             <div class="row g-5 text-center">
                 <div class="col-md-3" data-aos="zoom-in">
-                    <div class="value-card-icon"><i class="bi bi-gear-wide-connected"></i></div>
-                    <h5 class="fw-bold" style="color: var(--navy-primary);">Diverse Expertise</h5>
-                    <p class="text-secondary">Four industries, one united vision</p>
+                    <div class="value-card-icon"><i class="{{ gcfg.value1_icon|default:'bi-gear-wide-connected' }}"></i></div>
+                    <h5 class="fw-bold" style="color: var(--navy-primary);">{{ gcfg.value1_title|default:"Diverse Expertise" }}</h5>
+                    <p class="text-secondary">{{ gcfg.value1_desc|default:"Four industries, one united vision" }}</p>
                 </div>
                 <div class="col-md-3" data-aos="zoom-in" data-aos-delay="100">
-                    <div class="value-card-icon"><i class="bi bi-shield-check"></i></div>
-                    <h5 class="fw-bold" style="color: var(--navy-primary);">Quality & Safety</h5>
-                    <p class="text-secondary">Highest international standards</p>
+                    <div class="value-card-icon"><i class="{{ gcfg.value2_icon|default:'bi-shield-check' }}"></i></div>
+                    <h5 class="fw-bold" style="color: var(--navy-primary);">{{ gcfg.value2_title|default:"Quality & Safety" }}</h5>
+                    <p class="text-secondary">{{ gcfg.value2_desc|default:"Highest international standards" }}</p>
                 </div>
                 <div class="col-md-3" data-aos="zoom-in" data-aos-delay="200">
-                    <div class="value-card-icon"><i class="bi bi-recycle"></i></div>
-                    <h5 class="fw-bold" style="color: var(--navy-primary);">Sustainability</h5>
-                    <p class="text-secondary">Responsible industrial growth</p>
+                    <div class="value-card-icon"><i class="{{ gcfg.value3_icon|default:'bi-recycle' }}"></i></div>
+                    <h5 class="fw-bold" style="color: var(--navy-primary);">{{ gcfg.value3_title|default:"Sustainability" }}</h5>
+                    <p class="text-secondary">{{ gcfg.value3_desc|default:"Responsible industrial growth" }}</p>
                 </div>
                 <div class="col-md-3" data-aos="zoom-in" data-aos-delay="300">
-                    <div class="value-card-icon"><i class="bi bi-cpu"></i></div>
-                    <h5 class="fw-bold" style="color: var(--navy-primary);">Innovation</h5>
-                    <p class="text-secondary">Engineering modern Africa</p>
+                    <div class="value-card-icon"><i class="{{ gcfg.value4_icon|default:'bi-cpu' }}"></i></div>
+                    <h5 class="fw-bold" style="color: var(--navy-primary);">{{ gcfg.value4_title|default:"Innovation" }}</h5>
+                    <p class="text-secondary">{{ gcfg.value4_desc|default:"Engineering modern Africa" }}</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Parallax Divider -->
+    <!-- Parallax Divider – dynamic -->
     <div class="parallax-divider w-100">
         <div class="overlay-dark w-100 h-100 d-flex align-items-center justify-content-center py-5">
             <div class="text-center" data-aos="flip-up">
-                <h3 class="display-6 fw-bold" style="color: var(--safety-orange);">Unmatched Industrial Strength</h3>
-                <p class="lead text-white">Engineering Malawi's infrastructure & economy</p>
+                <h3 class="display-6 fw-bold" style="color: var(--safety-orange);">{{ gcfg.divider_title|default:"Unmatched Industrial Strength" }}</h3>
+                <p class="lead text-white">{{ gcfg.divider_subtitle|default:"Engineering Malawi's infrastructure & economy" }}</p>
             </div>
         </div>
     </div>
 
-    <!-- About Section + Counters -->
+    <!-- About Section + dynamic counters -->
     <section id="about" class="py-5 my-4" style="background: white;">
         <div class="container">
             <div class="row align-items-center g-5">
@@ -641,22 +610,24 @@
                         <span class="fw-semibold" style="color: var(--safety-orange);">▬ ABOUT US</span>
                     </div>
                     <h2 class="display-5 fw-bold" style="color: var(--navy-primary);">
-                        {{ gcfg.story_heading|default:"Our <span style='color:#F97316;'>Legacy</span>"|safe }}</h2>
+                        {{ gcfg.story_heading|default:"Our <span style='color:#F97316;'>Legacy</span>"|safe }}
+                    </h2>
                     <div style="width: 70px; height: 3px; background: var(--safety-orange); margin: 20px 0;"></div>
                     <p class="text-secondary lead">
-                        {{ gcfg.story_text|default:"J&N Group of Companies is a diversified industrial group based in Malawi, delivering excellence across building products, construction, and mining with a track record of reliability." }}</p>
+                        {{ gcfg.story_text|default:"J&N Group of Companies is a diversified industrial group based in Malawi, delivering excellence across building products, construction, and mining with a track record of reliability." }}
+                    </p>
                     <div class="row mt-4 g-4">
                         <div class="col-4">
-                            <div class="stat-circle counter" data-count="4">0</div>
-                            <p class="text-secondary">Strategic Sectors</p>
+                            <div class="stat-circle counter" data-count="{{ gcfg.stat1_number|default:'4' }}">0</div>
+                            <p class="text-secondary">{{ gcfg.stat1_label|default:"Strategic Sectors" }}</p>
                         </div>
                         <div class="col-4">
-                            <div class="stat-circle counter" data-count="12">0</div>
-                            <p class="text-secondary">Years Excellence</p>
+                            <div class="stat-circle counter" data-count="{{ gcfg.stat2_number|default:'12' }}">0</div>
+                            <p class="text-secondary">{{ gcfg.stat2_label|default:"Years Excellence" }}</p>
                         </div>
                         <div class="col-4">
-                            <div class="stat-circle counter" data-count="250">0</div>
-                            <p class="text-secondary">Industry Partners</p>
+                            <div class="stat-circle counter" data-count="{{ gcfg.stat3_number|default:'250' }}">0</div>
+                            <p class="text-secondary">{{ gcfg.stat3_label|default:"Industry Partners" }}</p>
                         </div>
                     </div>
                 </div>
@@ -670,6 +641,43 @@
         </div>
     </section>
 
+    <!-- Testimonials Section – dynamic from Testimonial model -->
+    {% with testimonials=testimonials_list %}
+    {% if testimonials %}
+    <section id="testimonials" class="py-5" style="background: var(--off-white);">
+        <div class="container py-4">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <span class="fw-semibold" style="color: var(--safety-orange);">▬ CLIENT VOICES</span>
+                <h2 class="display-5 fw-bold" style="color: var(--navy-primary);">Trusted by Industry Leaders</h2>
+            </div>
+            <div class="row g-4">
+                {% for t in testimonials|slice:":6" %}
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|add:'100' }}">
+                    <div class="glass-card p-4 h-100 d-flex flex-column">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 55px; height: 55px;">
+                                <i class="bi bi-person-circle fs-1 text-secondary"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-0">{{ t.name }}</h5>
+                                <small class="text-muted">{{ t.role|default:"Client" }}</small>
+                            </div>
+                        </div>
+                        <p class="text-secondary flex-grow-1">“{{ t.message|truncatewords:25 }}”</p>
+                        <div class="mt-2">
+                            {% for star in t.rating|make_list %}
+                                <i class="bi bi-star-fill" style="color: #F5A623; font-size: 0.9rem;"></i>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+    {% endwith %}
+
     <!-- Contact Section -->
     <section id="contact" class="py-5" style="background: var(--off-white);">
         <div class="container py-4">
@@ -677,8 +685,7 @@
                 <div class="col-lg-6" data-aos="fade-up">
                     <div class="glass-card p-4 p-xl-5 h-100">
                         <div class="mb-3 fw-semibold" style="color: var(--safety-orange);">⌂ CONNECT WITH US</div>
-                        <h3 class="display-6 fw-bold" style="color: var(--navy-primary);">Let’s Engineer<br><span
-                                style="color:#F97316;">The Future</span></h3>
+                        <h3 class="display-6 fw-bold" style="color: var(--navy-primary);">Let’s Engineer<br><span style="color:#F97316;">The Future</span></h3>
                         <p class="text-secondary mb-4">Reach out for industrial partnerships, supply inquiries, or project collaborations.</p>
 
                         <form method="POST" action="{% url 'contacts:contact' %}">
@@ -687,24 +694,19 @@
                             <input type="hidden" name="subject" value="Group Enquiry">
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <input type="text" name="name" class="form-control form-control-custom"
-                                        placeholder="Full Name *" required>
+                                    <input type="text" name="name" class="form-control form-control-custom" placeholder="Full Name *" required>
                                 </div>
                                 <div class="col-md-6">
-                                    <input type="tel" name="phone" class="form-control form-control-custom"
-                                        placeholder="Phone *" required>
+                                    <input type="tel" name="phone" class="form-control form-control-custom" placeholder="Phone *" required>
                                 </div>
                                 <div class="col-12">
-                                    <input type="email" name="email" class="form-control form-control-custom"
-                                        placeholder="Email Address">
+                                    <input type="email" name="email" class="form-control form-control-custom" placeholder="Email Address">
                                 </div>
                                 <div class="col-12">
-                                    <textarea name="message" rows="4" class="form-control form-control-custom"
-                                        placeholder="Your message / project details *" required></textarea>
+                                    <textarea name="message" rows="4" class="form-control form-control-custom" placeholder="Your message / project details *" required></textarea>
                                 </div>
                                 <div class="col-12">
-                                    <button type="submit" class="btn btn-orange-solid w-100 mt-2">Send Inquiry <i
-                                            class="bi bi-send-fill ms-2"></i></button>
+                                    <button type="submit" class="btn btn-orange-solid w-100 mt-2">Send Inquiry <i class="bi bi-send-fill ms-2"></i></button>
                                 </div>
                             </div>
                         </form>
@@ -712,37 +714,22 @@
                 </div>
                 <div class="col-lg-6" data-aos="fade-up" data-aos-delay="150">
                     <div class="glass-card p-4 p-xl-5 h-100">
-                        <h4 class="fw-bold mb-3" style="color: var(--navy-primary);"><i
-                                class="bi bi-buildings-fill me-2" style="color:#F97316;"></i>Group Headquarters</h4>
+                        <h4 class="fw-bold mb-3" style="color: var(--navy-primary);"><i class="bi bi-buildings-fill me-2" style="color:#F97316;"></i>Group Headquarters</h4>
                         <div class="mt-4">
                             <div class="d-flex gap-3 mb-4">
                                 <i class="bi bi-telephone-outbound fs-4" style="color: var(--safety-orange);"></i>
-                                <div>
-                                    <div class="small text-secondary">PHONE</div><a href="tel:{{ gcfg.phone }}"
-                                        class="text-dark text-decoration-none">
-                                        {{ gcfg.phone|default:"+265 999 000 000" }}</a>
-                                </div>
+                                <div><div class="small text-secondary">PHONE</div><a href="tel:{{ gcfg.phone }}" class="text-dark text-decoration-none">{{ gcfg.phone|default:"+265 999 000 000" }}</a></div>
                             </div>
                             <div class="d-flex gap-3 mb-4">
                                 <i class="bi bi-envelope-paper fs-4" style="color: var(--safety-orange);"></i>
-                                <div>
-                                    <div class="small text-secondary">EMAIL</div><a href="mailto:{{ gcfg.email }}"
-                                        class="text-dark text-decoration-none">
-                                        {{ gcfg.email|default:"info@jandn.mw" }}
-                                    </a>
-                                </div>
+                                <div><div class="small text-secondary">EMAIL</div><a href="mailto:{{ gcfg.email }}" class="text-dark text-decoration-none">{{ gcfg.email|default:"info@jandn.mw" }}</a></div>
                             </div>
                             <div class="d-flex gap-3 mb-4">
                                 <i class="bi bi-geo-alt-fill fs-4" style="color: var(--safety-orange);"></i>
-                                <div>
-                                    <div class="small text-secondary">ADDRESS</div><span class="text-secondary">
-                                        {{ gcfg.address|default:"Blantyre, Malawi - Industrial Zone" }}</span>
-                                </div>
+                                <div><div class="small text-secondary">ADDRESS</div><span class="text-secondary">{{ gcfg.address|default:"Blantyre, Malawi - Industrial Zone" }}</span></div>
                             </div>
                             {% if gcfg.whatsapp %}
-                            <a href="https://wa.me/{{ gcfg.whatsapp }}?text=Hello J%26N Group, industrial inquiry."
-                                target="_blank" class="btn btn-success rounded-pill w-100 mt-3"><i
-                                    class="bi bi-whatsapp"></i> WhatsApp Business</a>
+                            <a href="https://wa.me/{{ gcfg.whatsapp }}?text=Hello J%26N Group, industrial inquiry." target="_blank" class="btn btn-success rounded-pill w-100 mt-3"><i class="bi bi-whatsapp"></i> WhatsApp Business</a>
                             {% endif %}
                         </div>
                     </div>
@@ -751,7 +738,7 @@
         </div>
     </section>
 
-    <!-- Footer -->
+    <!-- Footer – dynamic -->
     <footer class="pt-5 pb-3">
         <div class="container">
             <div class="row gy-4">
@@ -766,30 +753,27 @@
                 <div class="col-md-2">
                     <h6 class="mb-3" style="color: var(--safety-orange);">GROUP LINKS</h6>
                     <ul class="list-unstyled">
-                        <li><a href="{{ gcfg.btn1_url }}" class="footer-link">Building Products</a></li>
-                        <li><a href="{{ gcfg.btn2_url }}" class="footer-link">Construction</a></li>
-                        <li><a href="{{ gcfg.btn3_url }}" class="footer-link">Mining</a></li>
-                        <li><a href="{{ gcfg.btn4_url }}" class="footer-link">Timber</a></li>
+                        <li><a href="{{ gcfg.btn1_url }}" class="footer-link">{{ gcfg.btn1_label|default:"Building Products" }}</a></li>
+                        <li><a href="{{ gcfg.btn2_url }}" class="footer-link">{{ gcfg.btn2_label|default:"Construction" }}</a></li>
+                        <li><a href="{{ gcfg.btn3_url }}" class="footer-link">{{ gcfg.btn3_label|default:"Mining" }}</a></li>
+                        <li><a href="{{ gcfg.btn4_url }}" class="footer-link">{{ gcfg.btn4_label|default:"Timber" }}</a></li>
                     </ul>
                 </div>
                 <div class="col-md-3">
                     <h6 class="mb-3" style="color: var(--safety-orange);">DISCOVER</h6>
                     <ul class="list-unstyled">
                         <li><a href="#about" class="footer-link">About Group</a></li>
-                        <li><a href="#values" class="footer-link">Core Values</a></li>
+                        <li><a href="#testimonials" class="footer-link">Testimonials</a></li>
                         <li><a href="#contact" class="footer-link">Contact HQ</a></li>
                     </ul>
                 </div>
                 <div class="col-md-3">
                     <h6 class="mb-3" style="color: var(--safety-orange);">FOLLOW</h6>
-                    {% if gcfg.facebook %}<a href="{{ gcfg.facebook }}" class="footer-link me-3"><i
-                            class="bi bi-facebook fs-5"></i></a>{% endif %}
-                    {% if gcfg.linkedin %}<a href="{{ gcfg.linkedin }}" class="footer-link me-3"><i
-                            class="bi bi-linkedin fs-5"></i></a>{% endif %}
+                    {% if gcfg.facebook %}<a href="{{ gcfg.facebook }}" class="footer-link me-3"><i class="bi bi-facebook fs-5"></i></a>{% endif %}
+                    {% if gcfg.linkedin %}<a href="{{ gcfg.linkedin }}" class="footer-link me-3"><i class="bi bi-linkedin fs-5"></i></a>{% endif %}
                     <div class="mt-3 small text-white-50">
-                        © {% now "Y" %} {{ gcfg.group_name }}. All rights reserved. Industrial Excellence.<br>
-                        Designed by <a href="http://pritechmw.com/" target="_blank"
-                            class="text-white-50 text-decoration-none" style="color: var(--safety-orange);">Pritech</a>
+                        © {% now "Y" %} {{ gcfg.group_name }}. All rights reserved. {{ gcfg.footer_copyright|default:"Industrial Excellence." }}<br>
+                        Designed by <a href="http://pritechmw.com/" target="_blank" class="text-white-50 text-decoration-none" style="color: var(--safety-orange);">Pritech</a>
                     </div>
                 </div>
             </div>
@@ -799,14 +783,13 @@
     <!-- WhatsApp Float -->
     {% if gcfg.whatsapp %}
     <div class="wa-float">
-        <a href="https://wa.me/{{ gcfg.whatsapp }}?text=Hello J&N Group, I'm interested in your industrial solutions."
-            target="_blank" aria-label="Chat on WhatsApp">
+        <a href="https://wa.me/{{ gcfg.whatsapp }}?text=Hello J&N Group, I'm interested in your industrial solutions." target="_blank" aria-label="Chat on WhatsApp">
             <i class="bi bi-whatsapp"></i>
         </a>
     </div>
     {% endif %}
 
-    <!-- Scripts: Bootstrap 5, AOS, counters -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
