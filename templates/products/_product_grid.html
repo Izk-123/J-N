@@ -7,14 +7,28 @@
                 <img src="{{ product.image.url }}" class="product-img" alt="{{ product.name }}" loading="lazy">
             </div>
             <div class="p-3">
+                <!-- Featured badge -->
+                {% if product.is_featured %}
+                <span class="badge bg-warning text-dark mb-2">🔥 Featured</span>
+                {% endif %}
+
+                <!-- Dynamic rating stars (only if product.rating exists) -->
+                {% if product.rating %}
                 <div class="mb-2">
+                    {% with full=product.rating|floatformat:0|add:0 %}
+                    {% for i in "12345"|slice:full %}
                     <i class="bi bi-star-fill text-warning"></i>
-                    <i class="bi bi-star-fill text-warning"></i>
-                    <i class="bi bi-star-fill text-warning"></i>
-                    <i class="bi bi-star-fill text-warning"></i>
+                    {% endfor %}
+                    {% if product.rating|floatformat:1|slice:"-2:" != "0" %}
                     <i class="bi bi-star-half text-warning"></i>
-                    <span class="small text-muted">(24)</span>
+                    {% endif %}
+                    {% for i in "12345"|slice:full|length|add:product.rating|add:0|make_list|slice:product.rating|add:-1 %}
+                    <i class="bi bi-star text-warning"></i>
+                    {% endfor %}
+                    {% endwith %}
                 </div>
+                {% endif %}
+
                 <a href="{% url 'products:product_detail' product.slug %}" class="text-decoration-none">
                     <h5 class="fw-semibold">{{ product.name|truncatechars:40 }}</h5>
                 </a>

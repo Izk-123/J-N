@@ -47,7 +47,6 @@
             scroll-behavior: smooth;
         }
         
-        /* Prevent horizontal scroll on all containers */
         .container, .container-fluid {
             overflow-x: hidden;
         }
@@ -57,7 +56,6 @@
             font-weight: 600;
         }
         
-        /* Custom Scrollbar (only for desktop) */
         @media (min-width: 768px) {
             ::-webkit-scrollbar {
                 width: 8px;
@@ -74,7 +72,6 @@
             }
         }
         
-        /* Advanced Spinner */
         .advanced-spinner {
             width: 48px;
             height: 48px;
@@ -97,7 +94,6 @@
             opacity: 1;
         }
         
-        /* Glassmorphism Base */
         .glass-card {
             background: var(--glass-bg);
             backdrop-filter: blur(16px);
@@ -112,7 +108,6 @@
             border-color: var(--primary);
         }
         
-        /* Navbar */
         .navbar-gloss {
             background: rgba(255, 255, 255, 0.88);
             backdrop-filter: blur(20px);
@@ -170,7 +165,6 @@
             width: 100%;
         }
         
-        /* Hero Section with Enhanced Animations */
         .hero-modern {
             position: relative;
             background: linear-gradient(125deg, var(--primary) 0%, var(--primary-dark) 100%);
@@ -186,7 +180,6 @@
                 border-radius: 0 0 3rem 3rem;
             }
         }
-        /* Particles - hidden on mobile for performance */
         .particles-container {
             display: none;
         }
@@ -211,22 +204,11 @@
             animation: floatParticle linear infinite;
         }
         @keyframes floatParticle {
-            0% {
-                transform: translateY(0) translateX(0);
-                opacity: 0;
-            }
-            20% {
-                opacity: 0.6;
-            }
-            80% {
-                opacity: 0.6;
-            }
-            100% {
-                transform: translateY(-100px) translateX(30px);
-                opacity: 0;
-            }
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            20% { opacity: 0.6; }
+            80% { opacity: 0.6; }
+            100% { transform: translateY(-100px) translateX(30px); opacity: 0; }
         }
-        /* Floating shapes - scaled down on mobile */
         .hero-shape {
             position: absolute;
             background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
@@ -248,7 +230,6 @@
             position: relative;
             z-index: 2;
         }
-        /* Text reveal */
         .hero-title, .hero-subtitle, .hero-badge-wrapper {
             opacity: 0;
             animation: fadeInUp 0.8s ease forwards;
@@ -257,16 +238,9 @@
         .hero-title { animation-delay: 0.2s; }
         .hero-subtitle { animation-delay: 0.35s; }
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        /* Hero text sizing */
         .hero-title {
             font-size: 1.8rem;
         }
@@ -288,7 +262,6 @@
                 font-size: 1.25rem;
             }
         }
-        /* Floating image - only on desktop */
         .hero-img {
             transition: transform 0.3s ease-out, box-shadow 0.3s;
             will-change: transform;
@@ -309,7 +282,6 @@
             transform: scale(1.02) rotateY(2deg);
             box-shadow: 0 25px 40px rgba(0,0,0,0.2);
         }
-        /* Buttons */
         .glow-button {
             transition: all 0.3s;
             position: relative;
@@ -349,7 +321,6 @@
             transform: translateY(-2px);
         }
         
-        /* Product Card */
         .product-tilt {
             transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             transform-style: preserve-3d;
@@ -385,7 +356,6 @@
             transform: scale(1.05);
         }
         
-        /* Category Card */
         .category-gloss {
             text-align: center;
             padding: 1rem;
@@ -432,7 +402,6 @@
             }
         }
         
-        /* Testimonial */
         .testimonial-glass {
             background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(12px);
@@ -449,7 +418,6 @@
             }
         }
         
-        /* Newsletter */
         .newsletter-glass {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(20px);
@@ -465,7 +433,6 @@
             }
         }
         
-        /* Buttons */
         .btn {
             font-weight: 600;
             border-radius: 40px;
@@ -499,7 +466,6 @@
             transform: translateY(-2px);
         }
         
-        /* Footer */
         footer {
             background: rgba(15, 23, 42, 0.96);
             backdrop-filter: blur(8px);
@@ -553,7 +519,6 @@
             transform: translateY(-3px);
         }
         
-        /* Carousel controls on mobile */
         .carousel-control-prev-icon, .carousel-control-next-icon {
             width: 30px;
             height: 30px;
@@ -566,7 +531,6 @@
             }
         }
         
-        /* Utilities */
         .bg-accent { background: var(--accent); }
         .text-primary { color: var(--primary) !important; }
         .border-primary { border-color: var(--primary) !important; }
@@ -575,12 +539,10 @@
             pointer-events: none;
         }
         
-        /* Fix offcanvas on mobile */
         .offcanvas {
             max-width: 80%;
         }
         
-        /* Ensure no horizontal scroll on any element */
         img, svg, iframe, video {
             max-width: 100%;
             height: auto;
@@ -590,7 +552,6 @@
 </head>
 <body>
 
-<!-- Navbar (Enhanced Glass) -->
 <nav class="navbar navbar-expand-lg navbar-gloss sticky-top py-2 py-md-3">
     <div class="container">
         <a class="navbar-brand" href="/">{{ site.company_name|default:"Blue Rock" }}</a>
@@ -607,7 +568,6 @@
     </div>
 </nav>
 
-<!-- Mobile Offcanvas -->
 <div class="offcanvas offcanvas-end" tabindex="-1" id="mobileNav">
     <div class="offcanvas-header border-bottom">
         <h5 class="offcanvas-title">{{ site.company_name|default:"Blue Rock" }}</h5>
@@ -624,7 +584,6 @@
 
 <main>{% block content %}{% endblock %}</main>
 
-<!-- Footer -->
 <footer>
     <div class="container">
         <div class="row g-4">
@@ -661,14 +620,17 @@
     </div>
 </footer>
 
-<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/htmx.org@1.9.12"></script>
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
     AOS.init({ duration: 800, once: false, mirror: true, offset: 20, disable: window.innerWidth < 768 ? true : false });
     
-    // Tilt effect for product cards (disabled on mobile for performance)
+    // Global CSRF token for all HTMX requests
+    document.body.addEventListener('htmx:configRequest', (event) => {
+        event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+    });
+    
     if (window.innerWidth >= 768) {
         document.querySelectorAll('.product-tilt').forEach(card => {
             card.addEventListener('mousemove', (e) => {
@@ -684,7 +646,6 @@
             });
         });
         
-        // Mouse parallax for hero image (desktop only)
         const heroImg = document.querySelector('.hero-img');
         const heroWrapper = document.querySelector('.hero-image-wrapper');
         if (heroImg && heroWrapper) {
@@ -699,13 +660,11 @@
             });
         }
     } else {
-        // On mobile, ensure no hover transforms cause layout shifts
         document.querySelectorAll('.product-tilt').forEach(card => {
             card.style.transform = 'none';
         });
     }
     
-    // Ensure carousel touch works (Bootstrap already supports, but force refresh)
     if (typeof bootstrap !== 'undefined') {
         var carousels = document.querySelectorAll('.carousel');
         carousels.forEach(carousel => {

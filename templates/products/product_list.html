@@ -107,38 +107,41 @@
     </div>
 </div>
 
-<!-- Testimonial Carousel -->
+<!-- Dynamic Testimonials Carousel (with source field support) -->
 <div class="container py-5">
     <div class="text-center mb-5" data-aos="fade-up">
         <h2 class="fw-bold">Trusted by <span class="text-primary">Professionals</span></h2>
         <div class="mx-auto rounded-pill" style="width: 60px; height: 4px; background: var(--primary); margin-top: 12px;"></div>
     </div>
+    {% if testimonials %}
     <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
-            <div class="carousel-item active">
+            {% for testimonial in testimonials %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
                 <div class="testimonial-glass mx-auto" style="max-width: 700px;">
                     <i class="bi bi-quote display-1 text-primary opacity-25"></i>
-                    <p class="fs-5 fst-italic">“Blue Rock wall putty gave our project a mirror finish. Absolutely no cracks after two seasons.”</p>
-                    <h5 class="mt-3">John Banda</h5>
-                    <small class="text-muted">Contractor, Lilongwe</small>
+                    <p class="fs-5 fst-italic">“{{ testimonial.message }}”</p>
+                    
+                    <!-- Optional source badge (if you want to show which sub‑site this testimonial belongs to) -->
+                    {% if testimonial.source %}
+                    <span class="badge bg-secondary mb-2">{{ testimonial.get_source_display }}</span>
+                    {% endif %}
+                    
+                    <!-- Star rating (1–5) -->
+                    <div class="mb-2">
+                        {% for i in "12345"|slice:testimonial.rating %}
+                        <i class="bi bi-star-fill text-warning"></i>
+                        {% endfor %}
+                        {% for i in "12345"|slice:testimonial.rating|length|add:testimonial.rating|make_list|slice:"5:" %}
+                        <i class="bi bi-star text-warning"></i>
+                        {% endfor %}
+                    </div>
+                    
+                    <h5 class="mt-3">{{ testimonial.name }}</h5>
+                    <small class="text-muted">{{ testimonial.role|default:"Customer" }}</small>
                 </div>
             </div>
-            <div class="carousel-item">
-                <div class="testimonial-glass mx-auto" style="max-width: 700px;">
-                    <i class="bi bi-quote display-1 text-primary opacity-25"></i>
-                    <p class="fs-5 fst-italic">“The water repellent formula is a game changer. Exterior walls stay dry even in heavy rain.”</p>
-                    <h5 class="mt-3">Grace Mwale</h5>
-                    <small class="text-muted">Architect, Blantyre</small>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <div class="testimonial-glass mx-auto" style="max-width: 700px;">
-                    <i class="bi bi-quote display-1 text-primary opacity-25"></i>
-                    <p class="fs-5 fst-italic">“Excellent coverage and easy to apply. My clients love the smooth finish.”</p>
-                    <h5 class="mt-3">Peter Phiri</h5>
-                    <small class="text-muted">Painting Contractor</small>
-                </div>
-            </div>
+            {% endfor %}
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
             <span class="carousel-control-prev-icon bg-primary rounded-circle p-3" aria-hidden="true"></span>
@@ -147,20 +150,30 @@
             <span class="carousel-control-next-icon bg-primary rounded-circle p-3" aria-hidden="true"></span>
         </button>
     </div>
+    {% else %}
+    <p class="text-center text-muted">No testimonials yet. Add some in the admin panel.</p>
+    {% endif %}
 </div>
 
-<!-- Newsletter -->
-<div class="container" data-aos="fade-up">
+<!-- Functional Newsletter Signup (HTMX) -->
+<div class="container" data-aos="fade-up" id="newsletter-section">
     <div class="newsletter-glass text-center">
         <i class="bi bi-envelope-paper display-4 text-primary mb-3"></i>
         <h3 class="fw-bold">Get exclusive offers</h3>
         <p>Subscribe to get 15% off your first order and updates on new products.</p>
         <div class="row justify-content-center mt-4">
             <div class="col-md-6">
-                <div class="input-group shadow-sm rounded-pill overflow-hidden">
-                    <input type="email" class="form-control form-control-lg border-0 py-3" placeholder="Your email address">
-                    <button class="btn btn-primary px-4 rounded-0">Subscribe <i class="bi bi-arrow-right ms-2"></i></button>
-                </div>
+                <form hx-post="{% url 'contacts:newsletter_signup' %}"
+                      hx-target="#newsletter-message"
+                      hx-swap="innerHTML"
+                      hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+                    {% csrf_token %}
+                    <div class="input-group shadow-sm rounded-pill overflow-hidden">
+                        <input type="email" name="email" class="form-control form-control-lg border-0 py-3" placeholder="Your email address" required>
+                        <button class="btn btn-primary px-4 rounded-0" type="submit">Subscribe <i class="bi bi-arrow-right ms-2"></i></button>
+                    </div>
+                    <div id="newsletter-message" class="mt-2 small"></div>
+                </form>
             </div>
         </div>
     </div>
